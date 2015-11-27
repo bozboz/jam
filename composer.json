@@ -1,0 +1,8 @@
+{
+    "name": "bozboz/entities",
+    "autoload": {
+        "psr-4": {
+            "Bozboz\\Entities\\": "src/"
+        }
+    }
+}
