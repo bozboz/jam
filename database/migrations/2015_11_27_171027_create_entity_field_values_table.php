@@ -17,11 +17,11 @@ class CreateEntityFieldValuesTable extends Migration
             $table->integer('entity_field_id')->unsigned();
             $table->integer('entity_revision_id')->unsigned();
             $table->string('key');
-            $table->text('value');
+            $table->text('value')->nullable();
             $table->timestamps();
 
             $table->foreign('entity_field_id')
-                  ->references('id')->on('fields')
+                  ->references('id')->on('entity_fields')
                   ->onDelete('cascade');
 
             $table->foreign('entity_revision_id')

@@ -22,8 +22,8 @@ class CreateEntitiesTable extends Migration
             $table->integer('rgt')->nullable()->index();
             $table->integer('depth')->nullable();
 
-            $table->integer('entity_type_id');
-            $table->integer('entity_template_id');
+            $table->integer('entity_type_id')->unsigned();
+            $table->integer('entity_template_id')->unsigned();
 
             $table->timestamps();
             $table->softDeletes();

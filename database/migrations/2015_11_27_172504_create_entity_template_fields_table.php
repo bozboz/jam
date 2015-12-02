@@ -17,7 +17,7 @@ class CreateEntityTemplateFieldsTable extends Migration
             $table->integer('entity_template_id')->unsigned();
             $table->integer('entity_field_id')->unsigned();
             $table->string('name');
-            $table->text('validation');
+            $table->text('validation')->nullable();
             $table->timestamps();
 
             $table->foreign('entity_template_id')
@@ -25,7 +25,7 @@ class CreateEntityTemplateFieldsTable extends Migration
                   ->onDelete('cascade');
 
             $table->foreign('entity_field_id')
-                  ->references('id')->on('fields')
+                  ->references('id')->on('entity_fields')
                   ->onDelete('cascade');
         });
     }
