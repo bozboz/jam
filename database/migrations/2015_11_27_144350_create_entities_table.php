@@ -14,24 +14,24 @@ class CreateEntitiesTable extends Migration
     {
         Schema::create('entities', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('alias');
+            $table->string('slug');
             $table->string('name');
 
-            $table->integer('parent_id')->nullable()->index();
-            $table->integer('lft')->nullable()->index();
-            $table->integer('rgt')->nullable()->index();
-            $table->integer('depth')->nullable();
+            $table->integer('parent_id')->nullable();
+            $table->integer('_lft')->nullable();
+            $table->integer('_rgt')->nullable();
 
-            $table->integer('entity_type_id')->unsigned();
-            $table->integer('entity_template_id')->unsigned();
+            $table->integer('template_id')->unsigned();
 
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('entity_type_id')
+            $table->index([ '_lft', '_rgt', 'parent_id' ]);
+
+            $table->foreign('type_id')
                   ->references('id')->on('entity_types')
                   ->onDelete('cascade');
-            $table->foreign('entity_template_id')
+            $table->foreign('template_id')
                   ->references('id')->on('entity_templates')
                   ->onDelete('cascade');
         });

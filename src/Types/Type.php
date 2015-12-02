@@ -22,7 +22,7 @@ class Type extends Base
 
 	public function templates()
 	{
-		return $this->belongsToMany(Template::class, 'entity_type_template');
+		return $this->hasMany(Template::class);
 	}
 
 	public function getValidator()

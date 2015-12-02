@@ -2,13 +2,14 @@
 
 namespace Bozboz\Entities\Entities;
 
-use Baum\Node;
 use Bozboz\Admin\Models\BaseInterface;
+use Bozboz\Admin\Traits\DynamicSlugTrait;
 use Bozboz\Admin\Traits\SanitisesInputTrait;
 use Bozboz\Entities\Field;
 use Bozboz\Entities\Templates\Template;
 use Bozboz\Entities\Types\Type;
-use Illuminate\Database\Eloquent\SoftDeletingTrait;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Kalnoy\Nestedset\Node;
 
 class Entity extends Node implements BaseInterface
 {
@@ -27,11 +28,19 @@ class Entity extends Node implements BaseInterface
 	protected $fields = [];
 
 	use SanitisesInputTrait;
-	use SoftDeletingTrait;
+	use SoftDeletes;
+	use DynamicSlugTrait;
 
 	public function getValidator()
 	{
-		return $this->template->getValidator();
+		return new EntityValidator(
+			(array) $this->template->fields()->lists('pivot.validation', 'name')
+		);
+	}
+
+	public function getSlugSourceField()
+	{
+		return 'name';
 	}
 
 	public function revisions()
@@ -47,11 +56,6 @@ class Entity extends Node implements BaseInterface
 	public function publishedRevision()
 	{
 		return $this->revisions()->whereNotNull('published_at')->latest()->first();
-	}
-
-	public function type()
-	{
-		return $this->belongsTo(Type::class);
 	}
 
 	/**
@@ -99,7 +103,7 @@ class Entity extends Node implements BaseInterface
 			$fieldValues[] = [
 				'field_id' => $field->id,
 				'key' => $field->pivot->name,
-				'value' => $input[$field->pivot->name],
+				'value' => $input[e($field->pivot->name)],
 			];
 		}
 

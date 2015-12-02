@@ -16,7 +16,11 @@ class CreateEntityTemplatesTable extends Migration
             $table->increments('id');
             $table->string('alias', 64);
             $table->string('name', 255);
+            $table->unsignedInteger('type_id');
             $table->timestamps();
+
+            $table->foreign('type_id')
+                  ->references('id')->on('entity_types');
         });
     }
 

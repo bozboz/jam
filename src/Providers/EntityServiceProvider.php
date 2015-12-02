@@ -15,7 +15,7 @@ class EntityServiceProvider extends ServiceProvider
 	{
 		$packageRoot = __DIR__ . '/../../';
 
-		$this->loadViewsFrom("{$packageRoot}/resources/views", 'admin');
+		$this->loadViewsFrom("{$packageRoot}/resources/views", 'entities');
 
 		$this->publishes([
 			"{$packageRoot}database/migrations" => database_path('migrations')
@@ -35,12 +35,13 @@ class EntityServiceProvider extends ServiceProvider
 			// $entityRepository = $this->app['entityRepository'];
 			$url = $this->app['url'];
 
+			$contentMenu = $menu['Content'];
+
 			$entityTypes = Type::all();
 			foreach ($entityTypes as $type) {
-				$menu[$type->name] = $url->route('admin.entities.index', [$type->alias]);
+				$contentMenu[$type->name] = $url->route('admin.entities.index', ['type' => $type->alias]);
 			}
-
-			\Debugbar::info(Type::all());
+			$menu['Content'] = $contentMenu;
 
 			$menu['Entities'] = [
 				// 'Types' => $url->route('admin.entities.types'),

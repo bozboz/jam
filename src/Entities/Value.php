@@ -2,7 +2,7 @@
 
 namespace Bozboz\Entities\Entities;
 
-use Baum\Extensions\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 
 class Value extends Model
 {

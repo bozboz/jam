@@ -14,17 +14,17 @@ class CreateEntityFieldValuesTable extends Migration
     {
         Schema::create('entity_field_values', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('entity_field_id')->unsigned();
-            $table->integer('entity_revision_id')->unsigned();
+            $table->integer('field_id')->unsigned();
+            $table->integer('revision_id')->unsigned();
             $table->string('key');
             $table->text('value')->nullable();
             $table->timestamps();
 
-            $table->foreign('entity_field_id')
+            $table->foreign('field_id')
                   ->references('id')->on('entity_fields')
                   ->onDelete('cascade');
 
-            $table->foreign('entity_revision_id')
+            $table->foreign('revision_id')
                   ->references('id')->on('entity_revisions')
                   ->onDelete('cascade');
         });

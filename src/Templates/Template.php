@@ -6,6 +6,7 @@ use Bozboz\Admin\Models\Base;
 use Bozboz\Entities\Entity;
 use Bozboz\Entities\Fields\Field;
 use Bozboz\Entities\Fields\FieldMapper;
+use Bozboz\Entities\Types\Type;
 
 class Template extends Base
 {
@@ -13,9 +14,6 @@ class Template extends Base
 
 	public function getValidator()
 	{
-		return new TemplateValidator(
-			$this->fields()->lists('pivot.validation', 'name')
-		);
 	}
 
 	public function fields()
@@ -26,6 +24,11 @@ class Template extends Base
 	public function entity()
 	{
 		return $this->belongsTo(Entity::class);
+	}
+
+	public function type()
+	{
+		return $this->belongsTo(Type::class);
 	}
 
 	/**

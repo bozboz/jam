@@ -6,26 +6,29 @@ use Bozboz\Admin\Decorators\ModelAdminDecorator;
 use Bozboz\Admin\Fields\HiddenField;
 use Bozboz\Admin\Fields\TextField;
 use Bozboz\Admin\Fields\URLField;
-use Illuminate\Support\Collection;
 use Bozboz\Entities\Entities\Entity;
+use Bozboz\Entities\Fields\FieldMapper;
+use Bozboz\Entities\Templates\Template;
+use Illuminate\Support\Collection;
 
 class EntityDecorator extends ModelAdminDecorator
 {
 	protected $fieldMapper;
 
-	public function __construct(Entity $page, FieldMapper $fieldMapper)
+	public function __construct(Entity $entity, FieldMapper $fieldMapper)
 	{
 		$this->fieldMapper = $fieldMapper;
 
-		parent::__construct($page);
+		parent::__construct($entity);
 	}
 
 	public function getColumns($instance)
 	{
 		return [
 			'Name' => $this->getLabel($instance),
-			'URL' => $instance->slug,
+			// 'URL' => $instance->alias,
 			'Type' => $instance->template->alias,
+			'Last Revision' => $instance->latestRevision()->created_at->format('d<\s\u\p>S</\s\u\p> M Y, H:i'),
 		];
 	}
 
@@ -36,28 +39,28 @@ class EntityDecorator extends ModelAdminDecorator
 
 	public function getFields($instance)
 	{
-		$fields = new Collection([
+		$fields = new Collection(array_filter([
 			new TextField('name'),
-			new URLField('slug'),
+			$instance->exists() ? new TextField('slug') : null,
 			new HiddenField('template_id'),
-		]);
+		]));
 
 		return $fields->merge($instance->template->getFields($this->fieldMapper))->all();
 	}
 
 	/**
-	 * Return a new page, associated with given $template
+	 * Return a new entity, associated with given $template
 	 *
-	 * @param  Bozboz\Entities\Template  $template
-	 * @return Bozboz\Entities\Entity
+	 * @param  Bozboz\Entities\Templates\Template  $template
+	 * @return Bozboz\Entities\Entities\Entity
 	 */
 	public function newEntityOfType(Template $template)
 	{
-		$page = $this->model->newInstance();
+		$entity = $this->model->newInstance();
 
-		$page->template()->associate($template);
+		$entity->template()->associate($template);
 
-		return $page;
+		return $entity;
 	}
 
 	/**
@@ -65,13 +68,13 @@ class EntityDecorator extends ModelAdminDecorator
 	 * attributes, associate it with the Entity.
 	 *
 	 * @param  array  $attributes
-	 * @return Bozboz\Entities\Entity
+	 * @return Bozboz\Entities\Entities\Entity
 	 */
 	public function newModelInstance($attributes = [])
 	{
 		if (array_key_exists('template_id', $attributes)) {
 			$template = Template::find($attributes['template_id']);
-			return $this->newPageOfType($template);
+			return $this->newEntityOfType($template);
 		}
 
 		return $this->model->newInstance();

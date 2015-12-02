@@ -2,12 +2,14 @@
 
 namespace Bozboz\Entities\Http\Controllers\Admin;
 
-use Bozboz\Admin\Exceptions\PageValidationException;
 use Bozboz\Admin\Http\Controllers\ModelAdminController;
 use Bozboz\Admin\Reports\Report;
 use Bozboz\Entities\Entities\EntityDecorator;
 use Bozboz\Entities\Templates\Template;
+use Bozboz\Entities\Types\Type;
+use Session;
 use Input, Redirect, DB;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class EntityController extends ModelAdminController
 {
@@ -16,14 +18,40 @@ class EntityController extends ModelAdminController
 		parent::__construct($decorator);
 	}
 
-	public function index()
+	/**
+	 * Get an instance of a report to display the model listing
+	 *
+	 * @return Bozboz\Admin\Reports\Report
+	 */
+	protected function getListingReport()
 	{
-		$report = new Report($this->decorator);
-		// $report->overrideView('sitemap.admin.overview');
+		return new Report($this->decorator, 'entities::admin.overview');
+	}
 
-		return $report->render([
-			'controller' => get_class($this),
-			'pageTypes' => Template::all()
+	/**
+	 * Return an array of params the report requires to render
+	 *
+	 * @return array
+	 */
+	protected function getReportParams()
+	{
+		if (Input::get('type')) {
+			$type = Type::where('alias', Input::get('type'))->first();
+
+			if (!$type) {
+				throw new NotFoundHttpException;
+			}
+
+			$templates = $type->templates()->orderBy('name')->get();
+		} else {
+			$type = null;
+			$templates = Template::orderBy('name')->get();
+		}
+		return array_merge(parent::getReportParams(), [
+			'type' => $type,
+			'templates' => $templates,
+
+			'createAction' => $this->getActionName('createOfType'),
 		]);
 	}
 
@@ -41,19 +69,33 @@ class EntityController extends ModelAdminController
 		DB::beginTransaction();
 		try {
 			$input = Input::except('after_save');
+			$input = $this->decorator->sanitiseInput($input);
+
 			$entity = $this->decorator->newModelInstance($input);
 
-			$input = $this->validate($entity, $input);
-			$entity = $this->save($entity, $input);
+			$validation = $entity->getValidator();
 
-			$this->newRevision($entity, $input);
+			if ($validation->passesStore($input)) {
 
-			$response = $this->reEdit($entity) ?: $this->getStoreResponse($entity);
+				$entity = $this->save($entity, $input);
+
+				$this->newRevision($entity, $input);
+
+				$response = $this->reEdit($entity) ?: $this->getStoreResponse($entity);
+			} else {
+				$response = Redirect::back()->withErrors($validation->getErrors())->withInput();
+			}
+
 			DB::commit();
-		} catch (PageValidationException $e) {
-			$response = Redirect::back()->withErrors($e->getErrors())->withInput();
+		} catch (\Exception $e) {
 			DB::rollback();
+			throw $e;
 		}
+
+		Session::flash("model.created", sprintf(
+			"Successfully created \"%s\"",
+			$this->decorator->getLabel($entity)
+		));
 
 		return $response;
 	}
@@ -63,7 +105,7 @@ class EntityController extends ModelAdminController
 		$view = parent::edit($id);
 
 		$values = $view->model->toArray();
-		$values += $view->model->latestRevision()->fieldValues()->lists('value', 'key');
+		$values += $view->model->latestRevision()->fieldValues()->lists('value', 'key')->toArray();
 
 		$view->with('model', $values);
 
@@ -74,22 +116,42 @@ class EntityController extends ModelAdminController
 	{
 		DB::beginTransaction();
 		try {
-			$input = Input::except('after_save');
 			$entity = $this->decorator->findInstance($id);
+			$validation = $entity->getValidator();
+			$input = $this->decorator->sanitiseInput(Input::except('after_save'));
+			$input[$entity->getKeyName()] = $entity->getKey();
 
-			$input = $this->validate($entity, $input);
-			$entity = $this->save($entity, $input);
+			if ($validation->passesUpdate($input)) {
+				$entity = $this->save($entity, $input);
 
-			$this->newRevision($entity, $input);
+				$this->newRevision($entity, $input);
 
-			$response = $this->reEdit($entity) ?: $this->getUpdateResponse($entity);
+				$response = $this->reEdit($entity) ?: $this->getUpdateResponse($entity);
+			} else {
+				$response = Redirect::back()->withErrors($validation->getErrors())->withInput();
+			}
 			DB::commit();
-		} catch (PageValidationException $e) {
-			$response = Redirect::back()->withErrors($e->getErrors())->withInput();
+		} catch (\Exception $e) {
 			DB::rollback();
+			throw $e;
 		}
 
+		Session::flash("model.updated", sprintf(
+			"Successfully updated \"%s\"",
+			$this->decorator->getLabel($entity)
+		));
+
 		return $response;
+	}
+
+	protected function save($modelInstance, $input)
+	{
+		$modelInstance->fill($input);
+		$modelInstance->save();
+
+		$this->decorator->updateRelations($modelInstance, $input);
+
+		return $modelInstance;
 	}
 
 	protected function newRevision($entity, $input)
