@@ -2,15 +2,12 @@
 
 namespace Bozboz\Entities\Fields;
 
-class FieldMapper
+class FieldMapper implements FieldMapperInterface
 {
-	protected $mapping = [
-		'text' => 'Bozboz\Admin\Fields\TextField',
-		'textarea' => 'Bozboz\Admin\Fields\TextareaField',
-		'htmleditor' => 'Bozboz\Admin\Fields\HTMLEditorField',
-		'checkbox' => 'Bozboz\Admin\Fields\CheckboxField',
-		'hidden' => 'Bozboz\Admin\Fields\HiddenField',
-	];
+	public function __construct()
+	{
+		$this->mapping = config('entities.field-map');
+	}
 
 	public function has($alias)
 	{

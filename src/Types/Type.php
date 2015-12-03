@@ -27,6 +27,6 @@ class Type extends Base
 
 	public function getValidator()
 	{
-
+		return new TypeValidator;
 	}
 }

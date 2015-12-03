@@ -21,8 +21,12 @@ class EntityServiceProvider extends ServiceProvider
 			"{$packageRoot}database/migrations" => database_path('migrations')
 		], 'migrations');
 
+		$this->publishes([
+			"{$packageRoot}/config/entities.php" => config_path('entities.php')
+		], 'config');
+
 		if (! $this->app->routesAreCached()) {
-			require $packageRoot . '/src/Http/routes.php';
+			require "{$packageRoot}/src/Http/routes.php";
 		}
 
 		$this->buildAdminMenu();
@@ -32,7 +36,6 @@ class EntityServiceProvider extends ServiceProvider
 	{
 		$this->app['events']->listen('admin.renderMenu', function($menu)
 		{
-			// $entityRepository = $this->app['entityRepository'];
 			$url = $this->app['url'];
 
 			$contentMenu = $menu['Content'];
@@ -44,7 +47,7 @@ class EntityServiceProvider extends ServiceProvider
 			$menu['Content'] = $contentMenu;
 
 			$menu['Entities'] = [
-				// 'Types' => $url->route('admin.entities.types'),
+				'Types' => $url->route('admin.entity-types.index'),
 				// 'Templates' => $url->route('admin.entities.templates'),
 				// 'Fields' => $url->route('admin.entities.fields'),
 			];

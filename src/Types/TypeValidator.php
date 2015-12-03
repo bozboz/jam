@@ -1,14 +1,16 @@
 <?php
 
-namespace Bozboz\Entities\Templates;
+namespace Bozboz\Entities\Types;
 
 use Bozboz\Admin\Services\Validators\Validator;
 
-class TemplateValidator extends Validator
+class TypeValidator extends Validator
 {
 	protected $rules = [
 		'name' => 'required',
 		'alias' => 'required',
-		'type_id' => 'required|exists:entity_types,id'
+	];
+
+	protected $editRules = [
 	];
 }

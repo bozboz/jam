@@ -33,8 +33,9 @@ class Entity extends Node implements BaseInterface
 
 	public function getValidator()
 	{
+		\Debugbar::info($this->template->fields()->lists('validation', 'name'));
 		return new EntityValidator(
-			(array) $this->template->fields()->lists('pivot.validation', 'name')
+			(array) $this->template->fields()->lists('validation', 'name')->toArray()
 		);
 	}
 
@@ -69,7 +70,7 @@ class Entity extends Node implements BaseInterface
 			$revision = $this->latestRevision();
 		}
 
-		$templateFields = $this->template->fields()->lists('pivot.name');
+		$templateFields = $this->template->fields()->lists('name');
 		$fieldValues = $revision->fieldValues()->lists('value', 'key');
 
 		$this->fields = array_merge(array_fill_keys($templateFields, null), $fieldValues);

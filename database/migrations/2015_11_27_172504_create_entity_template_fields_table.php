@@ -14,18 +14,14 @@ class CreateEntityTemplateFieldsTable extends Migration
     {
         Schema::create('entity_template_fields', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('template_id')->unsigned();
-            $table->integer('field_id')->unsigned();
+            $table->integer('template_id')->unsigned()->index();
             $table->string('name');
+            $table->string('type_alias');
             $table->text('validation')->nullable();
             $table->timestamps();
 
             $table->foreign('template_id')
                   ->references('id')->on('entity_templates')
-                  ->onDelete('cascade');
-
-            $table->foreign('field_id')
-                  ->references('id')->on('entity_fields')
                   ->onDelete('cascade');
         });
     }

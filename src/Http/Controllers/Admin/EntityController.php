@@ -18,6 +18,14 @@ class EntityController extends ModelAdminController
 		parent::__construct($decorator);
 	}
 
+	public function index()
+	{
+		if (!Input::get('type')) {
+			return Redirect::to('/admin');
+		}
+		return parent::index();
+	}
+
 	/**
 	 * Get an instance of a report to display the model listing
 	 *
@@ -25,7 +33,7 @@ class EntityController extends ModelAdminController
 	 */
 	protected function getListingReport()
 	{
-		return new Report($this->decorator, 'entities::admin.overview');
+		return new Report($this->decorator, 'entities::admin.entity-overview');
 	}
 
 	/**
@@ -167,5 +175,18 @@ class EntityController extends ModelAdminController
 		if ( ! $latestRevision || $changes) {
 			$entity->newRevision($input);
 		}
+	}
+
+	/**
+	 * The generic response after a successful store/update action.
+	 */
+	protected function getSuccessResponse($instance)
+	{
+		return \Redirect::action($this->getActionName('index'), ['type' => $instance->template->type->alias]);
+	}
+
+	protected function getListingUrl($instance)
+	{
+		return action($this->getActionName('index'), ['type' => $instance->template->type->alias]);
 	}
 }

@@ -12,13 +12,20 @@ class Template extends Base
 {
 	protected $table = 'entity_templates';
 
+	protected $fillable = [
+		'name',
+		'alias',
+		'type_id'
+	];
+
 	public function getValidator()
 	{
+		return new TemplateValidator;
 	}
 
 	public function fields()
 	{
-		return $this->belongsToMany(Field::class, 'entity_template_fields')->withPivot('name', 'validation');
+		return $this->hasMany(Field::class);
 	}
 
 	public function entity()
@@ -43,9 +50,9 @@ class Template extends Base
 		$fields = [];
 
 		foreach($this->fields as $field) {
-			if ($mapper->has($field->alias)) {
-				$class = $mapper->get($field->alias);
-				$fields[] = new $class($field->pivot->name);
+			if ($mapper->has($field->type_alias)) {
+				$class = $mapper->get($field->type_alias);
+				$fields[] = new $class($field->name);
 			}
 		}
 

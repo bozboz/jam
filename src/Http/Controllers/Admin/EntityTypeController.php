@@ -2,9 +2,10 @@
 
 namespace Bozboz\Entities\Http\Controllers\Admin;
 
-use Bozboz\Admin\Controllers\ModelAdminController;
+use Bozboz\Admin\Http\Controllers\ModelAdminController;
+use Bozboz\Entities\Types\TypeDecorator;
 
-class ShippingMethodController extends ModelAdminController
+class EntityTypeController extends ModelAdminController
 {
 	public function __construct(TypeDecorator $decorator)
 	{

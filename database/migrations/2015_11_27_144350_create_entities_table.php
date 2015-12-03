@@ -21,16 +21,13 @@ class CreateEntitiesTable extends Migration
             $table->integer('_lft')->nullable();
             $table->integer('_rgt')->nullable();
 
-            $table->integer('template_id')->unsigned();
+            $table->integer('template_id')->unsigned()->index();
 
             $table->timestamps();
             $table->softDeletes();
 
             $table->index([ '_lft', '_rgt', 'parent_id' ]);
 
-            $table->foreign('type_id')
-                  ->references('id')->on('entity_types')
-                  ->onDelete('cascade');
             $table->foreign('template_id')
                   ->references('id')->on('entity_templates')
                   ->onDelete('cascade');

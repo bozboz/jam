@@ -1,7 +1,7 @@
 @extends('admin::overview')
 
 @section('report_header')
-	@include('entities::admin.partials.new')
+	@include('entities::admin.partials.new-entity')
 	<h1>{{ $type->name or $heading }}</h1>
 
 	@if (Session::has('model'))
@@ -19,5 +19,5 @@
 
 @section('report_footer')
 	{!! $report->getFooter() !!}
-	@include('entities::admin.partials.new')
+	@include('entities::admin.partials.new-entity')
 @stop

@@ -9,6 +9,7 @@ use Bozboz\Admin\Fields\URLField;
 use Bozboz\Entities\Entities\Entity;
 use Bozboz\Entities\Fields\FieldMapper;
 use Bozboz\Entities\Templates\Template;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 class EntityDecorator extends ModelAdminDecorator
@@ -41,7 +42,7 @@ class EntityDecorator extends ModelAdminDecorator
 	{
 		$fields = new Collection(array_filter([
 			new TextField('name'),
-			$instance->exists() ? new TextField('slug') : null,
+			$instance->exists ? new TextField('slug') : null,
 			new HiddenField('template_id'),
 		]));
 
@@ -78,5 +79,12 @@ class EntityDecorator extends ModelAdminDecorator
 		}
 
 		return $this->model->newInstance();
+	}
+
+	protected function modifyListingQuery(Builder $query)
+	{
+		$query->whereHas('template.type', function($query) {
+			$query->whereAlias(\Input::get('type'));
+		});
 	}
 }
