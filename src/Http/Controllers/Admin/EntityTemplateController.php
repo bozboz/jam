@@ -47,4 +47,14 @@ class EntityTemplateController extends ModelAdminController
 
 		return $this->renderCreateFormFor($instance);
 	}
+
+	protected function getSuccessResponse($instance)
+	{
+		return Redirect::action($this->getActionName('index'), ['type_id' => $instance->type_id]);
+	}
+
+	protected function getListingUrl($instance)
+	{
+		return action($this->getActionName('index'), ['type_id' => $instance->type_id]);
+	}
 }

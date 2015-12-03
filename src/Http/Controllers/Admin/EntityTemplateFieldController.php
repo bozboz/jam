@@ -47,4 +47,14 @@ class EntityTemplateFieldController extends ModelAdminController
 
 		return $this->renderCreateFormFor($instance);
 	}
+
+	protected function getSuccessResponse($instance)
+	{
+		return Redirect::action($this->getActionName('index'), ['template_id' => $instance->template_id]);
+	}
+
+	protected function getListingUrl($instance)
+	{
+		return action($this->getActionName('index'), ['template_id' => $instance->template_id]);
+	}
 }
