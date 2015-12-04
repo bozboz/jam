@@ -46,7 +46,7 @@ class EntityDecorator extends ModelAdminDecorator
 			new HiddenField('template_id'),
 		]));
 
-		return $fields->merge($instance->template->getFields($this->fieldMapper))->all();
+		return $fields->merge($instance->template->getFields($this->fieldMapper, $instance))->all();
 	}
 
 	/**

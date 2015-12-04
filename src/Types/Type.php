@@ -3,6 +3,7 @@
 namespace Bozboz\Entities\Types;
 
 use Bozboz\Admin\Models\Base;
+use Bozboz\Admin\Traits\MediableTrait;
 use Bozboz\Entities\Entity;
 use Bozboz\Entities\Templates\Template;
 
@@ -14,6 +15,8 @@ class Type extends Base
 		'name',
 		'alias'
 	];
+
+	use MediableTrait;
 
 	public function entities()
 	{

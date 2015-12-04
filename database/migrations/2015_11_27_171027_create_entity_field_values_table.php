@@ -12,7 +12,7 @@ class CreateEntityFieldValuesTable extends Migration
      */
     public function up()
     {
-        Schema::create('entity_field_values', function (Blueprint $table) {
+        Schema::create('entity_values', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('revision_id')->unsigned();
             $table->string('key');
@@ -32,6 +32,6 @@ class CreateEntityFieldValuesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('entity_field_values');
+        Schema::drop('entity_values');
     }
 }

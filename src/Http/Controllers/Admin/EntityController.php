@@ -164,17 +164,7 @@ class EntityController extends ModelAdminController
 
 	protected function newRevision($entity, $input)
 	{
-		$latestRevision = $entity->latestRevision();
-
-		if ($latestRevision) {
-			$entity->loadValues($latestRevision);
-			$currentValues = $entity->getValue();
-			$changes = array_diff_assoc($currentValues, $input);
-		}
-
-		if ( ! $latestRevision || $changes) {
-			$entity->newRevision($input);
-		}
+		$entity->newRevision($input);
 	}
 
 	/**

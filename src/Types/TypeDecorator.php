@@ -3,6 +3,7 @@
 namespace Bozboz\Entities\Types;
 
 use Bozboz\Admin\Decorators\ModelAdminDecorator;
+use Bozboz\Admin\Fields\MediaBrowser;
 use Bozboz\Admin\Fields\TextField;
 use Bozboz\Entities\Types\Type;
 
@@ -36,6 +37,11 @@ class TypeDecorator extends ModelAdminDecorator
 		return [
 			new TextField('name'),
 			new TextField('alias'),
+			new MediaBrowser($instance->media())
 		];
+	}
+	public function getSyncRelations()
+	{
+		return ['media'];
 	}
 }

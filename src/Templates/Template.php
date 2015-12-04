@@ -3,7 +3,9 @@
 namespace Bozboz\Entities\Templates;
 
 use Bozboz\Admin\Models\Base;
-use Bozboz\Entities\Entity;
+use Bozboz\Entities\Entities\Entity;
+use Bozboz\Entities\Entities\Revision;
+use Bozboz\Entities\Entities\Value;
 use Bozboz\Entities\Fields\Field;
 use Bozboz\Entities\Fields\FieldMapper;
 use Bozboz\Entities\Types\Type;
@@ -45,14 +47,37 @@ class Template extends Base
 	 * @param  Bozboz\Entities\FieldMapper  $mapper
 	 * @return array
 	 */
-	public function getFields(FieldMapper $mapper)
+	public function getFields(FieldMapper $mapper, Entity $instance)
 	{
 		$fields = [];
+
+		$instance->loadValues(new Revision);
 
 		foreach($this->fields as $field) {
 			if ($mapper->has($field->type_alias)) {
 				$class = $mapper->get($field->type_alias);
-				$fields[] = new $class($field->name);
+				$fieldName = $field->name;
+
+				switch ($field->type_alias) {
+					case 'image':
+						$value = $instance->values ? $instance->values->$fieldName : (new Value);
+						$fields[] = new $class($value->image(), [
+							'name' => $fieldName
+						]);
+					break;
+
+					case 'gallery':
+						$value = $instance->values ? $instance->values->$fieldName : (new Value);
+						$fields[] = new $class($value->gallery(), [
+							'name' => $fieldName.'_relationship',
+							'label' => $fieldName
+						]);
+					break;
+
+					default:
+						$fields[] = new $class($field->name);
+					break;
+				}
 			}
 		}
 

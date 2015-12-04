@@ -2,15 +2,15 @@
 
 namespace Bozboz\Entities\Entities;
 
+use Bozboz\Admin\Models\Media;
 use Illuminate\Database\Eloquent\Model;
 
 class Value extends Model
 {
-	protected $table = 'entity_field_values';
+	protected $table = 'entity_values';
 
 	protected $fillable = [
 		'page_revision_id',
-		'field_id',
 		'key',
 		'value'
 	];
@@ -20,8 +20,18 @@ class Value extends Model
 		return $this->belongsTo(Revision::class);
 	}
 
-	public function field()
+	public function image()
 	{
-		return $this->belongsTo(Field::class);
+		return Media::forModel($this, 'value');
+	}
+
+	public function gallery()
+	{
+		return Media::forModel($this);
+	}
+
+	public function __toString()
+	{
+		return is_string($this->value) ? $this->value : serialize($this->value);
 	}
 }

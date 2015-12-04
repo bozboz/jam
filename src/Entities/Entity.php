@@ -3,13 +3,16 @@
 namespace Bozboz\Entities\Entities;
 
 use Bozboz\Admin\Models\BaseInterface;
+use Bozboz\Admin\Models\Media;
 use Bozboz\Admin\Traits\DynamicSlugTrait;
 use Bozboz\Admin\Traits\SanitisesInputTrait;
+use Bozboz\Entities\Entities\Value;
 use Bozboz\Entities\Field;
 use Bozboz\Entities\Templates\Template;
 use Bozboz\Entities\Types\Type;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Kalnoy\Nestedset\Node;
+use Illuminate\Support\Collection;
 
 class Entity extends Node implements BaseInterface
 {
@@ -25,7 +28,8 @@ class Entity extends Node implements BaseInterface
 
 	protected $dates = ['deleted_at'];
 
-	protected $fields = [];
+	public $fields = [];
+	public $values = [];
 
 	use SanitisesInputTrait;
 	use SoftDeletes;
@@ -33,7 +37,6 @@ class Entity extends Node implements BaseInterface
 
 	public function getValidator()
 	{
-		\Debugbar::info($this->template->fields()->lists('validation', 'name'));
 		return new EntityValidator(
 			(array) $this->template->fields()->lists('validation', 'name')->toArray()
 		);
@@ -70,23 +73,25 @@ class Entity extends Node implements BaseInterface
 			$revision = $this->latestRevision();
 		}
 
-		$templateFields = $this->template->fields()->lists('name');
-		$fieldValues = $revision->fieldValues()->lists('value', 'key');
+		$templateFields = $this->template->fields()->lists('name')->toArray();
+		$this->fillable = array_merge($this->fillable, $templateFields);
+		$fieldKeys = array_fill_keys($templateFields, null);
 
-		$this->fields = array_merge(array_fill_keys($templateFields, null), $fieldValues);
+		$fieldValues = $revision->fieldValues;
+		foreach ($fieldValues as $value) {
+			$this->values[$value->key] = $value;
+			$this->attributes[$value->key] = $value->value;
+		}
 	}
 
 	public function getValue($key = null)
 	{
-		if (!$this->fields) {
-			$this->loadValues();
-		}
+		return $this->values[$key];
+	}
 
-		if ($key) {
-			return $this->fields[$key];
-		} else {
-			return $this->fields;
-		}
+	public function getValues()
+	{
+		return $this->values;
 	}
 
 	public function template()
@@ -99,15 +104,24 @@ class Entity extends Node implements BaseInterface
 		$revision = $this->revisions()->create([]);
 
 		$fieldValues = [];
-
 		foreach ($this->template->fields as $field) {
-			$fieldValues[] = [
+			$fieldValue = [
 				'field_id' => $field->id,
-				'key' => $field->pivot->name,
-				'value' => $input[e($field->pivot->name)],
+				'key' => $field->name,
 			];
-		}
+			switch ($field->type_alias) {
+				case 'gallery':
+					$fieldValue['value'] = null;
+					$value = $revision->fieldValues()->create($fieldValue);
+					$data = @array_filter($input[e($field->name).'_relationship']);
+					$value->gallery()->sync(is_array($data) ? $data : []);
+					break;
 
-		$revision->fieldValues()->createMany($fieldValues);
+				default:
+					$fieldValue['value'] = $input[e($field->name)];
+					$revision->fieldValues()->create($fieldValue);
+					break;
+			}
+		}
 	}
 }

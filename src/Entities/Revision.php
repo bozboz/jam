@@ -2,9 +2,9 @@
 
 namespace Bozboz\Entities\Entities;
 
-use Bozboz\Admin\Models\Base;
+use Illuminate\Database\Eloquent\Model;
 
-class Revision extends Base
+class Revision extends Model
 {
 	protected $table = 'entity_revisions';
 
@@ -12,11 +12,6 @@ class Revision extends Base
 		'entity_id',
 		'published_at'
 	];
-
-	public function getValidator()
-	{
-
-	}
 
 	public function entity()
 	{
