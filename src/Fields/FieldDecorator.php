@@ -2,7 +2,7 @@
 
 namespace Bozboz\Entities\Fields;
 
-use Bozboz\Admin\Decorators\ModelAdminDecorator;
+use Bozboz\Admin\Base\ModelAdminDecorator;
 use Bozboz\Admin\Fields\BelongsToField;
 use Bozboz\Admin\Fields\HiddenField;
 use Bozboz\Admin\Fields\SelectField;
@@ -14,6 +14,8 @@ use Input;
 
 class FieldDecorator extends ModelAdminDecorator
 {
+	protected $adminFieldClass;
+
 	public function __construct(Field $instance)
 	{
 		parent::__construct($instance);
@@ -63,5 +65,15 @@ class FieldDecorator extends ModelAdminDecorator
 	protected function modifyListingQuery(Builder $query)
 	{
 		$query->whereTemplateId(Input::get('template_id'));
+	}
+
+	public function setAdminFieldClass($adminFieldClass)
+	{
+		$this->adminFieldClass = $adminFieldClass;
+	}
+
+	public function getEntityField()
+	{
+		# code...
 	}
 }

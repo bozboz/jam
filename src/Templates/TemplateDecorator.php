@@ -2,9 +2,10 @@
 
 namespace Bozboz\Entities\Templates;
 
-use Bozboz\Admin\Decorators\ModelAdminDecorator;
+use Bozboz\Admin\Base\ModelAdminDecorator;
 use Bozboz\Admin\Fields\HiddenField;
 use Bozboz\Admin\Fields\TextField;
+use Bozboz\Entities\Fields\FieldMapper;
 use Bozboz\Entities\Templates\Template;
 use Bozboz\Entities\Types\Type;
 use Illuminate\Database\Eloquent\Builder;
@@ -12,8 +13,11 @@ use Input;
 
 class TemplateDecorator extends ModelAdminDecorator
 {
-	public function __construct(Template $instance)
+	protected $fieldMapper;
+
+	public function __construct(Template $instance, FieldMapper $fieldMapper)
 	{
+		$this->fieldMapper = $fieldMapper;
 		parent::__construct($instance);
 	}
 

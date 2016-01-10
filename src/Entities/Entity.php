@@ -2,20 +2,23 @@
 
 namespace Bozboz\Entities\Entities;
 
-use Bozboz\Admin\Models\BaseInterface;
-use Bozboz\Admin\Models\Media;
-use Bozboz\Admin\Traits\DynamicSlugTrait;
-use Bozboz\Admin\Traits\SanitisesInputTrait;
+use Bozboz\Admin\Base\DynamicSlugTrait;
+use Bozboz\Admin\Base\ModelInterface;
+use Bozboz\Admin\Base\SanitisesInputTrait;
 use Bozboz\Entities\Entities\Value;
 use Bozboz\Entities\Field;
 use Bozboz\Entities\Templates\Template;
 use Bozboz\Entities\Types\Type;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Kalnoy\Nestedset\Node;
 use Illuminate\Support\Collection;
+use Kalnoy\Nestedset\Node;
 
-class Entity extends Node implements BaseInterface
+class Entity extends Node implements ModelInterface
 {
+	use SanitisesInputTrait;
+	use SoftDeletes;
+	use DynamicSlugTrait;
+
 	protected $table = 'entities';
 
 	protected $nullable = [];
@@ -28,12 +31,7 @@ class Entity extends Node implements BaseInterface
 
 	protected $dates = ['deleted_at'];
 
-	public $fields = [];
-	public $values = [];
-
-	use SanitisesInputTrait;
-	use SoftDeletes;
-	use DynamicSlugTrait;
+	protected $values = [];
 
 	public function getValidator()
 	{
@@ -73,25 +71,26 @@ class Entity extends Node implements BaseInterface
 			$revision = $this->latestRevision();
 		}
 
-		$templateFields = $this->template->fields()->lists('name')->toArray();
-		$this->fillable = array_merge($this->fillable, $templateFields);
-		$fieldKeys = array_fill_keys($templateFields, null);
+		$templateFields = $this->template->fields;
+		$templateFields->map(function($field) {
+			array_push($this->fillable, $field->name);
+		});
 
-		$fieldValues = $revision->fieldValues;
-		foreach ($fieldValues as $value) {
-			$this->values[$value->key] = $value;
-			$this->attributes[$value->key] = $value->value;
+		if ($revision) {
+			foreach ($templateFields as $field) {
+				$field->injectValue($this, $revision, $field->name);
+			}
 		}
 	}
 
-	public function getValue($key = null)
+	public function getValue($key)
 	{
-		return $this->values[$key];
+		return array_key_exists($key, $this->values) ? $this->values[$key] : new Value(compact('key'));
 	}
 
-	public function getValues()
+	public function setValue($key, $value)
 	{
-		return $this->values;
+		$this->values[$key] = $value;
 	}
 
 	public function template()
@@ -103,25 +102,8 @@ class Entity extends Node implements BaseInterface
 	{
 		$revision = $this->revisions()->create([]);
 
-		$fieldValues = [];
 		foreach ($this->template->fields as $field) {
-			$fieldValue = [
-				'field_id' => $field->id,
-				'key' => $field->name,
-			];
-			switch ($field->type_alias) {
-				case 'gallery':
-					$fieldValue['value'] = null;
-					$value = $revision->fieldValues()->create($fieldValue);
-					$data = @array_filter($input[e($field->name).'_relationship']);
-					$value->gallery()->sync(is_array($data) ? $data : []);
-					break;
-
-				default:
-					$fieldValue['value'] = $input[e($field->name)];
-					$revision->fieldValues()->create($fieldValue);
-					break;
-			}
+			$field->saveValue($revision, $input[$field->getName()]);
 		}
 	}
 }

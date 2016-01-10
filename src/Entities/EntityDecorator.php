@@ -2,13 +2,14 @@
 
 namespace Bozboz\Entities\Entities;
 
-use Bozboz\Admin\Decorators\ModelAdminDecorator;
+use Bozboz\Admin\Base\ModelAdminDecorator;
 use Bozboz\Admin\Fields\HiddenField;
 use Bozboz\Admin\Fields\TextField;
 use Bozboz\Admin\Fields\URLField;
 use Bozboz\Entities\Entities\Entity;
 use Bozboz\Entities\Fields\FieldMapper;
 use Bozboz\Entities\Templates\Template;
+use Bozboz\Entities\Templates\TemplateDecorator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
@@ -46,7 +47,30 @@ class EntityDecorator extends ModelAdminDecorator
 			new HiddenField('template_id'),
 		]));
 
-		return $fields->merge($instance->template->getFields($this->fieldMapper, $instance))->all();
+		return $fields->merge($this->getTemplateFields($instance))->all();
+	}
+
+	/**
+	 * Iterate over a template's fields, and build an array of field instances
+	 * found in the FieldMapper lookup.
+	 *
+	 * @param  Bozboz\Entities\Entity  $instance
+	 * @return array
+	 */
+	public function getTemplateFields($instance)
+	{
+		$fields = [];
+
+		$instance->loadValues($instance->latestRevision());
+
+		foreach($instance->template->fields as $field) {
+			$templateField = $this->fieldMapper->get($field);
+			$fieldName = $field->name;
+			$value = $instance->getValue($fieldName);
+			$fields[] = $templateField->getAdminField($value);
+		}
+
+		return $fields;
 	}
 
 	/**

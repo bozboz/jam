@@ -2,7 +2,7 @@
 
 namespace Bozboz\Entities\Entities;
 
-use Bozboz\Admin\Models\Media;
+use Bozboz\Admin\Media\Media;
 use Illuminate\Database\Eloquent\Model;
 
 class Value extends Model

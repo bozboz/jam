@@ -66,10 +66,11 @@ class EntityController extends ModelAdminController
 	public function createOfType($type)
 	{
 		$template = Template::whereAlias($type)->first();
+		$instance = $this->decorator->newEntityOfType($template);
 
-		$entity = $this->decorator->newEntityOfType($template);
+		if ( ! $this->canCreate($instance)) App::abort(403);
 
-		return $this->renderCreateFormFor($entity);
+		return $this->renderFormFor($instance, $this->createView, 'POST', 'store');
 	}
 
 	public function store()
@@ -110,14 +111,12 @@ class EntityController extends ModelAdminController
 
 	public function edit($id)
 	{
-		$view = parent::edit($id);
+		$instance = $this->decorator->findInstance($id);
+		$instance->loadValues();
 
-		$values = $view->model->toArray();
-		$values += $view->model->latestRevision()->fieldValues()->lists('value', 'key')->toArray();
+		if ( ! $this->canEdit($instance)) App::abort(403);
 
-		$view->with('model', $values);
-
-		return $view;
+		return $this->renderFormFor($instance, $this->editView, 'PUT', 'update');
 	}
 
 	public function update($id)

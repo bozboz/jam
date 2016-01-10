@@ -2,11 +2,16 @@
 
 namespace Bozboz\Entities\Fields;
 
-class FieldMapper implements FieldMapperInterface
+class FieldMapper
 {
-	public function __construct()
+	protected $mapping;
+
+	public function register($alias, $decorator, $adminField)
 	{
-		$this->mapping = config('entities.field-map');
+		$this->mapping[$alias] = [
+			'decorator' => $decorator,
+			'adminField' => $adminField
+		];
 	}
 
 	public function has($alias)
@@ -14,8 +19,11 @@ class FieldMapper implements FieldMapperInterface
 		return array_key_exists($alias, $this->mapping);
 	}
 
-	public function get($alias)
+	public function get(FieldInterface $field)
 	{
-		return $this->mapping[$alias];
+		debug($field);
+		$mapping = $this->mapping[$field->type_alias];
+		$decorator = new $mapping['decorator']($field, $mapping['adminField']);
+		return $decorator;
 	}
 }

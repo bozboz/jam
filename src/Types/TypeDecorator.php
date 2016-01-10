@@ -2,7 +2,7 @@
 
 namespace Bozboz\Entities\Types;
 
-use Bozboz\Admin\Decorators\ModelAdminDecorator;
+use Bozboz\Admin\Base\ModelAdminDecorator;
 use Bozboz\Admin\Fields\MediaBrowser;
 use Bozboz\Admin\Fields\TextField;
 use Bozboz\Entities\Types\Type;

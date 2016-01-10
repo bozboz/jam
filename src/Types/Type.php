@@ -2,12 +2,12 @@
 
 namespace Bozboz\Entities\Types;
 
-use Bozboz\Admin\Models\Base;
-use Bozboz\Admin\Traits\MediableTrait;
+use Bozboz\Admin\Base\Model;
+use Bozboz\Admin\Media\MediableTrait;
 use Bozboz\Entities\Entity;
 use Bozboz\Entities\Templates\Template;
 
-class Type extends Base
+class Type extends Model
 {
 	protected $table = 'entity_types';
 
