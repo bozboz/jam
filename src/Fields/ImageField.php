@@ -2,14 +2,15 @@
 
 namespace Bozboz\Entities\Fields;
 
+use Bozboz\Admin\Fields\MediaBrowser;
 use Bozboz\Entities\Entities\Value;
 
-class ImageTemplateField extends TemplateField
+class ImageField extends Field
 {
 	public function getAdminField(Value $value)
 	{
-		return new $this->adminField($value->image(), [
-			'name' => $this->instance->name
+		return new MediaBrowser($value->image(), [
+			'name' => $this->name
 		]);
 	}
 }

@@ -3,8 +3,8 @@
 namespace Bozboz\Entities\Fields;
 
 use Bozboz\Admin\Base\Model;
+use Bozboz\Entities\Entities\Value;
 use Bozboz\Entities\Entity;
-use Bozboz\Entities\Fields\Field;
 use Bozboz\Entities\Fields\FieldMapper;
 use Bozboz\Entities\Templates\Template;
 
@@ -23,6 +23,57 @@ class Field extends Model implements FieldInterface
 	{
 		return new FieldValidator;
 	}
+
+    public function getAdminField(Value $value)
+    {
+        throw new \Exception("Attempting to create admin field for unknown field type", 1);
+    }
+
+    /**
+     * Create a new instance of the given model.
+     *
+     * @param  array  $attributes
+     * @param  bool   $exists
+     * @return static
+     */
+    public function newInstance($attributes = [], $exists = false)
+    {
+        // This method just provides a convenient way for us to generate fresh model
+        // instances of this current model. It is particularly useful during the
+        // hydration of new objects via the Eloquent query builder instances.
+        if (array_key_exists('type_alias', $attributes)) {
+            $class = app(FieldMapper::class)->get($attributes['type_alias']);
+            $model = new $class((array) $attributes);
+        } else {
+            $model = new static((array) $attributes);
+        }
+        $model->exists = $exists;
+
+        return $model;
+    }
+
+    /**
+     * Create a new model instance that is existing.
+     *
+     * @param  array  $attributes
+     * @param  string|null  $connection
+     * @return static
+     */
+    public function newFromBuilder($attributes = [], $connection = null)
+    {
+    	$newInstanceAttributes = [];
+    	$attributes = (array) $attributes;
+    	if (array_key_exists('type_alias', $attributes)) {
+    		$newInstanceAttributes['type_alias'] = $attributes['type_alias'];
+    	}
+        $model = $this->newInstance($newInstanceAttributes, true);
+
+        $model->setRawAttributes((array) $attributes, true);
+
+        $model->setConnection($connection ?: $this->connection);
+
+        return $model;
+    }
 
 	public function template()
 	{
@@ -56,3 +107,6 @@ class Field extends Model implements FieldInterface
 		return $valueObj;
 	}
 }
+
+
+interface FieldInterface {}

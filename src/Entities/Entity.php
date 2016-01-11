@@ -103,7 +103,7 @@ class Entity extends Node implements ModelInterface
 		$revision = $this->revisions()->create([]);
 
 		foreach ($this->template->fields as $field) {
-			$field->saveValue($revision, $input[$field->getName()]);
+			$field->saveValue($revision, $input[$field->getInputName()]);
 		}
 	}
 }

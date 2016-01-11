@@ -6,12 +6,9 @@ class FieldMapper
 {
 	protected $mapping;
 
-	public function register($alias, $decorator, $adminField)
+	public function register($alias, $fieldClass)
 	{
-		$this->mapping[$alias] = [
-			'decorator' => $decorator,
-			'adminField' => $adminField
-		];
+		$this->mapping[$alias] = $fieldClass;
 	}
 
 	public function has($alias)
@@ -19,11 +16,10 @@ class FieldMapper
 		return array_key_exists($alias, $this->mapping);
 	}
 
-	public function get(FieldInterface $field)
+	public function get($type_alias)
 	{
-		debug($field);
-		$mapping = $this->mapping[$field->type_alias];
-		$decorator = new $mapping['decorator']($field, $mapping['adminField']);
-		return $decorator;
+		$mapping = $this->mapping[$type_alias];
+		$field = new $mapping;
+		return $field;
 	}
 }
