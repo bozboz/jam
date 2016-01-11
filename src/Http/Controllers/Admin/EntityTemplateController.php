@@ -45,7 +45,7 @@ class EntityTemplateController extends ModelAdminController
 		$type = $this->type->find($typeId);
 		$instance->type()->associate($type);
 
-		return $this->renderCreateFormFor($instance);
+		return $this->renderFormFor($instance, $this->createView, 'POST', 'store');
 	}
 
 	protected function getSuccessResponse($instance)

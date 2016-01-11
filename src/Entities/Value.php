@@ -2,7 +2,6 @@
 
 namespace Bozboz\Entities\Entities;
 
-use Bozboz\Admin\Media\Media;
 use Illuminate\Database\Eloquent\Model;
 
 class Value extends Model
@@ -18,16 +17,6 @@ class Value extends Model
 	public function pageRevision()
 	{
 		return $this->belongsTo(Revision::class);
-	}
-
-	public function image()
-	{
-		return Media::forModel($this, 'value');
-	}
-
-	public function gallery()
-	{
-		return Media::forModel($this);
 	}
 
 	public function __toString()

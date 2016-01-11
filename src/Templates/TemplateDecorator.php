@@ -50,6 +50,7 @@ class TemplateDecorator extends ModelAdminDecorator
 		return [
 			new TextField('name'),
 			new TextField('alias'),
+			new TextField('view'),
 			new HiddenField('type_id')
 		];
 	}

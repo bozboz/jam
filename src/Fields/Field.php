@@ -106,6 +106,11 @@ class Field extends Model implements FieldInterface
 
 		return $valueObj;
 	}
+
+    public function getValue(Value $value)
+    {
+        return $value->value;
+    }
 }
 
 

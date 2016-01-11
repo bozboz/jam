@@ -37,7 +37,6 @@ class TypeDecorator extends ModelAdminDecorator
 		return [
 			new TextField('name'),
 			new TextField('alias'),
-			new MediaBrowser($instance->media())
 		];
 	}
 	public function getSyncRelations()

@@ -16,6 +16,7 @@ class Template extends Model
 	protected $fillable = [
 		'name',
 		'alias',
+		'view',
 		'type_id'
 	];
 

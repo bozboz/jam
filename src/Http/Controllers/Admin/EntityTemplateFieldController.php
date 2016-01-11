@@ -4,6 +4,7 @@ namespace Bozboz\Entities\Http\Controllers\Admin;
 
 use Bozboz\Admin\Http\Controllers\ModelAdminController;
 use Bozboz\Entities\Fields\FieldDecorator;
+use Bozboz\Entities\Fields\FieldMapper;
 use Bozboz\Entities\Templates\Template;
 use Input, Redirect;
 
@@ -32,18 +33,22 @@ class EntityTemplateFieldController extends ModelAdminController
 	 */
 	protected function getReportParams()
 	{
+		$fieldTypes = array_keys(app(FieldMapper::class)->getAll());
 		return array_merge(parent::getReportParams(), [
 			'createAction' => $this->getActionName('createForTemplate'),
-			'createParams' => [Input::get('template_id')],
+			'createParams' => ['templateId' => Input::get('template_id')],
+			'newButtonPartial' => 'entities::admin.partials.new-template-field',
+			'fieldTypes' => $fieldTypes
 		]);
 	}
 
-	public function createForTemplate($templateId)
+	public function createForTemplate($templateId, $type)
 	{
 		$instance = $this->decorator->newModelInstance();
 
 		$template = $this->template->find($templateId);
 		$instance->template()->associate($template);
+		$instance->type_alias = $type;
 
 		return $this->renderFormFor($instance, $this->createView, 'POST', 'store');
 	}

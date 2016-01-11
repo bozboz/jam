@@ -8,7 +8,7 @@
 
 Route::group(array('namespace' => 'Bozboz\Entities\Http\Controllers\Admin', 'prefix' => 'admin'), function() {
 
-	Route::resource('entities', 'EntityController');
+	Route::resource('entities', 'EntityController', ['except' => ['create']]);
 	Route::get('entities/{type}/create', 'EntityController@createOfType');
 
 	Route::resource('entity-types', 'EntityTypeController');
@@ -16,7 +16,7 @@ Route::group(array('namespace' => 'Bozboz\Entities\Http\Controllers\Admin', 'pre
 	Route::resource('entity-templates', 'EntityTemplateController', ['except' => ['create']]);
 	Route::get('entity-templates/{type}/create', 'EntityTemplateController@createForType');
 
-	Route::resource('entity-template-fields', 'EntityTemplateFieldController');
-	Route::get('entity-templates-fields/{type}/create', 'EntityTemplateFieldController@createForTemplate');
+	Route::resource('entity-template-fields', 'EntityTemplateFieldController', ['except' => ['create']]);
+	Route::get('entity-templates-fields/{templateId}/{type}/create', 'EntityTemplateFieldController@createForTemplate');
 
 });

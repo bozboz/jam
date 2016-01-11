@@ -1,6 +1,0 @@
-<?php
-
-return [
-	'field-map' => [
-	]
-];

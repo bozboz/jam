@@ -12,4 +12,5 @@ interface FieldInterface
 	public function injectValue(Entity $entity, Revision $revision, $valueKey);
 	public function getInputName();
 	public function saveValue(Revision $revision, Value $value);
+	public function getValue(Value $value);
 }

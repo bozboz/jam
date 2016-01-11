@@ -22,4 +22,9 @@ class FieldMapper
 		$field = new $mapping;
 		return $field;
 	}
+
+	public function getAll()
+	{
+		return $this->mapping;
+	}
 }
