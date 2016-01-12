@@ -3,6 +3,7 @@
 namespace Bozboz\Entities\Providers;
 
 use Bozboz\Entities\Fields\Field;
+use Bozboz\Entities\Fields\EntityRelationField;
 use Bozboz\Entities\Fields\FieldMapper;
 use Bozboz\Entities\Fields\ToggleField;
 use Bozboz\Entities\Fields\DateField;
@@ -16,6 +17,8 @@ use Bozboz\Entities\Fields\TextField;
 use Bozboz\Entities\Fields\TextareaField;
 use Bozboz\Entities\Fields\GalleryField;
 use Bozboz\Entities\Fields\ImageField;
+use Bozboz\Entities\Fields\BelongsToTypeField;
+use Bozboz\Entities\Fields\BelongsToEntityField;
 use Bozboz\Entities\Types\Type;
 use Illuminate\Support\ServiceProvider;
 
@@ -43,6 +46,8 @@ class EntityServiceProvider extends ServiceProvider
 			return new FieldMapper;
 		});
 		$this->registerFieldTypes();
+
+		Field::setMapper($this->app[FieldMapper::class]);
 
 		$this->buildAdminMenu();
 
@@ -78,20 +83,19 @@ class EntityServiceProvider extends ServiceProvider
 	{
 		$mapper = $this->app[FieldMapper::class];
 
-		// $mapper->register('belongs-to',      'Bozboz\Admin\Fields\BelongsToField');
-		// $mapper->register('belongs-to-many', 'Bozboz\Admin\Fields\BelongsToManyField');
-		$mapper->register('checkbox',   ToggleField::class);
-		$mapper->register('date',       DateField::class);
-		$mapper->register('date-time',  DateTimeField::class);
-		$mapper->register('email',      EmailField::class);
-		$mapper->register('hidden',     HiddenField::class);
-		$mapper->register('htmleditor', HTMLEditorField::class);
-		$mapper->register('password',   PasswordField::class);
-		$mapper->register('select',     SelectField::class);
-		$mapper->register('text',       TextField::class);
-		$mapper->register('textarea',   TextareaField::class);
-
-		$mapper->register('image',   ImageField::class);
-		$mapper->register('gallery', GalleryField::class);
+		$mapper->register('text',              TextField::class);
+		$mapper->register('textarea',          TextareaField::class);
+		$mapper->register('toggle',            ToggleField::class);
+		$mapper->register('date',              DateField::class);
+		$mapper->register('date-time',         DateTimeField::class);
+		$mapper->register('email',             EmailField::class);
+		$mapper->register('hidden',            HiddenField::class);
+		$mapper->register('htmleditor',        HTMLEditorField::class);
+		$mapper->register('password',          PasswordField::class);
+		$mapper->register('select',            SelectField::class);
+		$mapper->register('image',             ImageField::class);
+		$mapper->register('gallery',           GalleryField::class);
+		$mapper->register('belongs-to-type',   BelongsToTypeField::class);
+		$mapper->register('belongs-to-entity', BelongsToEntityField::class);
 	}
 }

@@ -44,13 +44,29 @@ class EntityTemplateFieldController extends ModelAdminController
 
 	public function createForTemplate($templateId, $type)
 	{
-		$instance = $this->decorator->newModelInstance();
+		$instance = $this->decorator->newModelInstance(['type_alias' => $type]);
 
 		$template = $this->template->find($templateId);
 		$instance->template()->associate($template);
 		$instance->type_alias = $type;
 
 		return $this->renderFormFor($instance, $this->createView, 'POST', 'store');
+	}
+
+	protected function save($modelInstance, $input)
+	{
+		parent::save($modelInstance, $input);
+		$modelInstance->options()->delete();
+		if (array_key_exists('options_array', $input)) {
+			$options = [];
+			foreach (array_filter($input['options_array'], function($a){return $a !== '';}) as $key => $value) {
+				$options[] = [
+					'key' => $key,
+					'value' => $value
+				];
+			}
+			$modelInstance->options()->createMany($options);
+		}
 	}
 
 	protected function getSuccessResponse($instance)

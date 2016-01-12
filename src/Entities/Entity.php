@@ -71,13 +71,13 @@ class Entity extends Node implements ModelInterface
 			$revision = $this->latestRevision();
 		}
 
-		$templateFields = $this->template->fields;
-		$templateFields->map(function($field) {
-			array_push($this->fillable, $field->name);
-		});
+		// $templateFields = $this->template->fields;
+		// $templateFields->map(function($field) {
+		// 	array_push($this->fillable, $field->name);
+		// });
 
 		if ($revision) {
-			foreach ($templateFields as $field) {
+			foreach ($this->template->fields as $field) {
 				$field->injectValue($this, $revision, $field->name);
 			}
 		}
@@ -88,9 +88,10 @@ class Entity extends Node implements ModelInterface
 		return array_key_exists($key, $this->values) ? $this->values[$key] : new Value(compact('key'));
 	}
 
-	public function setValue($key, $value)
+	public function setValue(Value $value)
 	{
-		$this->values[$key] = $value;
+		$this->values[$value->key] = $value;
+		$this->setAttribute($value->key, $value->value);
 	}
 
 	public function template()

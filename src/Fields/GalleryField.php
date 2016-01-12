@@ -4,11 +4,14 @@ namespace Bozboz\Entities\Fields;
 
 use Bozboz\Admin\Fields\MediaBrowser;
 use Bozboz\Admin\Media\Media;
+use Bozboz\Entities\Entities\Entity;
+use Bozboz\Entities\Entities\EntityDecorator;
+use Bozboz\Entities\Entities\Revision;
 use Bozboz\Entities\Entities\Value;
 
 class GalleryField extends Field implements FieldInterface
 {
-	public function getAdminField(Value $value)
+	public function getAdminField(EntityDecorator $decorator, Value $value)
 	{
 		return new MediaBrowser($this->getValue($value), [
 			'name' => $this->getInputName(),
@@ -16,9 +19,9 @@ class GalleryField extends Field implements FieldInterface
 		]);
 	}
 
-	public function injectValue($entity, $revision, $valueKey)
+	public function injectValue(Entity $entity, Revision $revision)
 	{
-		$value = parent::injectValue($entity, $revision, $valueKey);
+		$value = parent::injectValue($entity, $revision);
 		$entity->setAttribute($this->getInputName(), $this->getValue($value)->getRelatedIds()->all());
 	}
 
@@ -27,7 +30,7 @@ class GalleryField extends Field implements FieldInterface
 		return e($this->name).'_relationship';
 	}
 
-	public function saveValue($revision, $value)
+	public function saveValue(Revision $revision, $value)
 	{
 		$valueObj = parent::saveValue($revision, $value);
 

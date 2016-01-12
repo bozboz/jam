@@ -9,7 +9,6 @@
 		<ul class="dropdown-menu" role="menu">
 			@foreach($fieldTypes as $field)
 			<li>
-			{{ Debugbar::info($createParams+['type'=>$field]) }}
 				<a class="" type="submit" href="{{ action($createAction, ['type'=>$field]+$createParams) }}">
 					{{ $field }}
 				</a>

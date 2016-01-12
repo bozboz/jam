@@ -27,16 +27,6 @@ class EntityController extends ModelAdminController
 	}
 
 	/**
-	 * Get an instance of a report to display the model listing
-	 *
-	 * @return Bozboz\Admin\Reports\Report
-	 */
-	protected function getListingReport()
-	{
-		return new Report($this->decorator, 'entities::admin.entity-overview');
-	}
-
-	/**
 	 * Return an array of params the report requires to render
 	 *
 	 * @return array
@@ -55,12 +45,17 @@ class EntityController extends ModelAdminController
 			$type = null;
 			$templates = Template::orderBy('name')->get();
 		}
-		return array_merge(parent::getReportParams(), [
+		$params = [
 			'type' => $type,
 			'templates' => $templates,
 
 			'createAction' => $this->getActionName('createOfType'),
-		]);
+			'newButtonPartial' => 'entities::admin.partials.new-entity'
+		];
+		if ($type) {
+			$params['heading'] = $type->name;
+		}
+		return array_merge(parent::getReportParams(), $params);
 	}
 
 	public function createOfType($type)
@@ -73,42 +68,6 @@ class EntityController extends ModelAdminController
 		return $this->renderFormFor($instance, $this->createView, 'POST', 'store');
 	}
 
-	public function store()
-	{
-		DB::beginTransaction();
-		try {
-			$input = Input::except('after_save');
-			$input = $this->decorator->sanitiseInput($input);
-
-			$entity = $this->decorator->newModelInstance($input);
-
-			$validation = $entity->getValidator();
-
-			if ($validation->passesStore($input)) {
-
-				$entity = $this->save($entity, $input);
-
-				$this->newRevision($entity, $input);
-
-				$response = $this->reEdit($entity) ?: $this->getStoreResponse($entity);
-			} else {
-				$response = Redirect::back()->withErrors($validation->getErrors())->withInput();
-			}
-
-			DB::commit();
-		} catch (\Exception $e) {
-			DB::rollback();
-			throw $e;
-		}
-
-		Session::flash("model.created", sprintf(
-			"Successfully created \"%s\"",
-			$this->decorator->getLabel($entity)
-		));
-
-		return $response;
-	}
-
 	public function edit($id)
 	{
 		$instance = $this->decorator->findInstance($id);
@@ -119,51 +78,10 @@ class EntityController extends ModelAdminController
 		return $this->renderFormFor($instance, $this->editView, 'PUT', 'update');
 	}
 
-	public function update($id)
-	{
-		DB::beginTransaction();
-		try {
-			$entity = $this->decorator->findInstance($id);
-			$validation = $entity->getValidator();
-			$input = $this->decorator->sanitiseInput(Input::except('after_save'));
-			$input[$entity->getKeyName()] = $entity->getKey();
-
-			if ($validation->passesUpdate($input)) {
-				$entity = $this->save($entity, $input);
-
-				$this->newRevision($entity, $input);
-
-				$response = $this->reEdit($entity) ?: $this->getUpdateResponse($entity);
-			} else {
-				$response = Redirect::back()->withErrors($validation->getErrors())->withInput();
-			}
-			DB::commit();
-		} catch (\Exception $e) {
-			DB::rollback();
-			throw $e;
-		}
-
-		Session::flash("model.updated", sprintf(
-			"Successfully updated \"%s\"",
-			$this->decorator->getLabel($entity)
-		));
-
-		return $response;
-	}
-
 	protected function save($modelInstance, $input)
 	{
-		$modelInstance->fill($input);
-		$modelInstance->save();
-
-		$this->decorator->updateRelations($modelInstance, $input);
-
-		return $modelInstance;
-	}
-
-	protected function newRevision($entity, $input)
-	{
-		$entity->newRevision($input);
+		parent::save($modelInstance, $input);
+		$modelInstance->newRevision($input);
 	}
 
 	/**
