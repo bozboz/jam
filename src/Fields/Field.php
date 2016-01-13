@@ -66,7 +66,7 @@ class Field extends Model implements FieldInterface
 
     public function injectValue(Entity $entity, Revision $revision)
     {
-        $value = $revision->fieldValues->where('key', $this->name)->first();
+        $value = $revision->fieldValues->where('key', $this->name)->first() ?: new Value(['key' => $this->name]);
         $entity->setValue($value);
         return $value;
     }

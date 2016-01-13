@@ -143,10 +143,28 @@ class Entity extends Node implements ModelInterface, Sortable
 
 	public function newRevision($input)
 	{
-		$revision = $this->revisions()->create([]);
+		if ($this->requiresNewRevision($input)) {
+			$revision = $this->revisions()->create([]);
 
-		foreach ($this->template->fields as $field) {
-			$field->saveValue($revision, $input[$field->getInputName()]);
+			foreach ($this->template->fields as $field) {
+				$field->saveValue($revision, $input[$field->getInputName()]);
+			}
 		}
+	}
+
+	public function requiresNewRevision($input)
+	{
+		$latestRevision = $this->latestRevision();
+
+		if ($latestRevision) {
+			$templateFields = $this->template->fields->lists('name')->all();
+
+			$currentValues = array_merge(
+				array_fill_keys($templateFields, null),
+				$latestRevision->fieldValues()->lists('value', 'key')->all()
+			);
+		}
+
+		return !$latestRevision || count(array_diff_assoc($currentValues, $input)) > 0;
 	}
 }
