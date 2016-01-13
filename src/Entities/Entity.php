@@ -34,6 +34,14 @@ class Entity extends Node implements ModelInterface, Sortable
 
 	protected $values = [];
 
+	static public function boot()
+	{
+		parent::boot();
+		self::saved(function($instance) {
+			$instance->updatePath();
+		});
+	}
+
 	public function sortBy()
 	{
 		return '_lft';
@@ -49,6 +57,39 @@ class Entity extends Node implements ModelInterface, Sortable
 	public function getSlugSourceField()
 	{
 		return 'name';
+	}
+
+	/**
+	 * If the slug has changed then softdelete current path for self and all
+	 * descendants and insert new path for self and all descendants
+	 */
+	public function updatePath()
+	{
+		if ($this->isDirty('slug')) {
+			EntityPath::forEntity($this)->delete();
+			$this->addPath();
+			$this->getDescendants()->map(function($this) {
+				$this->addPath();
+			});
+		}
+	}
+
+	/**
+	 * Create new EntityPath OR restore old path if already exists
+	 */
+	public function addPath()
+	{
+		$this->paths()->withTrashed()->firstOrCreate(['path' => $this->lookupPath()])->restore();
+	}
+
+	public function paths()
+	{
+		return $this->hasMany(EntityPath::class);
+	}
+
+	public function lookupPath()
+	{
+		return $this->getAncestors()->pluck('slug')->push($this->slug)->implode('/');
 	}
 
 	public function revisions()
