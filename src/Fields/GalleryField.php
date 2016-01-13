@@ -19,10 +19,14 @@ class GalleryField extends Field implements FieldInterface
 		]);
 	}
 
-	public function injectValue(Entity $entity, Revision $revision)
+	public function injectValue(Entity $entity, Revision $revision, $realValue)
 	{
-		$value = parent::injectValue($entity, $revision);
+		$value = parent::injectValue($entity, $revision, $realValue);
 		$entity->setAttribute($this->getInputName(), $this->getValue($value)->getRelatedIds()->all());
+
+		if (!$realValue) {
+			$entity->setAttribute($value->key, $this->getValue($value)->get());
+		}
 	}
 
 	public function getInputName()

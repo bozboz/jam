@@ -4,7 +4,7 @@ namespace Bozboz\Entities\Types;
 
 use Bozboz\Admin\Base\Model;
 use Bozboz\Admin\Media\MediableTrait;
-use Bozboz\Entities\Entity;
+use Bozboz\Entities\Entities\Entity;
 use Bozboz\Entities\Templates\Template;
 
 class Type extends Model
@@ -20,7 +20,7 @@ class Type extends Model
 
 	public function entities()
 	{
-		return $this->hasMany(Entity::class);
+		return $this->hasManyThrough(Entity::class, Template::class);
 	}
 
 	public function templates()

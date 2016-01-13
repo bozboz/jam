@@ -108,11 +108,12 @@ class Entity extends Node implements ModelInterface, Sortable
 	}
 
 	/**
-	 * Load fields values as an array for all fields, not just the values stored
-	 * in the db
-	 * @param  Revision|null $revision
+	 * Load values and inject them in to the entity
+	 * @param  bool $realValues true: inject actual db values,
+	 *                          false: inject values as you'd use them, i.e. relations, etc...
+	 * @param  Revision|null $revision Defaults to latestRevision
 	 */
-	public function loadValues(Revision $revision = null)
+	protected function _loadValues($realValues, Revision $revision = null)
 	{
 		if (is_null($revision)) {
 			$revision = $this->latestRevision();
@@ -120,9 +121,27 @@ class Entity extends Node implements ModelInterface, Sortable
 
 		if ($revision) {
 			foreach ($this->template->fields as $field) {
-				$field->injectValue($this, $revision, $field->name);
+				$field->injectValue($this, $revision, $realValues);
 			}
 		}
+	}
+
+	/**
+	 * Load field values as the admin wants them as an array for all fields
+	 * @param  Revision|null $revision
+	 */
+	public function loadRealValues(Revision $revision = null)
+	{
+		$this->_loadValues(true, $revision);
+	}
+
+	/**
+	 * Load field values as the frontend wants them as an array for all fields
+	 * @param  Revision|null $revision
+	 */
+	public function loadValues(Revision $revision = null)
+	{
+		$this->_loadValues(false, $revision);
 	}
 
 	public function getValue($key)

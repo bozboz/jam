@@ -64,10 +64,11 @@ class Field extends Model implements FieldInterface
         return $this->belongsTo(Template::class);
     }
 
-    public function injectValue(Entity $entity, Revision $revision)
+    public function injectValue(Entity $entity, Revision $revision, $realValue)
     {
         $value = $revision->fieldValues->where('key', $this->name)->first() ?: new Value(['key' => $this->name]);
         $entity->setValue($value);
+
         return $value;
     }
 
