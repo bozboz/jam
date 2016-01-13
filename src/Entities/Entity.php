@@ -5,6 +5,7 @@ namespace Bozboz\Entities\Entities;
 use Bozboz\Admin\Base\DynamicSlugTrait;
 use Bozboz\Admin\Base\ModelInterface;
 use Bozboz\Admin\Base\SanitisesInputTrait;
+use Bozboz\Admin\Base\Sortable;
 use Bozboz\Entities\Entities\Value;
 use Bozboz\Entities\Field;
 use Bozboz\Entities\Templates\Template;
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use Kalnoy\Nestedset\Node;
 
-class Entity extends Node implements ModelInterface
+class Entity extends Node implements ModelInterface, Sortable
 {
 	use SanitisesInputTrait;
 	use SoftDeletes;
@@ -33,10 +34,15 @@ class Entity extends Node implements ModelInterface
 
 	protected $values = [];
 
+	public function sortBy()
+	{
+		return '_lft';
+	}
+
 	public function getValidator()
 	{
 		return new EntityValidator(
-			(array) $this->template->fields()->lists('validation', 'name')->toArray()
+			(array) $this->template->fields()->lists('validation', 'name')->all()
 		);
 	}
 
@@ -70,11 +76,6 @@ class Entity extends Node implements ModelInterface
 		if (is_null($revision)) {
 			$revision = $this->latestRevision();
 		}
-
-		// $templateFields = $this->template->fields;
-		// $templateFields->map(function($field) {
-		// 	array_push($this->fillable, $field->name);
-		// });
 
 		if ($revision) {
 			foreach ($this->template->fields as $field) {
