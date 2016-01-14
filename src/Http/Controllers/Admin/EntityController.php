@@ -3,12 +3,12 @@
 namespace Bozboz\Entities\Http\Controllers\Admin;
 
 use Bozboz\Admin\Http\Controllers\ModelAdminController;
-use Bozboz\Admin\Reports\Report;
+use Bozboz\Admin\Reports\NestedReport;
 use Bozboz\Entities\Entities\EntityDecorator;
 use Bozboz\Entities\Templates\Template;
 use Bozboz\Entities\Types\Type;
-use Session;
 use Input, Redirect, DB;
+use Session;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class EntityController extends ModelAdminController
@@ -27,20 +27,30 @@ class EntityController extends ModelAdminController
 	}
 
 	/**
+	 * Get an instance of a report to display the model listing
+	 *
+	 * @return Bozboz\Admin\Reports\NestedReport
+	 */
+	protected function getListingReport()
+	{
+		return new NestedReport($this->decorator);
+	}
+
+	/**
 	 * Return an array of params the report requires to render
 	 *
 	 * @return array
 	 */
 	protected function getReportParams()
 	{
-		if (Input::get('type')) {
-			$type = Type::where('alias', Input::get('type'))->first();
+		if (Input::has('type')) {
+			$type = Type::with('templates')->where('alias', Input::get('type'))->first();
 
 			if (!$type) {
 				throw new NotFoundHttpException;
 			}
 
-			$templates = $type->templates()->orderBy('name')->get();
+			$templates = $type->templates;
 		} else {
 			$type = null;
 			$templates = Template::orderBy('name')->get();

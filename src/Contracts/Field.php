@@ -1,13 +1,13 @@
 <?php
 
-namespace Bozboz\Entities\Fields;
+namespace Bozboz\Entities\Contracts;
 
 use Bozboz\Entities\Entities\Entity;
 use Bozboz\Entities\Entities\EntityDecorator;
 use Bozboz\Entities\Entities\Revision;
 use Bozboz\Entities\Entities\Value;
 
-interface FieldInterface
+interface Field
 {
 	public function getAdminField(EntityDecorator $decorator, Value $value);
 	public function injectValue(Entity $entity, Revision $revision, $realValue);

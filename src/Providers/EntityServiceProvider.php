@@ -2,8 +2,6 @@
 
 namespace Bozboz\Entities\Providers;
 
-use Bozboz\Entities\Entities\EntityRepositoryInterface;
-use Bozboz\Entities\Entities\EntityRepository;
 use Bozboz\Entities\Fields\Field;
 use Bozboz\Entities\Fields\FieldMapper;
 use Bozboz\Entities\Types\Type;
@@ -22,8 +20,8 @@ class EntityServiceProvider extends ServiceProvider
 		$this->loadViewsFrom("{$packageRoot}/resources/views", 'entities');
 
 		$this->app->bind(
-			EntityRepositoryInterface::class,
-			EntityRepository::class
+			\Bozboz\Entities\Contracts\EntityRepository::class,
+			\Bozboz\Entities\Entities\EntityRepository::class
 		);
 
 		$this->publishes([
@@ -64,8 +62,6 @@ class EntityServiceProvider extends ServiceProvider
 
 			$menu['Entities'] = [
 				'Types' => $url->route('admin.entity-types.index'),
-				// 'Templates' => $url->route('admin.entities.templates'),
-				// 'Fields' => $url->route('admin.entities.fields'),
 			];
 		});
 	}
@@ -75,19 +71,19 @@ class EntityServiceProvider extends ServiceProvider
 	{
 		$mapper = $this->app[FieldMapper::class];
 
-		$mapper->register('belongs-to-entity', \Bozboz\Entities\Fields\BelongsToEntityField::class);
-		$mapper->register('belongs-to-type',   \Bozboz\Entities\Fields\BelongsToTypeField::class);
+		$mapper->register('text',              \Bozboz\Entities\Fields\TextField::class);
+		$mapper->register('textarea',          \Bozboz\Entities\Fields\TextareaField::class);
+		$mapper->register('htmleditor',        \Bozboz\Entities\Fields\HTMLEditorField::class);
+		$mapper->register('image',             \Bozboz\Entities\Fields\ImageField::class);
+		$mapper->register('gallery',           \Bozboz\Entities\Fields\GalleryField::class);
 		$mapper->register('date',              \Bozboz\Entities\Fields\DateField::class);
 		$mapper->register('date-time',         \Bozboz\Entities\Fields\DateTimeField::class);
 		$mapper->register('email',             \Bozboz\Entities\Fields\EmailField::class);
-		$mapper->register('gallery',           \Bozboz\Entities\Fields\GalleryField::class);
-		$mapper->register('hidden',            \Bozboz\Entities\Fields\HiddenField::class);
-		$mapper->register('htmleditor',        \Bozboz\Entities\Fields\HTMLEditorField::class);
-		$mapper->register('image',             \Bozboz\Entities\Fields\ImageField::class);
+		// $mapper->register('hidden',            \Bozboz\Entities\Fields\HiddenField::class);
 		$mapper->register('password',          \Bozboz\Entities\Fields\PasswordField::class);
-		$mapper->register('select',            \Bozboz\Entities\Fields\SelectField::class);
-		$mapper->register('text',              \Bozboz\Entities\Fields\TextField::class);
-		$mapper->register('textarea',          \Bozboz\Entities\Fields\TextareaField::class);
+		// $mapper->register('select',            \Bozboz\Entities\Fields\SelectField::class);
 		$mapper->register('toggle',            \Bozboz\Entities\Fields\ToggleField::class);
+		$mapper->register('belongs-to-entity', \Bozboz\Entities\Fields\BelongsToEntityField::class);
+		$mapper->register('belongs-to-type',   \Bozboz\Entities\Fields\BelongsToTypeField::class);
 	}
 }

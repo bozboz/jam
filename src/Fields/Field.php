@@ -3,6 +3,9 @@
 namespace Bozboz\Entities\Fields;
 
 use Bozboz\Admin\Base\Model;
+use Bozboz\Admin\Base\Sorting\Sortable;
+use Bozboz\Admin\Base\Sorting\SortableTrait;
+use Bozboz\Entities\Contracts\Field as FieldInterface;
 use Bozboz\Entities\Entities\Entity;
 use Bozboz\Entities\Entities\EntityDecorator;
 use Bozboz\Entities\Entities\Revision;
@@ -11,8 +14,10 @@ use Bozboz\Entities\Fields\FieldMapper;
 use Bozboz\Entities\Fields\Options\Option;
 use Bozboz\Entities\Templates\Template;
 
-class Field extends Model implements FieldInterface
+class Field extends Model implements FieldInterface, Sortable
 {
+    use SortableTrait;
+
     protected $table = 'entity_template_fields';
 
     protected $fillable = [
@@ -27,6 +32,16 @@ class Field extends Model implements FieldInterface
     public function getValidator()
     {
         return new FieldValidator;
+    }
+
+    public function sortBy()
+    {
+        return 'sorting';
+    }
+
+    public function scopeModifySortingQuery($query, $instance)
+    {
+        $query->where('template_id', $instance->template_id);
     }
 
     public static function setMapper(FieldMapper $mapper)

@@ -2,7 +2,7 @@
 
 namespace Bozboz\Entities\Entities;
 
-use Bozboz\Entities\Entities\EntityRepositoryInterface;
+use Bozboz\Entities\Contracts\EntityRepository as EntityRepositoryInterface;
 use Illuminate\Support\Collection;
 
 class EntityRepository implements EntityRepositoryInterface

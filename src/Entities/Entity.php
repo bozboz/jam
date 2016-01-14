@@ -5,7 +5,8 @@ namespace Bozboz\Entities\Entities;
 use Bozboz\Admin\Base\DynamicSlugTrait;
 use Bozboz\Admin\Base\ModelInterface;
 use Bozboz\Admin\Base\SanitisesInputTrait;
-use Bozboz\Admin\Base\Sortable;
+use Bozboz\Admin\Base\Sorting\Sortable;
+use Bozboz\Admin\Base\Sorting\NestedSortableTrait;
 use Bozboz\Entities\Entities\Value;
 use Bozboz\Entities\Field;
 use Bozboz\Entities\Templates\Template;
@@ -19,6 +20,7 @@ class Entity extends Node implements ModelInterface, Sortable
 	use SanitisesInputTrait;
 	use SoftDeletes;
 	use DynamicSlugTrait;
+	use NestedSortableTrait;
 
 	protected $table = 'entities';
 
@@ -33,6 +35,8 @@ class Entity extends Node implements ModelInterface, Sortable
 	protected $dates = ['deleted_at'];
 
 	protected $values = [];
+
+	protected $latestRevision;
 
 	static public function boot()
 	{
@@ -99,7 +103,10 @@ class Entity extends Node implements ModelInterface, Sortable
 
 	public function latestRevision()
 	{
-		return $this->revisions()->latest()->first();
+		if (!$this->latestRevision) {
+			$this->latestRevison = $this->revisions()->latest()->first();
+		}
+		return $this->latestRevison;
 	}
 
 	public function publishedRevision()

@@ -1,8 +1,8 @@
 <?php
 
-namespace Bozboz\Entities\Entities;
+namespace Bozboz\Entities\Contracts;
 
-interface EntityRepositoryInterface
+interface EntityRepository
 {
 	/**
 	 * Get a single entity from a URL path

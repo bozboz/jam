@@ -30,7 +30,6 @@ class EntityDecorator extends ModelAdminDecorator
 			'Name' => $this->getLabel($instance),
 			// 'URL' => $instance->alias,
 			'Type' => $instance->template->alias,
-			'Last Revision' => $instance->latestRevision()->created_at->format('d<\s\u\p>S</\s\u\p> M Y, H:i'),
 		];
 	}
 
@@ -61,7 +60,7 @@ class EntityDecorator extends ModelAdminDecorator
 	{
 		$fields = [];
 
-		$instance->loadRealValues($instance->latestRevision());
+		$instance->loadRealValues();
 
 		foreach($instance->template->fields as $field) {
 			$fieldName = $field->name;
@@ -106,8 +105,8 @@ class EntityDecorator extends ModelAdminDecorator
 
 	protected function modifyListingQuery(Builder $query)
 	{
-		$query->whereHas('template.type', function($query) {
+		$query->with('template')->whereHas('template.type', function($query) {
 			$query->whereAlias(\Input::get('type'));
-		});
+		})->orderBy($this->model->sortBy());
 	}
 }
