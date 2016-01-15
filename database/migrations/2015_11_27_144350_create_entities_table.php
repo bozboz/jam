@@ -16,12 +16,11 @@ class CreateEntitiesTable extends Migration
             $table->increments('id');
             $table->string('slug');
             $table->string('name');
+            $table->unsignedInteger('template_id')->index();
 
-            $table->integer('parent_id')->nullable();
-            $table->integer('_lft')->nullable();
-            $table->integer('_rgt')->nullable();
-
-            $table->integer('template_id')->unsigned()->index();
+            $table->unsignedInteger('parent_id')->nullable();
+            $table->unsignedInteger('_lft');
+            $table->unsignedInteger('_rgt');
 
             $table->timestamps();
             $table->softDeletes();

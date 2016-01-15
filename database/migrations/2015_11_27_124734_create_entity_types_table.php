@@ -16,6 +16,8 @@ class CreateEntityTypesTable extends Migration
             $table->increments('id');
             $table->string('alias', 64);
             $table->string('name', 255);
+            $table->boolean('visible');
+            $table->boolean('is_primary');
             $table->timestamps();
         });
     }

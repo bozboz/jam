@@ -14,10 +14,11 @@ class CreateEntityTemplateFieldsTable extends Migration
     {
         Schema::create('entity_template_fields', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('template_id')->unsigned()->index();
+            $table->unsignedInteger('template_id')->index();
             $table->string('name');
             $table->string('type_alias');
             $table->text('validation')->nullable();
+            $table->unsignedInteger('sorting');
             $table->timestamps();
 
             $table->foreign('template_id')
