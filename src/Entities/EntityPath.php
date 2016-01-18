@@ -11,7 +11,7 @@ class EntityPath extends Model
 
 	protected $fillable = [
 		'entity_id',
-		'path'
+		'path',
 	];
 
 	public function entity()
@@ -26,5 +26,15 @@ class EntityPath extends Model
 				$query->whereDescendantOf($entity, 'and');
 			});
 		});
+	}
+
+	public function canonical()
+	{
+		return $this->belongsTo(self::class, 'canonical_id');
+	}
+
+	public function getCanonicalPathAttribute()
+	{
+		return $this->canonical ? $this->canonical->path : null;
 	}
 }
