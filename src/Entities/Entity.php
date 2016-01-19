@@ -21,7 +21,9 @@ class Entity extends Node implements ModelInterface, Sortable
 	use SanitisesInputTrait;
 	use SoftDeletes;
 	use DynamicSlugTrait;
-	use NestedSortableTrait;
+	use NestedSortableTrait {
+		sort as traitSort;
+	}
 
 	protected static $linkBuilder;
 
@@ -44,7 +46,7 @@ class Entity extends Node implements ModelInterface, Sortable
 	static public function boot()
 	{
 		parent::boot();
-		self::saved([self::$linkBuilder, 'updatePaths']);
+		static::saved([static::$linkBuilder, 'updatePaths']);
 	}
 
     public static function setLinkBuilder(LinkBuilder $linkBuilder)
@@ -60,6 +62,12 @@ class Entity extends Node implements ModelInterface, Sortable
 	public function sortBy()
 	{
 		return '_lft';
+	}
+
+	public function sort($before, $after, $parent)
+	{
+		$this->traitSort($before, $after, $parent);
+		static::$linkBuilder->updatePaths($this);
 	}
 
 	public function getValidator()
