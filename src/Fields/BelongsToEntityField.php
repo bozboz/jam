@@ -12,7 +12,7 @@ use Bozboz\Entities\Types\Type;
 
 class BelongsToEntityField extends Field
 {
-	public function getAdminField(EntityDecorator $decorator, Value $value)
+	public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
 	{
 		return new BelongsToField($decorator, $this->getValue($value), [
 				'name' => $this->getInputName(),

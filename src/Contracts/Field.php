@@ -9,7 +9,7 @@ use Bozboz\Entities\Entities\Value;
 
 interface Field
 {
-	public function getAdminField(EntityDecorator $decorator, Value $value);
+	public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value);
 	public function injectValue(Entity $entity, Revision $revision, $realValue);
 	public function getInputName();
 	public function saveValue(Revision $revision, $value);

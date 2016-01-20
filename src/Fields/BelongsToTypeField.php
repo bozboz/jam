@@ -13,7 +13,7 @@ use Bozboz\Entities\Types\Type;
 
 class BelongsToTypeField extends Field
 {
-    public function getAdminField(EntityDecorator $decorator, Value $value)
+    public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
     {
         return new BelongsToField($decorator, $this->getValue($value), [
             'name' => $this->getInputName(),
@@ -26,7 +26,9 @@ class BelongsToTypeField extends Field
         $value = parent::injectValue($entity, $revision, $realValue);
 
         if (!$realValue) {
-            $entity->setAttribute($value->key, $this->getValue($value)->first()->entities);
+            $entity->setAttribute($value->key, $this->getValue($value)->first()->entities->transform(function ($entity, $key) {
+                return $entity->setAttribute('path', $entity->paths()->first());
+            }));
         }
     }
 

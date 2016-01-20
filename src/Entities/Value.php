@@ -9,12 +9,11 @@ class Value extends Model
 	protected $table = 'entity_values';
 
 	protected $fillable = [
-		'page_revision_id',
 		'key',
 		'value'
 	];
 
-	public function pageRevision()
+	public function revision()
 	{
 		return $this->belongsTo(Revision::class);
 	}

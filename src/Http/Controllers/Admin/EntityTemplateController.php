@@ -4,6 +4,7 @@ namespace Bozboz\Entities\Http\Controllers\Admin;
 
 use Bozboz\Admin\Http\Controllers\ModelAdminController;
 use Bozboz\Entities\Templates\TemplateDecorator;
+use Bozboz\Entities\Templates\TemplateReport;
 use Bozboz\Entities\Types\Type;
 use Input, Redirect;
 
@@ -15,6 +16,16 @@ class EntityTemplateController extends ModelAdminController
 	{
 		$this->type = $type;
 		parent::__construct($decorator);
+	}
+
+	/**
+	 * Get an instance of a report to display the model listing
+	 *
+	 * @return Bozboz\Admin\Reports\NestedReport
+	 */
+	protected function getListingReport()
+	{
+		return new TemplateReport($this->decorator);
 	}
 
 	public function index()

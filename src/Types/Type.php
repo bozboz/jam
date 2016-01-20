@@ -2,6 +2,7 @@
 
 namespace Bozboz\Entities\Types;
 
+use Bozboz\Admin\Base\DynamicSlugTrait;
 use Bozboz\Admin\Base\Model;
 use Bozboz\Admin\Media\MediableTrait;
 use Bozboz\Entities\Entities\Entity;
@@ -9,14 +10,27 @@ use Bozboz\Entities\Templates\Template;
 
 class Type extends Model
 {
+	use DynamicSlugTrait;
+	use MediableTrait;
+
 	protected $table = 'entity_types';
 
 	protected $fillable = [
 		'name',
-		'alias'
+		'alias',
+		'visible',
+		'generate_paths',
 	];
 
-	use MediableTrait;
+	public function getSlugSourceField()
+	{
+		return 'name';
+	}
+
+	public function getSlugField()
+	{
+		return 'alias';
+	}
 
 	public function entities()
 	{

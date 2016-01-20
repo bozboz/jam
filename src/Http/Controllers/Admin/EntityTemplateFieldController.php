@@ -3,8 +3,8 @@
 namespace Bozboz\Entities\Http\Controllers\Admin;
 
 use Bozboz\Admin\Http\Controllers\ModelAdminController;
+use Bozboz\Entities\Fields\Field;
 use Bozboz\Entities\Fields\FieldDecorator;
-use Bozboz\Entities\Fields\FieldMapper;
 use Bozboz\Entities\Templates\Template;
 use Input, Redirect;
 
@@ -33,7 +33,7 @@ class EntityTemplateFieldController extends ModelAdminController
 	 */
 	protected function getReportParams()
 	{
-		$fieldTypes = array_keys(app(FieldMapper::class)->getAll());
+		$fieldTypes = array_keys(Field::getMapper()->getAll());
 		return array_merge(parent::getReportParams(), [
 			'createAction' => $this->getActionName('createForTemplate'),
 			'createParams' => ['templateId' => Input::get('template_id')],

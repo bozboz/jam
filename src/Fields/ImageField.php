@@ -11,7 +11,7 @@ use Bozboz\Entities\Entities\Value;
 
 class ImageField extends Field
 {
-	public function getAdminField(EntityDecorator $decorator, Value $value)
+	public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
 	{
 		return new MediaBrowser($this->getValue($value), [
 			'name' => $this->name

@@ -87,6 +87,17 @@ class Entity extends Node implements ModelInterface, Sortable
 		return $this->hasMany(EntityPath::class);
 	}
 
+	public function getCanonicalPathAttribute()
+	{
+		if ($this->paths->count()) {
+			$path = $this->paths->where('canonical_id', null)->pluck('path')->first();
+		} else {
+			$path = "/{$this->id}/{$this->slug}";
+		}
+
+		return $path;
+	}
+
 	public function revisions()
 	{
 		return $this->hasMany(Revision::class);

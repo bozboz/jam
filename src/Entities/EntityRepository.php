@@ -3,15 +3,45 @@
 namespace Bozboz\Entities\Entities;
 
 use Bozboz\Entities\Contracts\EntityRepository as EntityRepositoryInterface;
+use Bozboz\Entities\Entities\Entity;
+use Bozboz\Entities\Entities\EntityPath;
 use Illuminate\Support\Collection;
 
 class EntityRepository implements EntityRepositoryInterface
 {
+	public function find($id)
+	{
+		$entity = Entity::find($id);
+
+		if (!$entity) {
+			return false;
+		}
+
+		$entity->setAttribute('canonical', $entity->canonical_path);
+
+		return $entity;
+	}
+
 	public function getForPath($path)
 	{
-		$entity = Entity::with('template', 'template.fields')->whereHas('paths', function($query) use ($path) {
-			$query->where('path', $path);
-		})->first();
+		$path = EntityPath::wherePath($path)->with('entity')->first();
+
+		if (!$path) {
+			return false;
+		}
+
+		$entity = $path->entity;
+		$entity->setAttribute('canonical', $path->canonical_path);
+
 		return $entity;
+	}
+
+	public function get301ForPath($path)
+	{
+		$path = EntityPath::wherePath($path)->onlyTrashed()->first();
+		if ($path) {
+			$redirectPath = EntityPath::whereEntityId($path->entity_id)->whereNull('canonical_id')->first();
+			return $redirectPath ? $redirectPath->path : false;
+		}
 	}
 }

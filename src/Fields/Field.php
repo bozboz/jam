@@ -54,7 +54,7 @@ class Field extends Model implements FieldInterface, Sortable
         return static::$mapper;
     }
 
-    public function getAdminField(EntityDecorator $decorator, Value $value)
+    public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
     {
         throw new \Exception("Attempting to create admin field for unknown field type", 1);
     }
@@ -62,6 +62,11 @@ class Field extends Model implements FieldInterface, Sortable
     public function options()
     {
         return $this->hasMany(Option::class, 'field_id');
+    }
+
+    public function getOption($key)
+    {
+        return $this->options->where('key', $key)->pluck('value')->first();
     }
 
     public function getOptionsArrayAttribute()

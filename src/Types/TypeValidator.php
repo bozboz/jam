@@ -8,9 +8,9 @@ class TypeValidator extends Validator
 {
 	protected $rules = [
 		'name' => 'required',
-		'alias' => 'required',
 	];
 
 	protected $editRules = [
+		'alias' => 'required',
 	];
 }

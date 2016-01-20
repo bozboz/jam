@@ -17,13 +17,29 @@ class LinkBuilder implements Contract
 	 */
 	public function updatePaths (Entity $instance)
 	{
-		if ($instance->template->type->is_primary && $instance->isDirty('slug')) {
+		if ($this->requiresPath($instance)) {
 			EntityPath::forEntity($instance)->delete();
 			$this->addPaths($instance);
 			$instance->getDescendants()->map(function($instance) {
 				$this->addPaths($instance);
 			});
 		}
+	}
+
+	/**
+	 * Discern whether or not an entity needs to generate new paths
+	 *
+	 * @param  Entity $instance
+	 * @return boolean
+	 */
+	protected function requiresPath(Entity $instance)
+	{
+		return $instance->template->type->generate_paths
+			&& (
+				$instance->isDirty('slug')
+				||
+				$instance->isDirty('parent_id')
+			);
 	}
 
 	/**

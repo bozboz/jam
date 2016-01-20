@@ -3,6 +3,7 @@
 namespace Bozboz\Entities\Types;
 
 use Bozboz\Admin\Base\ModelAdminDecorator;
+use Bozboz\Admin\Fields\CheckboxField;
 use Bozboz\Admin\Fields\MediaBrowser;
 use Bozboz\Admin\Fields\TextField;
 use Bozboz\Entities\Types\Type;
@@ -18,12 +19,8 @@ class TypeDecorator extends ModelAdminDecorator
 	{
 		return [
 			'Name' => $this->getLabel($instance),
-			'' => link_to_route(
-				'admin.entity-templates.index',
-				'Edit Templates',
-				['type_id' => $instance->id],
-				['class' => 'btn btn-default btn-sm', 'style' => 'float:right;']
-			)
+			'Generates Paths' => $instance->generate_paths ? '<i class="fa fa-check"></i>' : '',
+			'Visible' => $instance->visible ? '<i class="fa fa-check"></i>' : '',
 		];
 	}
 
@@ -32,13 +29,25 @@ class TypeDecorator extends ModelAdminDecorator
 		return $instance->name;
 	}
 
+	/**
+	 * @param  array  $attributes
+	 * @return Bozboz\Admin\Base\ModelInterface
+	 */
+	public function newModelInstance($attributes = array())
+	{
+		return $this->model->newInstance(['visible' => true]);
+	}
+
 	public function getFields($instance)
 	{
 		return [
 			new TextField('name'),
-			new TextField('alias'),
+			($instance->exists ? new TextField('alias') : null),
+			new CheckboxField('visible'),
+			new CheckboxField('generate_paths'),
 		];
 	}
+
 	public function getSyncRelations()
 	{
 		return ['media'];

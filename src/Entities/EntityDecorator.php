@@ -65,7 +65,7 @@ class EntityDecorator extends ModelAdminDecorator
 		foreach($instance->template->fields as $field) {
 			$fieldName = $field->name;
 			$value = $instance->getValue($fieldName);
-			$fields[] = $field->getAdminField($this, $value);
+			$fields[] = $field->getAdminField($instance, $this, $value);
 		}
 
 		return $fields;

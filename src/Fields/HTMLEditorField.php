@@ -8,7 +8,7 @@ use Bozboz\Entities\Entities\Value;
 
 class HTMLEditorField extends Field
 {
-	public function getAdminField(EntityDecorator $decorator, Value $value)
+	public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
 	{
 	    return new HTMLEditorInput($this->name);
 	}

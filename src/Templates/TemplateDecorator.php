@@ -25,12 +25,6 @@ class TemplateDecorator extends ModelAdminDecorator
 	{
 		return [
 			'Name' => $this->getLabel($instance),
-			'' => link_to_route(
-				'admin.entity-template-fields.index',
-				'Edit Fields',
-				['template_id' => $instance->id],
-				['class' => 'btn btn-default btn-sm', 'style' => 'float:right;']
-			)
 		];
 	}
 
@@ -49,7 +43,6 @@ class TemplateDecorator extends ModelAdminDecorator
 	{
 		return [
 			new TextField('name'),
-			new TextField('alias'),
 			new TextField('view'),
 			new HiddenField('type_id')
 		];
@@ -57,6 +50,6 @@ class TemplateDecorator extends ModelAdminDecorator
 
 	protected function modifyListingQuery(Builder $query)
 	{
-		$query->whereTypeId(Input::get('type_id'));
+		$query->whereTypeId(Input::get('type_id'))->orderBy($this->model->sortBy());
 	}
 }

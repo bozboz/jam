@@ -4,6 +4,7 @@ namespace Bozboz\Entities\Http\Controllers\Admin;
 
 use Bozboz\Admin\Http\Controllers\ModelAdminController;
 use Bozboz\Admin\Reports\NestedReport;
+use Bozboz\Entities\Entities\Entity;
 use Bozboz\Entities\Entities\EntityDecorator;
 use Bozboz\Entities\Templates\Template;
 use Bozboz\Entities\Types\Type;
