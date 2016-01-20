@@ -93,7 +93,7 @@ class EntityServiceProvider extends ServiceProvider
 		$mapper->register('toggle',            \Bozboz\Entities\Fields\ToggleField::class);
 		$mapper->register('foreign',           \Bozboz\Entities\Fields\ForeignField::class);
 		$mapper->register('entity-list-field', \Bozboz\Entities\Fields\EntityListField::class);
-		$mapper->register('belongs-to-entity', \Bozboz\Entities\Fields\BelongsToEntityField::class);
-		$mapper->register('belongs-to-type',   \Bozboz\Entities\Fields\BelongsToTypeField::class);
+		// $mapper->register('belongs-to-entity', \Bozboz\Entities\Fields\BelongsToEntityField::class);
+		// $mapper->register('belongs-to-type',   \Bozboz\Entities\Fields\BelongsToTypeField::class);
 	}
 }

@@ -16,11 +16,9 @@ class CreateEntityPathsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('entity_id');
             $table->unsignedInteger('canonical_id')->nullable();
-            $table->string('path');
+            $table->string('path')->unique();
             $table->softDeletes();
             $table->timestamps();
-
-            $table->unique(['entity_id', 'path']);
 
             $table->foreign('entity_id')->references('id')->on('entities')->onDelete('cascade');
             $table->foreign('canonical_id')->references('id')->on('entities')->onDelete('cascade');

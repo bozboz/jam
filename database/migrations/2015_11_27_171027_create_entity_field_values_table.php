@@ -14,7 +14,7 @@ class CreateEntityFieldValuesTable extends Migration
     {
         Schema::create('entity_values', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('revision_id')->unsigned();
+            $table->unsignedInteger('revision_id');
             $table->string('key');
             $table->text('value')->nullable();
             $table->timestamps();
