@@ -106,7 +106,7 @@ class Entity extends Node implements ModelInterface, Sortable
 	public function latestRevision()
 	{
 		if (!$this->latestRevision) {
-			$this->latestRevison = $this->revisions()->latest()->first();
+			$this->latestRevison = $this->revisions()->latest()->with('fieldValues')->first();
 		}
 		return $this->latestRevison;
 	}

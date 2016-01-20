@@ -8,6 +8,7 @@ use Bozboz\Admin\Fields\SelectField;
 use Bozboz\Admin\Fields\TextField;
 use Bozboz\Entities\Entities\Entity;
 use Bozboz\Entities\Entities\EntityDecorator;
+use Bozboz\Entities\Entities\Revision;
 use Bozboz\Entities\Entities\Value;
 use Bozboz\Entities\Templates\Template;
 use Bozboz\Entities\Types\Type;
@@ -29,11 +30,23 @@ class EntityListField extends Field
 		];
 	}
 
+	public function injectValue(Entity $entity, Revision $revision, $realValue)
+	{
+		$value = parent::injectValue($entity, $revision, $realValue);
+
+		if (!$realValue) {
+			$entity->setAttribute($value->key, $this->getValue($value));
+		}
+	}
+
 	public function getValue(Value $value)
 	{
-		return Entity::whereHas('template.type', function ($query) {
+		return Entity::with('template.type', 'revisions')->whereHas('template.type', function ($query) {
 			$query->whereAlias($this->getOption('type'));
-		})->defaultOrder()->get();
+		})->defaultOrder()->get()->transform(function ($entity) {
+			$entity->loadValues();
+			return $entity;
+		});
 	}
 }
 
