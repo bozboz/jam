@@ -16,7 +16,7 @@ class BelongsToEntityField extends Field
 	{
 		return new BelongsToField($decorator, $this->getValue($value), [
 				'name' => $this->getInputName(),
-				'label' => preg_replace('/([A-Z])/', ' $1', studly_case($this->name))
+				'label' => $this->getInputLabel()
 			],
 			function($query) {
 				if (property_exists($this->options_array, 'type')) {

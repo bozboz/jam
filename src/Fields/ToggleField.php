@@ -11,6 +11,9 @@ class ToggleField extends Field
 {
 	public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
 	{
-	    return new CheckboxField($this->name);
+	    return new CheckboxField([
+			'name' => $this->getInputName(),
+			'label' => $this->getInputLabel()
+		]);
 	}
 }

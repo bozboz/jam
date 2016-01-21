@@ -14,7 +14,8 @@ class ImageField extends Field
 	public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
 	{
 		return new MediaBrowser($this->getValue($value), [
-			'name' => $this->name
+			'name' => $this->getInputName(),
+			'label' => $this->getInputLabel()
 		]);
 	}
 

@@ -16,8 +16,8 @@ class BelongsToTypeField extends Field
     public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
     {
         return new BelongsToField($decorator, $this->getValue($value), [
-            'name' => $this->getInputName(),
-            'label' => preg_replace('/([A-Z])/', ' $1', studly_case($this->name))
+                'name' => $this->getInputName(),
+                'label' => $this->getInputLabel()
         ]);
     }
 

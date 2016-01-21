@@ -11,6 +11,9 @@ class EmailField extends Field
 {
 	public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
 	{
-	    return new EmailInput($this->name);
+	    return new EmailInput([
+			'name' => $this->getInputName(),
+			'label' => $this->getInputLabel()
+		]);
 	}
 }

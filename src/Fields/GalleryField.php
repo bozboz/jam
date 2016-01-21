@@ -15,7 +15,7 @@ class GalleryField extends Field
 	{
 		return new MediaBrowser($this->getValue($value), [
 			'name' => $this->getInputName(),
-			'label' => preg_replace('/([A-Z])/', ' $1', studly_case($this->name))
+			'label' => $this->getInputLabel()
 		]);
 	}
 

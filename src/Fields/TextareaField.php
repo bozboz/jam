@@ -11,6 +11,9 @@ class TextareaField extends Field
 {
 	public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
 	{
-	    return new TextareaInput($this->name);
+	    return new TextareaInput([
+			'name' => $this->getInputName(),
+			'label' => $this->getInputLabel()
+		]);
 	}
 }

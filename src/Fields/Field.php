@@ -97,6 +97,12 @@ class Field extends Model implements FieldInterface, Sortable
         return e($this->name);
     }
 
+
+    public function getInputLabel()
+    {
+        return preg_replace('/([A-Z])/', ' $1', studly_case($this->name)) . (str_contains($this->validation, 'required') ? ' *' : '');
+    }
+
     public function saveValue(Revision $revision, $value)
     {
         $fieldValue = [

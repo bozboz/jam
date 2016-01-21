@@ -11,6 +11,9 @@ class PasswordField extends Field
 {
 	public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
 	{
-	    return new PasswordInput($this->name);
+	    return new PasswordInput([
+			'name' => $this->getInputName(),
+			'label' => $this->getInputLabel()
+		]);
 	}
 }

@@ -17,7 +17,10 @@ class EntityListField extends Field
 {
 	public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
 	{
-		return new EntityListInput($instance, $this, $this->getValue($value), ['name' => $this->name]);
+		return new EntityListInput($instance, $this, $this->getValue($value), [
+			'name' => $this->getInputName(),
+			'label' => $this->getInputLabel()
+		]);
 	}
 
 	public function getOptionFields()

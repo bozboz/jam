@@ -11,6 +11,9 @@ class DateTimeField extends Field
 {
 	public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
 	{
-	    return new DateTimeInput($this->name);
+	    return new DateTimeInput([
+			'name' => $this->getInputName(),
+			'label' => $this->getInputLabel()
+		]);
 	}
 }
