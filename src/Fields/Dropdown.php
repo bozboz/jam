@@ -2,16 +2,16 @@
 
 namespace Bozboz\Entities\Fields;
 
-use Bozboz\Admin\Fields\DateField as DateInput;
+use Bozboz\Admin\Fields\SelectField;
 use Bozboz\Entities\Entities\Entity;
 use Bozboz\Entities\Entities\EntityDecorator;
 use Bozboz\Entities\Entities\Value;
 
-class DateField extends Field
+class Dropdown extends Field
 {
 	public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
 	{
-		return new DateInput([
+	    return new SelectField([
 			'name' => $this->getInputName(),
 			'label' => $this->getInputLabel()
 		]);

@@ -80,20 +80,20 @@ class EntityServiceProvider extends ServiceProvider
 		$mapper = $this->app['FieldMapper'];
 
 		$mapper->register('text',              \Bozboz\Entities\Fields\Text::class);
-		$mapper->register('textarea',          \Bozboz\Entities\Fields\TextareaField::class);
-		$mapper->register('htmleditor',        \Bozboz\Entities\Fields\HTMLEditorField::class);
-		$mapper->register('image',             \Bozboz\Entities\Fields\ImageField::class);
-		$mapper->register('gallery',           \Bozboz\Entities\Fields\GalleryField::class);
-		$mapper->register('date',              \Bozboz\Entities\Fields\DateField::class);
-		$mapper->register('date-time',         \Bozboz\Entities\Fields\DateTimeField::class);
-		$mapper->register('email',             \Bozboz\Entities\Fields\EmailField::class);
-		// $mapper->register('hidden',            \Bozboz\Entities\Fields\HiddenField::class);
-		$mapper->register('password',          \Bozboz\Entities\Fields\PasswordField::class);
-		// $mapper->register('select',            \Bozboz\Entities\Fields\SelectField::class);
-		$mapper->register('toggle',            \Bozboz\Entities\Fields\ToggleField::class);
-		$mapper->register('foreign',           \Bozboz\Entities\Fields\ForeignField::class);
-		$mapper->register('entity-list-field', \Bozboz\Entities\Fields\EntityListField::class);
-		// $mapper->register('belongs-to-entity', \Bozboz\Entities\Fields\BelongsToEntityField::class);
-		// $mapper->register('belongs-to-type',   \Bozboz\Entities\Fields\BelongsToTypeField::class);
+		$mapper->register('textarea',          \Bozboz\Entities\Fields\Textarea::class);
+		$mapper->register('htmleditor',        \Bozboz\Entities\Fields\HTMLEditor::class);
+		$mapper->register('image',             \Bozboz\Entities\Fields\Image::class);
+		$mapper->register('gallery',           \Bozboz\Entities\Fields\Gallery::class);
+		$mapper->register('date',              \Bozboz\Entities\Fields\Date::class);
+		$mapper->register('date-time',         \Bozboz\Entities\Fields\DateTime::class);
+		$mapper->register('email',             \Bozboz\Entities\Fields\Email::class);
+		// $mapper->register('hidden',            \Bozboz\Entities\Fields\Hidden::class);
+		$mapper->register('password',          \Bozboz\Entities\Fields\Password::class);
+		// $mapper->register('select',            \Bozboz\Entities\Fields\Select::class);
+		$mapper->register('toggle',            \Bozboz\Entities\Fields\Toggle::class);
+		$mapper->register('foreign',           \Bozboz\Entities\Fields\Foreign::class);
+		$mapper->register('entity-list-field', \Bozboz\Entities\Fields\EntityList::class);
+		// $mapper->register('belongs-to-entity', \Bozboz\Entities\Fields\BelongsToEntity::class);
+		// $mapper->register('belongs-to-type',   \Bozboz\Entities\Fields\BelongsToType::class);
 	}
 }

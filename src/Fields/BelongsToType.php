@@ -11,7 +11,7 @@ use Bozboz\Entities\Entities\Value;
 use Bozboz\Entities\Templates\Template;
 use Bozboz\Entities\Types\Type;
 
-class BelongsToTypeField extends Field
+class BelongsToType extends Field
 {
     public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
     {

@@ -9,7 +9,7 @@ use Bozboz\Entities\Entities\EntityDecorator;
 use Bozboz\Entities\Entities\Revision;
 use Bozboz\Entities\Entities\Value;
 
-class ImageField extends Field
+class Image extends Field
 {
 	public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
 	{

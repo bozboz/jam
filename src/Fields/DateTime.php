@@ -2,16 +2,16 @@
 
 namespace Bozboz\Entities\Fields;
 
-use Bozboz\Admin\Fields\DateTimeField as DateTimeInput;
+use Bozboz\Admin\Fields\DateTimeField;
 use Bozboz\Entities\Entities\Entity;
 use Bozboz\Entities\Entities\EntityDecorator;
 use Bozboz\Entities\Entities\Value;
 
-class DateTimeField extends Field
+class DateTime extends Field
 {
 	public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
 	{
-	    return new DateTimeInput([
+	    return new DateTimeField([
 			'name' => $this->getInputName(),
 			'label' => $this->getInputLabel()
 		]);

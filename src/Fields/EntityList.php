@@ -13,11 +13,11 @@ use Bozboz\Entities\Entities\Value;
 use Bozboz\Entities\Templates\Template;
 use Bozboz\Entities\Types\Type;
 
-class EntityListField extends Field
+class EntityList extends Field
 {
 	public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
 	{
-		return new EntityListInput($instance, $this, $this->getValue($value), [
+		return new EntityListField($instance, $this, $this->getValue($value), [
 			'name' => $this->getInputName(),
 			'label' => $this->getInputLabel()
 		]);
@@ -53,7 +53,7 @@ class EntityListField extends Field
 	}
 }
 
-class EntityListInput extends AdminField
+class EntityListField extends AdminField
 {
 	protected $parentEntity;
 	protected $field;

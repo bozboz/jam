@@ -7,7 +7,7 @@ use Bozboz\Entities\Entities\Entity;
 use Bozboz\Entities\Entities\EntityDecorator;
 use Bozboz\Entities\Entities\Value;
 
-class ToggleField extends Field
+class Toggle extends Field
 {
 	public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
 	{

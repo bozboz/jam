@@ -2,15 +2,18 @@
 
 namespace Bozboz\Entities\Fields;
 
-use Bozboz\Admin\Fields\HiddenField as HiddenInput;
+use Bozboz\Admin\Fields\DateField;
 use Bozboz\Entities\Entities\Entity;
 use Bozboz\Entities\Entities\EntityDecorator;
 use Bozboz\Entities\Entities\Value;
 
-class HiddenField extends Field
+class Date extends Field
 {
 	public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
 	{
-	    return new HiddenInput($this->instance->name);
+		return new DateField([
+			'name' => $this->getInputName(),
+			'label' => $this->getInputLabel()
+		]);
 	}
 }
