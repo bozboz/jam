@@ -35,6 +35,8 @@ class EntityPath extends Model
 
 	public function getCanonicalPathAttribute()
 	{
-		return $this->canonical ? $this->canonical->path : null;
+		if ($this->canonical_id) {
+			return $this->canonical->path;
+		}
 	}
 }

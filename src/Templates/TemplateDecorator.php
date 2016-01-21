@@ -43,6 +43,7 @@ class TemplateDecorator extends ModelAdminDecorator
 	{
 		return [
 			new TextField('name'),
+			($instance->exists ? new TextField('alias') : null),
 			new TextField('view'),
 			new HiddenField('type_id')
 		];

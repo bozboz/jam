@@ -82,7 +82,7 @@ class EntityController extends ModelAdminController
 	public function edit($id)
 	{
 		$instance = $this->decorator->findInstance($id);
-		$instance->loadValues();
+		$instance->loadValues($instance->latestRevision());
 
 		if ( ! $this->canEdit($instance)) App::abort(403);
 

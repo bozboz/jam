@@ -3,6 +3,7 @@
 namespace Bozboz\Entities\Entities;
 
 use Bozboz\Admin\Base\ModelAdminDecorator;
+use Bozboz\Admin\Fields\CheckboxField;
 use Bozboz\Admin\Fields\HiddenField;
 use Bozboz\Admin\Fields\TextField;
 use Bozboz\Admin\Fields\URLField;
@@ -28,8 +29,9 @@ class EntityDecorator extends ModelAdminDecorator
 	{
 		return [
 			'Name' => $this->getLabel($instance),
-			// 'URL' => $instance->alias,
+			'URL' => $instance->template->type->generate_paths ? link_to($instance->slug, route('entity', array($instance->slug), false)) : null,
 			'Type' => $instance->template->alias,
+			'Status' => $instance->status ? '<i class="fa fa-check"></i>' : '',
 		];
 	}
 
@@ -41,9 +43,10 @@ class EntityDecorator extends ModelAdminDecorator
 	public function getFields($instance)
 	{
 		$fields = new Collection(array_filter([
-			new TextField('name'),
-			$instance->exists ? new TextField('slug') : null,
+			new TextField('name', ['label' => 'Name *']),
+			$instance->exists && $instance->template->type->visible ? new TextField('slug', ['label' => 'Slug *']) : null,
 			new HiddenField('template_id'),
+			new CheckboxField('status'),
 		]));
 
 		return $fields->merge($this->getTemplateFields($instance))->all();
@@ -62,7 +65,7 @@ class EntityDecorator extends ModelAdminDecorator
 
 		$instance->loadRealValues();
 
-		foreach($instance->template->fields as $field) {
+		foreach($instance->template->fields->sortBy('sorting') as $field) {
 			$fieldName = $field->name;
 			$value = $instance->getValue($fieldName);
 			$fields[] = $field->getAdminField($instance, $this, $value);

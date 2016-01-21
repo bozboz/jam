@@ -35,6 +35,7 @@ class Entity extends Node implements ModelInterface, Sortable
 		'slug',
 		'name',
 		'entity_template_id',
+		'status',
 	];
 
 	protected $dates = ['deleted_at'];
@@ -116,6 +117,13 @@ class Entity extends Node implements ModelInterface, Sortable
 		return $this->revisions()->whereNotNull('published_at')->latest()->first();
 	}
 
+	public function scopeActive($query)
+	{
+		$query->whereStatus(true)->whereHas('revisions', function($query) {
+			$query->whereNotNull('published_at');
+		});
+	}
+
 	/**
 	 * Load values and inject them in to the entity
 	 * @param  bool $realValues true: inject actual db values,
@@ -125,7 +133,7 @@ class Entity extends Node implements ModelInterface, Sortable
 	protected function _loadValues($realValues, Revision $revision = null)
 	{
 		if (is_null($revision)) {
-			$revision = $this->latestRevision();
+			$revision = $this->publishedRevision();
 		}
 
 		if ($revision) {
@@ -172,7 +180,9 @@ class Entity extends Node implements ModelInterface, Sortable
 	public function newRevision($input)
 	{
 		if ($this->requiresNewRevision($input)) {
-			$revision = $this->revisions()->create([]);
+			$revision = $this->revisions()->create([
+				'published_at' => $input['status'] ? new \DateTime : null
+			]);
 
 			foreach ($this->template->fields as $field) {
 				$field->saveValue($revision, $input[$field->getInputName()]);
@@ -191,6 +201,7 @@ class Entity extends Node implements ModelInterface, Sortable
 				array_fill_keys($templateFields, null),
 				$latestRevision->fieldValues()->lists('value', 'key')->all()
 			);
+			$currentValues['status'] = !is_null($latestRevision->published_at);
 		}
 
 		return !$latestRevision || count(array_diff_assoc($currentValues, $input)) > 0;

@@ -79,7 +79,7 @@ class EntityServiceProvider extends ServiceProvider
 	{
 		$mapper = $this->app['FieldMapper'];
 
-		$mapper->register('text',              \Bozboz\Entities\Fields\TextField::class);
+		$mapper->register('text',              \Bozboz\Entities\Fields\Text::class);
 		$mapper->register('textarea',          \Bozboz\Entities\Fields\TextareaField::class);
 		$mapper->register('htmleditor',        \Bozboz\Entities\Fields\HTMLEditorField::class);
 		$mapper->register('image',             \Bozboz\Entities\Fields\ImageField::class);
