@@ -3,6 +3,8 @@
 namespace Bozboz\Entities\Http\Controllers\Admin;
 
 use Bozboz\Admin\Http\Controllers\ModelAdminController;
+use Bozboz\Admin\Reports\Actions\CreateDropdownAction;
+use Bozboz\Admin\Reports\Actions\DropdownItem;
 use Bozboz\Admin\Reports\NestedReport;
 use Bozboz\Entities\Entities\Entity;
 use Bozboz\Entities\Entities\EntityDecorator;
@@ -14,6 +16,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class EntityController extends ModelAdminController
 {
+	protected $type;
+
 	public function __construct(EntityDecorator $decorator)
 	{
 		parent::__construct($decorator);
@@ -24,6 +28,13 @@ class EntityController extends ModelAdminController
 		if (!Input::get('type')) {
 			return Redirect::to('/admin');
 		}
+
+		$this->type = Type::with('templates')->where('alias', Input::get('type'))->first();
+
+		if (!$this->type) {
+			throw new NotFoundHttpException;
+		}
+
 		return parent::index();
 	}
 
@@ -38,35 +49,25 @@ class EntityController extends ModelAdminController
 	}
 
 	/**
-	 * Return an array of params the report requires to render
+	 * Return an array of actions the report can perform
 	 *
 	 * @return array
 	 */
-	protected function getReportParams()
+	protected function getReportActions()
 	{
-		if (Input::has('type')) {
-			$type = Type::with('templates')->where('alias', Input::get('type'))->first();
+		$options = Template::whereHas('type', function($query) {
+				$query->whereAlias(Input::get('type'));
+			})->orderBy('name')->get()->map(function($template) {
+				return new DropdownItem(
+					[$this->getActionName('createOfType'), $template->alias],
+					[$this, 'canCreate'],
+					['label' => $template->name]
+				);
+			});
 
-			if (!$type) {
-				throw new NotFoundHttpException;
-			}
-
-			$templates = $type->templates;
-		} else {
-			$type = null;
-			$templates = Template::orderBy('name')->get();
-		}
-		$params = [
-			'type' => $type,
-			'templates' => $templates,
-
-			'createAction' => $this->getActionName('createOfType'),
-			'newButtonPartial' => 'entities::admin.partials.new-entity'
+		return [
+			'create' => new CreateDropdownAction($options)
 		];
-		if ($type) {
-			$params['heading'] = $type->name;
-		}
-		return array_merge(parent::getReportParams(), $params);
 	}
 
 	public function createOfType($type)

@@ -45,6 +45,10 @@ class EntityServiceProvider extends ServiceProvider
 			"{$packageRoot}/config/entities.php" => config_path('entities.php')
 		], 'config');
 
+		$permissions = $this->app['permission.handler'];
+
+		require __DIR__ . '/../permissions.php';
+
 		$this->registerFieldTypes();
 
 		$this->buildAdminMenu();
@@ -64,13 +68,20 @@ class EntityServiceProvider extends ServiceProvider
 
 			$entityTypes = Type::whereVisible(true)->get();
 			foreach ($entityTypes as $type) {
-				$contentMenu[$type->name] = $url->route('admin.entities.index', ['type' => $type->alias]);
+				if ($menu->gate('view_entity_type', $type)) {
+				\Debugbar::info($type);
+					$contentMenu[$type->name] = $url->route('admin.entities.index', ['type' => $type->alias]);
+				}
 			}
-			$menu['Content'] = $contentMenu;
+			if ($contentMenu) {
+				$menu['Content'] = $contentMenu;
+			}
 
-			$menu['Entities'] = [
-				'Types' => $url->route('admin.entity-types.index'),
-			];
+			if ($this->app['permission.checker']->allows('view_anything')) {
+				$menu['Entities'] = [
+					'Types' => $url->route('admin.entity-types.index'),
+				];
+			}
 		});
 	}
 

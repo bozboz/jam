@@ -3,6 +3,8 @@
 namespace Bozboz\Entities\Http\Controllers\Admin;
 
 use Bozboz\Admin\Http\Controllers\ModelAdminController;
+use Bozboz\Admin\Reports\Actions\CreateDropdownAction;
+use Bozboz\Admin\Reports\Actions\DropdownItem;
 use Bozboz\Entities\Fields\Field;
 use Bozboz\Entities\Fields\FieldDecorator;
 use Bozboz\Entities\Templates\Template;
@@ -27,19 +29,23 @@ class EntityTemplateFieldController extends ModelAdminController
 	}
 
 	/**
-	 * Return an array of params the report requires to render
+	 * Return an array of actions the report can perform
 	 *
 	 * @return array
 	 */
-	protected function getReportParams()
+	protected function getReportActions()
 	{
-		$fieldTypes = array_keys(Field::getMapper()->getAll());
-		return array_merge(parent::getReportParams(), [
-			'createAction' => $this->getActionName('createForTemplate'),
-			'createParams' => ['templateId' => Input::get('template_id')],
-			'newButtonPartial' => 'entities::admin.partials.new-template-field',
-			'fieldTypes' => $fieldTypes
-		]);
+		$options = collect(array_keys(Field::getMapper()->getAll()))->map(function($type) {
+			return new DropdownItem(
+				[$this->getActionName('createForTemplate'), 'template_id' => Input::get('template_id'), 'type' => $type],
+				[$this, 'canCreate'],
+				['label' => $type]
+			);
+		});
+
+		return [
+			'create' => new CreateDropdownAction($options)
+		];
 	}
 
 	public function createForTemplate($templateId, $type)

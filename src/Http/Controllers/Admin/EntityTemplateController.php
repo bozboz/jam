@@ -3,7 +3,9 @@
 namespace Bozboz\Entities\Http\Controllers\Admin;
 
 use Bozboz\Admin\Http\Controllers\ModelAdminController;
+use Bozboz\Admin\Reports\Actions\CreateAction;
 use Bozboz\Entities\Templates\TemplateDecorator;
+use Bozboz\Entities\Templates\TemplateFieldsAction;
 use Bozboz\Entities\Templates\TemplateReport;
 use Bozboz\Entities\Types\Type;
 use Input, Redirect;
@@ -18,16 +20,6 @@ class EntityTemplateController extends ModelAdminController
 		parent::__construct($decorator);
 	}
 
-	/**
-	 * Get an instance of a report to display the model listing
-	 *
-	 * @return Bozboz\Admin\Reports\NestedReport
-	 */
-	protected function getListingReport()
-	{
-		return new TemplateReport($this->decorator);
-	}
-
 	public function index()
 	{
 		if (!Input::get('type_id')) {
@@ -36,17 +28,29 @@ class EntityTemplateController extends ModelAdminController
 		return parent::index();
 	}
 
+	public function getRowActions()
+	{
+		return array_merge([
+			new TemplateFieldsAction(
+				'\\'.EntityTemplateFieldController::class.'@index',
+				[$this, 'canEdit']
+			)
+		], parent::getRowActions());
+	}
+
 	/**
-	 * Return an array of params the report requires to render
+	 * Return an array of actions the report can perform
 	 *
 	 * @return array
 	 */
-	protected function getReportParams()
+	protected function getReportActions()
 	{
-		return array_merge(parent::getReportParams(), [
-			'createAction' => $this->getActionName('createForType'),
-			'createParams' => [Input::get('type_id')],
-		]);
+		return [
+			'create' => new CreateAction(
+				[$this->getActionName('createForType'), Input::get('type_id')],
+				[$this, 'canCreate']
+			)
+		];
 	}
 
 	public function createForType($typeId)

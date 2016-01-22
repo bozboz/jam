@@ -4,7 +4,7 @@ namespace Bozboz\Entities\Http\Controllers\Admin;
 
 use Bozboz\Admin\Http\Controllers\ModelAdminController;
 use Bozboz\Entities\Types\TypeDecorator;
-use Bozboz\Entities\Types\TypeReport;
+use Bozboz\Entities\Types\TypeTemplatesAction;
 
 class EntityTypeController extends ModelAdminController
 {
@@ -14,12 +14,17 @@ class EntityTypeController extends ModelAdminController
 	}
 
 	/**
-	 * Get an instance of a report to display the model listing
+	 * Return an array of actions each row can perform
 	 *
-	 * @return Bozboz\Admin\Reports\Report
+	 * @return array
 	 */
-	protected function getListingReport()
+	protected function getRowActions()
 	{
-		return new TypeReport($this->decorator);
+		return array_merge([
+			new TypeTemplatesAction(
+					'\\'.EntityTemplateController::class.'@index',
+					[$this, 'canEdit']
+			)
+		], parent::getRowActions());
 	}
 }

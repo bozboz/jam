@@ -11,8 +11,10 @@ use Bozboz\Entities\Entities\Entity;
 use Bozboz\Entities\Fields\FieldMapper;
 use Bozboz\Entities\Templates\Template;
 use Bozboz\Entities\Templates\TemplateDecorator;
+use Bozboz\Entities\Types\Type;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Input;
 
 class EntityDecorator extends ModelAdminDecorator
 {
@@ -29,10 +31,18 @@ class EntityDecorator extends ModelAdminDecorator
 	{
 		return [
 			'Name' => $this->getLabel($instance),
-			'URL' => $instance->template->type->generate_paths ? link_to($instance->slug, route('entity', array($instance->slug), false)) : null,
+			'URL' => $instance->template->type->generate_paths ? link_to($instance->canonical_path, route('entity', array($instance->canonical_path), false)) : null,
 			'Type' => $instance->template->alias,
 			'Status' => $instance->status ? '<i class="fa fa-check"></i>' : '',
 		];
+	}
+
+
+	public function getHeading($plural = false)
+	{
+		$type = Type::whereAlias(Input::get('type'))->pluck('name');
+		$name = preg_replace('/([a-z])([A-Z])/', '$1 $2', $type);
+		return $plural ? str_plural($name) : $name;
 	}
 
 	public function getLabel($instance)
