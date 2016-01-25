@@ -53,6 +53,6 @@ class LinkBuilder implements Contract
 
 	public function lookupPath(Entity $instance)
 	{
-		return $instance->getAncestors()->pluck('slug')->push($instance->slug)->implode('/');
+		return trim($instance->getAncestors()->pluck('slug')->push($instance->slug)->implode('/'), '/');
 	}
 }

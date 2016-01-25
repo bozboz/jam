@@ -5,7 +5,6 @@ namespace Bozboz\Entities\Entities;
 use Bozboz\Entities\Contracts\EntityRepository as EntityRepositoryInterface;
 use Bozboz\Entities\Entities\Entity;
 use Bozboz\Entities\Entities\EntityPath;
-use Illuminate\Support\Collection;
 
 class EntityRepository implements EntityRepositoryInterface
 {
@@ -24,7 +23,7 @@ class EntityRepository implements EntityRepositoryInterface
 
 	public function getForPath($path)
 	{
-		$path = EntityPath::wherePath($path)->first();
+		$path = EntityPath::wherePath(trim($path, '/'))->first();
 
 		if (!$path) {
 			return false;
@@ -48,5 +47,27 @@ class EntityRepository implements EntityRepositoryInterface
 			$redirectPath = EntityPath::whereEntityId($path->entity_id)->whereNull('canonical_id')->first();
 			return $redirectPath ? $redirectPath->path : false;
 		}
+	}
+
+	public function hydrate(Entity $entity)
+	{
+		$entity->setAttribute('breadcrumbs', $this->breadcrumbs($entity));
+		$entity->setAttribute('child_pages', $this->childPages($entity));
+		$entity->loadValues();
+	}
+
+	public function breadcrumbs(Entity $entity)
+	{
+		return $entity->ancestors()->active()->get()->push($entity)->map(function($crumb) {
+			return (object) [
+				'url' => $crumb->canonical_path,
+				'label' => $crumb->name
+			];
+		});
+	}
+
+	public function childPages(Entity $entity)
+	{
+		return $entity->children()->active()->get();
 	}
 }
