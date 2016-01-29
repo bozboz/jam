@@ -10,6 +10,9 @@ Route::group(array('namespace' => 'Bozboz\Entities\Http\Controllers\Admin', 'pre
 
 	Route::resource('entities', 'EntityController', ['except' => ['create']]);
 	Route::get('entities/{type}/create', 'EntityController@createOfType');
+	Route::get('entities/{type}/publish', 'EntityController@publish');
+	Route::get('entities/{type}/unpublish', 'EntityController@unpublish');
+	Route::get('entities/{type}/schedule', 'EntityController@schedule');
 
 	Route::resource('entity-list', 'EntityListController', ['except' => ['create']]);
 	Route::get('entity-list/{type}/{parent_id}/create', [

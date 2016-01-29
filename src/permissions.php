@@ -7,4 +7,6 @@ $permissions->define([
 	'delete_entity_type' => 'Bozboz\Permissions\Rules\Rule',
 	'edit_entity_type' => 'Bozboz\Permissions\Rules\Rule',
 
+	'publish_entity' => 'Bozboz\Permissions\Rules\Rule',
+
 ]);

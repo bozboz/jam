@@ -8,8 +8,11 @@ use Bozboz\Admin\Reports\Actions\DropdownItem;
 use Bozboz\Admin\Reports\NestedReport;
 use Bozboz\Entities\Entities\Entity;
 use Bozboz\Entities\Entities\EntityDecorator;
+use Bozboz\Entities\Entities\PublishAction;
+use Bozboz\Entities\Entities\Revision;
 use Bozboz\Entities\Templates\Template;
 use Bozboz\Entities\Types\Type;
+use Carbon\Carbon;
 use Input, Redirect, DB;
 use Session;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -70,6 +73,25 @@ class EntityController extends ModelAdminController
 		];
 	}
 
+	/**
+	 * Return an array of actions each row can perform
+	 *
+	 * @return array
+	 */
+	protected function getRowActions()
+	{
+		return [
+			'published' => new PublishAction(
+				[
+					Revision::UNPUBLISHED => '\\'.self::class.'@unpublish',
+					Revision::PUBLISHED => '\\'.self::class.'@publish',
+					Revision::SCHEDULED => '\\'.self::class.'@schedule',
+				],
+				[$this, 'canEdit']
+			)
+		] + parent::getRowActions();
+	}
+
 	public function createOfType($type)
 	{
 		$template = Template::whereAlias($type)->first();
@@ -96,6 +118,36 @@ class EntityController extends ModelAdminController
 		$modelInstance->newRevision($input);
 	}
 
+	public function publish($id)
+	{
+		$instance = $this->decorator->findInstance($id);
+		$revision = $instance->currentRevision;
+		$revision->published_at = $revision->freshTimestamp();
+		$revision->save();
+
+		return Redirect::back();
+	}
+
+	public function unpublish($id)
+	{
+		$instance = $this->decorator->findInstance($id);
+		$revision = $instance->currentRevision;
+		$revision->published_at = null;
+		$revision->save();
+
+		return Redirect::back();
+	}
+
+	public function schedule($id, $scheduleDate)
+	{
+		$instance = $this->decorator->findInstance($id);
+		$revision = $instance->currentRevision;
+		$revision->published_at = $scheduleDate;
+		$revision->save();
+
+		return Redirect::back();
+	}
+
 	/**
 	 * The generic response after a successful store/update action.
 	 */
@@ -108,4 +160,13 @@ class EntityController extends ModelAdminController
 	{
 		return action($this->getActionName('index'), ['type' => $instance->template->type->alias]);
 	}
+
+	// public function canPublish($instance)
+	// {
+	// 	$stack = new RuleStack;
+
+	// 	$stack->add('publish_anything');
+
+	// 	$this->publishPermissions($stack, $instance);
+	// }
 }
