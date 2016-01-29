@@ -14,8 +14,9 @@ class CreateEntityRevisionsTable extends Migration
     {
         Schema::create('entity_revisions', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('entity_id')->unsigned();
-            $table->datetime('published_at')->nullable();
+            $table->unsignedInteger('entity_id');
+            $table->unsignedInteger('user_id')->index();
+            $table->datetime('published_at');
             $table->timestamps();
 
             $table->foreign('entity_id')

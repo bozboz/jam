@@ -32,10 +32,8 @@ class Entity extends Node implements ModelInterface, Sortable
 	protected $nullable = [];
 
 	protected $fillable = [
-		'slug',
 		'name',
-		'entity_template_id',
-		'status',
+		'slug',
 	];
 
 	protected $dates = ['deleted_at'];
@@ -92,18 +90,40 @@ class Entity extends Node implements ModelInterface, Sortable
 	{
 		if ($this->paths->count()) {
 			$path = $this->paths->where('canonical_id', null)->pluck('path')->first();
-		} else {
+		} elseif ($this->template->type->visible) {
 			$path = "/{$this->id}/{$this->slug}";
+		} else {
+			$path = null;
 		}
 
 		return $path;
 	}
 
+	/**
+	 * Fetch relation to all of this entity's revisions
+	 *
+	 * @return Illuminate\Database\Eloquent\Relations\Relation
+	 */
 	public function revisions()
 	{
 		return $this->hasMany(Revision::class);
 	}
 
+	/**
+	 * Fetch relation to this entity's current, live revision
+	 *
+	 * @return Illuminate\Database\Eloquent\Relations\Relation
+	 */
+	public function currentRevision()
+	{
+		return $this->belongsTo(Revision::class, 'revision_id');
+	}
+
+	/**
+	 * Fetch the relation for this entity's latest revision
+	 *
+	 * @return Illuminate\Database\Eloquent\Relations\Relation
+	 */
 	public function latestRevision()
 	{
 		if (!$this->latestRevision) {
@@ -112,15 +132,10 @@ class Entity extends Node implements ModelInterface, Sortable
 		return $this->latestRevison;
 	}
 
-	public function publishedRevision()
-	{
-		return $this->revisions()->whereNotNull('published_at')->latest()->first();
-	}
-
 	public function scopeActive($query)
 	{
-		$query->whereStatus(true)->whereHas('revisions', function($query) {
-			$query->whereNotNull('published_at');
+		$query->whereHas('currentRevision', function($query) {
+			$query->isPublished();
 		});
 	}
 
@@ -133,7 +148,7 @@ class Entity extends Node implements ModelInterface, Sortable
 	protected function _loadValues($realValues, Revision $revision = null)
 	{
 		if (is_null($revision)) {
-			$revision = $this->publishedRevision();
+			$revision = $this->revision;
 		}
 
 		if ($revision) {
@@ -181,7 +196,7 @@ class Entity extends Node implements ModelInterface, Sortable
 	{
 		if ($this->requiresNewRevision($input)) {
 			$revision = $this->revisions()->create([
-				'published_at' => $input['status'] ? new \DateTime : null
+				'published_at' => $this->freshTimestamp()
 			]);
 
 			foreach ($this->template->fields as $field) {
@@ -192,7 +207,7 @@ class Entity extends Node implements ModelInterface, Sortable
 
 	public function requiresNewRevision($input)
 	{
-		$latestRevision = $this->latestRevision();
+		$latestRevision = $this->currentRevision;
 
 		if ($latestRevision) {
 			$templateFields = $this->template->fields->lists('name')->all();

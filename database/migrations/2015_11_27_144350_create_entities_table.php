@@ -16,7 +16,9 @@ class CreateEntitiesTable extends Migration
             $table->increments('id');
             $table->string('slug');
             $table->string('name');
+            $table->unsignedInteger('revision_id')->index();
             $table->unsignedInteger('template_id')->index();
+            $table->unsignedInteger('user_id')->index();
 
             $table->unsignedInteger('parent_id')->nullable();
             $table->unsignedInteger('_lft');
@@ -30,6 +32,9 @@ class CreateEntitiesTable extends Migration
             $table->foreign('template_id')
                   ->references('id')->on('entity_templates')
                   ->onDelete('cascade');
+
+            $table->foreign('revision_id')
+                  ->references('id')->on('entity_revisions');
         });
     }
 
