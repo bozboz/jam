@@ -83,9 +83,9 @@ class EntityController extends ModelAdminController
 		return [
 			'published' => new PublishAction(
 				[
-					Revision::UNPUBLISHED => '\\'.self::class.'@unpublish',
-					Revision::PUBLISHED => '\\'.self::class.'@publish',
-					Revision::SCHEDULED => '\\'.self::class.'@schedule',
+					Revision::UNPUBLISHED => $this->getActionName('unpublish'),
+					Revision::PUBLISHED => $this->getActionName('publish'),
+					Revision::SCHEDULED => $this->getActionName('schedule'),
 				],
 				[$this, 'canEdit']
 			)
