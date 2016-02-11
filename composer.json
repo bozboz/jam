@@ -4,5 +4,8 @@
         "psr-4": {
             "Bozboz\\Entities\\": "src/"
         }
+    },
+    "require": {
+        "kalnoy/nestedset": "3.1.*"
     }
 }
