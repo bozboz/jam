@@ -12,7 +12,6 @@ use Bozboz\Entities\Entities\PublishAction;
 use Bozboz\Entities\Entities\Revision;
 use Bozboz\Entities\Templates\Template;
 use Bozboz\Entities\Types\Type;
-use Bozboz\Permissions\RuleStack;
 use Carbon\Carbon;
 use Input, Redirect, DB;
 use Session;
@@ -72,6 +71,25 @@ class EntityController extends ModelAdminController
 		return [
 			'create' => new CreateDropdownAction($options)
 		];
+	}
+
+	/**
+	 * Return an array of actions each row can perform
+	 *
+	 * @return array
+	 */
+	protected function getRowActions()
+	{
+		return [
+			'published' => new PublishAction(
+				[
+					Revision::UNPUBLISHED => $this->getActionName('unpublish'),
+					Revision::PUBLISHED => $this->getActionName('publish'),
+					Revision::SCHEDULED => $this->getActionName('schedule'),
+				],
+				[$this, 'canEdit']
+			)
+		] + parent::getRowActions();
 	}
 
 	public function createOfType($type)
@@ -143,40 +161,12 @@ class EntityController extends ModelAdminController
 		return action($this->getActionName('index'), ['type' => $instance->template->type->alias]);
 	}
 
-	public function canPublish($instance)
-	{
-		switch ($instance->currentRevision->status) {
-			case Revision::PUBLISHED:
-			case Revision::SCHEDULED:
-				return false;
-		}
-		$stack = new RuleStack;
+	// public function canPublish($instance)
+	// {
+	// 	$stack = new RuleStack;
 
-		$this->publishPermissions($stack, $instance);
+	// 	$stack->add('publish_anything');
 
-		return $stack->isAllowed();
-	}
-
-	public function canUnpublish($instance)
-	{
-		switch ($instance->currentRevision->status) {
-			case Revision::UNPUBLISHED:
-				return false;
-		}
-		$stack = new RuleStack;
-
-		$this->unpublishPermissions($stack, $instance);
-
-		return $stack->isAllowed();
-	}
-
-	protected function publishPermissions($stack, $instance)
-	{
-		$stack->add('publish_entity', $instance);
-	}
-
-	protected function unpublishPermissions($stack, $instance)
-	{
-		$stack->add('unpublish_entity', $instance);
-	}
+	// 	$this->publishPermissions($stack, $instance);
+	// }
 }
