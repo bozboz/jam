@@ -154,6 +154,13 @@ class Entity extends Node implements ModelInterface, Sortable
 		return $this->currentRevision->status != Revision::SCHEDULED && $this->currentRevision->status != Revision::PUBLISHED;
 	}
 
+	public function getStatusAttribute()
+	{
+		if ($this->currentRevision) {
+			return $this->currentRevision->status;
+		}
+	}
+
 	/**
 	 * Load values and inject them in to the entity
 	 * @param  bool $realValues true: inject actual db values,

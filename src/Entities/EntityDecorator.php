@@ -3,11 +3,12 @@
 namespace Bozboz\Entities\Entities;
 
 use Bozboz\Admin\Base\ModelAdminDecorator;
-use Bozboz\Admin\Fields\CheckboxField;
 use Bozboz\Admin\Fields\HiddenField;
 use Bozboz\Admin\Fields\TextField;
 use Bozboz\Admin\Fields\URLField;
 use Bozboz\Entities\Entities\Entity;
+use Bozboz\Entities\Entities\Fields\PublishField;
+use Bozboz\Entities\Entities\Revision;
 use Bozboz\Entities\Fields\FieldMapper;
 use Bozboz\Entities\Templates\Template;
 use Bozboz\Entities\Templates\TemplateDecorator;
@@ -29,11 +30,26 @@ class EntityDecorator extends ModelAdminDecorator
 
 	public function getColumns($instance)
 	{
+		switch ($instance->status) {
+			case Revision::PUBLISHED:
+				$publishedAt = $instance->currentRevision->published_at->format('d M Y H:i');
+				$statusLabel = '<small>Published on '.$publishedAt.'</small>';
+			break;
+
+			case Revision::SCHEDULED:
+				$publishedAt = $instance->currentRevision->published_at->format('d M Y H:i');
+				$statusLabel = '<small>Scheduled for '.$publishedAt.'</small>';
+			break;
+
+			default:
+				$statusLabel = null;
+			break;
+		}
 		return [
 			'Name' => $this->getLabel($instance),
 			'URL' => $instance->template->type->generate_paths ? link_to($instance->canonical_path, route('entity', array($instance->canonical_path), false)) : null,
 			'Type' => $instance->template->alias,
-			'Status' => $instance->status ? '<i class="fa fa-check"></i>' : '',
+			'Status' => $statusLabel
 		];
 	}
 
@@ -56,7 +72,7 @@ class EntityDecorator extends ModelAdminDecorator
 			new TextField('name', ['label' => 'Name *']),
 			$instance->exists && $instance->template->type->visible ? new TextField('slug', ['label' => 'Slug *']) : null,
 			new HiddenField('template_id'),
-			new CheckboxField('status'),
+			new PublishField('status'),
 		]));
 
 		return $fields->merge($this->getTemplateFields($instance))->all();

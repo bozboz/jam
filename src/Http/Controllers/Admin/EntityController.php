@@ -4,6 +4,8 @@ namespace Bozboz\Entities\Http\Controllers\Admin;
 
 use Bozboz\Admin\Http\Controllers\ModelAdminController;
 use Bozboz\Admin\Reports\Actions\CreateDropdownAction;
+use Bozboz\Admin\Reports\Actions\DropdownDatePopupItem;
+use Bozboz\Admin\Reports\Actions\DropdownFormItem;
 use Bozboz\Admin\Reports\Actions\DropdownItem;
 use Bozboz\Admin\Reports\NestedReport;
 use Bozboz\Entities\Entities\Entity;
@@ -14,6 +16,7 @@ use Bozboz\Entities\Templates\Template;
 use Bozboz\Entities\Types\Type;
 use Bozboz\Permissions\RuleStack;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Input, Redirect, DB;
 use Session;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -83,20 +86,29 @@ class EntityController extends ModelAdminController
 	{
 		return [
 			'published' => new PublishAction([
-				new DropdownItem(
-					$this->getActionName('unpublish'),
-					[$this, 'canPublish'],
-					['label' => 'Publish']
-				),
-				new DropdownItem(
+				new DropdownFormItem(
 					$this->getActionName('publish'),
-					[$this, 'canHide'],
-					['label' => 'Hide']
+					[$this, 'canPublish'],
+					[
+						'label' => 'Publish',
+						'method' => 'PUBLISH',
+					]
 				),
-				new DropdownItem(
+				new DropdownFormItem(
+					$this->getActionName('unpublish'),
+					[$this, 'canHide'],
+					[
+						'label' => 'Hide',
+						'method' => 'HIDE',
+					]
+				),
+				new DropdownDatePopupItem(
 					$this->getActionName('schedule'),
 					[$this, 'canSchedule'],
-					['label' => 'Schedule', 'class' => 'js-schedule-entity']
+					[
+						'label' => 'Schedule',
+						'method' => 'SCHEDULE',
+					]
 				)
 			])
 		] + parent::getRowActions();
@@ -130,32 +142,56 @@ class EntityController extends ModelAdminController
 
 	public function publish($id)
 	{
-		$instance = $this->decorator->findInstance($id);
-		$revision = $instance->currentRevision;
+		$modelInstance = $this->decorator->findInstance($id);
+		$revision = $modelInstance->currentRevision;
 		$revision->published_at = $revision->freshTimestamp();
 		$revision->save();
 
-		return Redirect::back();
+		$response = $this->getUpdateResponse($modelInstance);
+		$response->with('model.updated', sprintf(
+			'Successfully published "%s"',
+			$this->decorator->getLabel($modelInstance)
+		));
+
+		return $response;
 	}
 
 	public function unpublish($id)
 	{
-		$instance = $this->decorator->findInstance($id);
-		$revision = $instance->currentRevision;
+		$modelInstance = $this->decorator->findInstance($id);
+		$revision = $modelInstance->currentRevision;
 		$revision->published_at = null;
 		$revision->save();
 
-		return Redirect::back();
+		$response = $this->getUpdateResponse($modelInstance);
+		$response->with('model.updated', sprintf(
+			'Successfully hid "%s"',
+			$this->decorator->getLabel($modelInstance)
+		));
+
+		return $response;
 	}
 
-	public function schedule($id, $scheduleDate)
+	public function schedule(Request $request, $id)
 	{
-		$instance = $this->decorator->findInstance($id);
-		$revision = $instance->currentRevision;
+		try {
+			$scheduleDate = new Carbon(Input::get('date'));
+		} catch (\Exception $e) {
+			Redirect::back()->with('error', 'Invalid schedule date.');
+		}
+
+		$modelInstance = $this->decorator->findInstance($id);
+		$revision = $modelInstance->currentRevision;
 		$revision->published_at = $scheduleDate;
 		$revision->save();
 
-		return Redirect::back();
+		$response = $this->getUpdateResponse($modelInstance);
+		$response->with('model.updated', sprintf(
+			'Successfully scheduled "%s"',
+			$this->decorator->getLabel($modelInstance)
+		));
+
+		return $response;
 	}
 
 	/**
