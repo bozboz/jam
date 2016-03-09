@@ -139,6 +139,21 @@ class Entity extends Node implements ModelInterface, Sortable
 		});
 	}
 
+	public function canPublish()
+	{
+		return $this->currentRevision->status != Revision::PUBLISHED;
+	}
+
+	public function canHide()
+	{
+		return $this->currentRevision->status != Revision::UNPUBLISHED;
+	}
+
+	public function canSchedule()
+	{
+		return $this->currentRevision->status != Revision::SCHEDULED && $this->currentRevision->status != Revision::PUBLISHED;
+	}
+
 	/**
 	 * Load values and inject them in to the entity
 	 * @param  bool $realValues true: inject actual db values,

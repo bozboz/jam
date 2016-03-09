@@ -12,8 +12,8 @@ class TemplateFieldsAction extends LinkAction
 		'class' => 'btn-default',
 	];
 
-	public function getUrl($id)
+	public function getUrl()
 	{
-		return action($this->action, ['template_id' => $id]);
+		return action($this->action, ['template_id' => $this->instance->id]);
 	}
 }

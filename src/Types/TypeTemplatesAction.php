@@ -12,9 +12,9 @@ class TypeTemplatesAction extends LinkAction
 		'class' => 'btn-default',
 	];
 
-	public function getUrl($id = null)
+	public function getUrl()
 	{
-		return action($this->action, ['type_id' => $id]);
+		return action($this->action, ['type_id' => $this->instance->id]);
 	}
 }
 

@@ -12,6 +12,7 @@ use Bozboz\Entities\Entities\PublishAction;
 use Bozboz\Entities\Entities\Revision;
 use Bozboz\Entities\Templates\Template;
 use Bozboz\Entities\Types\Type;
+use Bozboz\Permissions\RuleStack;
 use Carbon\Carbon;
 use Input, Redirect, DB;
 use Session;
@@ -81,14 +82,23 @@ class EntityController extends ModelAdminController
 	protected function getRowActions()
 	{
 		return [
-			'published' => new PublishAction(
-				[
-					Revision::UNPUBLISHED => $this->getActionName('unpublish'),
-					Revision::PUBLISHED => $this->getActionName('publish'),
-					Revision::SCHEDULED => $this->getActionName('schedule'),
-				],
-				[$this, 'canEdit']
-			)
+			'published' => new PublishAction([
+				new DropdownItem(
+					$this->getActionName('unpublish'),
+					[$this, 'canPublish'],
+					['label' => 'Publish']
+				),
+				new DropdownItem(
+					$this->getActionName('publish'),
+					[$this, 'canHide'],
+					['label' => 'Hide']
+				),
+				new DropdownItem(
+					$this->getActionName('schedule'),
+					[$this, 'canSchedule'],
+					['label' => 'Schedule', 'class' => 'js-schedule-entity']
+				)
+			])
 		] + parent::getRowActions();
 	}
 
@@ -161,12 +171,18 @@ class EntityController extends ModelAdminController
 		return action($this->getActionName('index'), ['type' => $instance->template->type->alias]);
 	}
 
-	// public function canPublish($instance)
-	// {
-	// 	$stack = new RuleStack;
+	public function canPublish($instance)
+	{
+		return $instance->canPublish() && RuleStack::with('publish_entity')->isAllowed();
+	}
 
-	// 	$stack->add('publish_anything');
+	public function canHide($instance)
+	{
+		return $instance->canHide() && RuleStack::with('hide_entity')->isAllowed();
+	}
 
-	// 	$this->publishPermissions($stack, $instance);
-	// }
+	public function canSchedule($instance)
+	{
+		return $instance->canSchedule() && RuleStack::with('schedule_entity')->isAllowed();
+	}
 }
