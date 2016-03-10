@@ -217,30 +217,42 @@ class Entity extends Node implements ModelInterface, Sortable
 	public function newRevision($input)
 	{
 		if ($this->requiresNewRevision($input)) {
+			if ($input['status'] == Revision::SCHEDULED) {
+				$publishedAt = $input['currentRevision']['published_at'];
+			} elseif ($input['status'] == Revision::PUBLISHED) {
+				$publishedAt = $this->freshTimestamp();
+			} else {
+				$publishedAt = null;
+			}
 			$revision = $this->revisions()->create([
-				'published_at' => $this->freshTimestamp()
+				'published_at' => $publishedAt,
+				'user_id' => $input['user_id']
 			]);
 
 			foreach ($this->template->fields as $field) {
 				$field->saveValue($revision, $input[$field->getInputName()]);
 			}
+			return $revision;
 		}
 	}
 
 	public function requiresNewRevision($input)
 	{
-		$latestRevision = $this->currentRevision;
+		$currentRevision = $this->currentRevision;
 
-		if ($latestRevision) {
+		if ($currentRevision) {
 			$templateFields = $this->template->fields->lists('name')->all();
 
 			$currentValues = array_merge(
 				array_fill_keys($templateFields, null),
-				$latestRevision->fieldValues()->lists('value', 'key')->all()
+				$currentRevision->fieldValues()->lists('value', 'key')->all()
 			);
-			$currentValues['status'] = !is_null($latestRevision->published_at);
+			$currentValues['status'] = $currentRevision->status;
+			$currentValues['published_at'] = $currentRevision->published_at->format('Y-m-d H:i:s');
+
+			$input['published_at'] = $input['currentRevision']['published_at'];
 		}
 
-		return !$latestRevision || count(array_diff_assoc($currentValues, $input)) > 0;
+		return !$currentRevision || count(array_diff_assoc($currentValues, $input)) > 0;
 	}
 }

@@ -10,17 +10,18 @@ use Bozboz\Entities\Entities\Revision;
 
 class PublishField extends SelectField
 {
-	protected $dateInput;
+	protected $dateInput, $instance;
 
-	function __construct($attributesOrName, $attributes = [])
+	function __construct($attributesOrName, $instance, $attributes = [])
 	{
 		parent::__construct($attributesOrName, $attributes);
 
 		$this->options = $this->getPublishingOptions();
 		$this->class = $this->class . ' js-publish-dropdown';
 
-		$this->dateInput = new DateTimeField('published_at');
-		$this->dateInput->class = $this->dateInput->class . ' js-publish-date';
+		$this->instance = $instance;
+
+		$this->dateInput = new DateTimeField('currentRevision[published_at]');
 	}
 
 	public function getInput()
@@ -30,24 +31,40 @@ class PublishField extends SelectField
 
 	public function getScheduleInput()
 	{
-		return $this->dateInput->getInput();
+		return '<div class="hidden" style="margin-top:20px;"><label for="published_at">Scheduled Date</label>'.$this->dateInput->getInput().'</div>';
 	}
 
 	public function getJavascript()
 	{
+		$scheduleValue = Revision::SCHEDULED;
+		$scheduledDate = $this->instance->currentRevision->published_at;
 		return $this->dateInput->getJavascript() . <<<JAVASCRIPT
-			// $(function() {
-			// 	$('js-publish-dropdown').change
-			// });
+			$(function() {
+				var publishDropdown = $('.js-publish-dropdown');
+
+				function toggleDateInput(select) {
+					if (select.val() == {$scheduleValue}) {
+						select.next().removeClass('hidden');
+					} else {
+						select.next().addClass('hidden');
+					}
+				}
+
+				publishDropdown.change(function() {
+					toggleDateInput($(this));
+				});
+
+				toggleDateInput(publishDropdown);
+			});
 JAVASCRIPT;
 	}
 
 	protected function getPublishingOptions()
 	{
 		return [
-			Revision::UNPUBLISHED => 'Unpublished',
+			Revision::UNPUBLISHED => 'Hidden',
 			Revision::PUBLISHED => 'Published',
-			Revision::SCHEDULED => 'Schedule',
+			Revision::SCHEDULED => 'Scheduled',
 		];
 	}
 }
