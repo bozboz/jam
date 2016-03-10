@@ -47,8 +47,11 @@ class EntityDecorator extends ModelAdminDecorator
 			break;
 		}
 		return [
-			'Name' => $this->getLabel($instance),
-			'URL' => $instance->template->type->generate_paths ? link_to($instance->canonical_path, route('entity', array($instance->canonical_path), false)) : null,
+			'Name' => $this->getLabel($instance)
+				. ( $instance->template->type->generate_paths
+					? '&nbsp;&nbsp;<a href="'.$instance->canonical_path.'" targe="_blank" title="Go to '.$this->getLabel($instance).'"><i class="fa fa-external-link"></i></a>'
+					: null
+			),
 			'Status' => $statusLabel,
 		];
 	}
