@@ -15,6 +15,7 @@ use Bozboz\Entities\Templates\TemplateDecorator;
 use Bozboz\Entities\Types\Type;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 
 class EntityDecorator extends ModelAdminDecorator
@@ -33,12 +34,12 @@ class EntityDecorator extends ModelAdminDecorator
 		switch ($instance->status) {
 			case Revision::PUBLISHED:
 				$publishedAt = $instance->currentRevision->published_at->format('d M Y H:i');
-				$statusLabel = '<small>Published on '.$publishedAt.'</small>';
+				$statusLabel = "<small><abbr title='{$publishedAt}'>Published</abbr></small>";
 			break;
 
 			case Revision::SCHEDULED:
 				$publishedAt = $instance->currentRevision->published_at->format('d M Y H:i');
-				$statusLabel = '<small>Scheduled for '.$publishedAt.'</small>';
+				$statusLabel = "<small><abbr title='{$publishedAt}'>Scheduled</abbr></small>";
 			break;
 
 			default:
@@ -48,8 +49,7 @@ class EntityDecorator extends ModelAdminDecorator
 		return [
 			'Name' => $this->getLabel($instance),
 			'URL' => $instance->template->type->generate_paths ? link_to($instance->canonical_path, route('entity', array($instance->canonical_path), false)) : null,
-			'Type' => $instance->template->alias,
-			'Status' => $statusLabel
+			'Status' => $statusLabel,
 		];
 	}
 
@@ -72,7 +72,8 @@ class EntityDecorator extends ModelAdminDecorator
 			new TextField('name', ['label' => 'Name *']),
 			$instance->exists && $instance->template->type->visible ? new TextField('slug', ['label' => 'Slug *']) : null,
 			new HiddenField('template_id'),
-			new PublishField('status'),
+			new HiddenField('user_id', Auth::id()),
+			new PublishField('status', $instance),
 		]));
 
 		return $fields->merge($this->getTemplateFields($instance))->all();

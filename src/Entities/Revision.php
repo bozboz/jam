@@ -2,6 +2,7 @@
 
 namespace Bozboz\Entities\Entities;
 
+use Bozboz\Admin\Users\User;
 use Illuminate\Database\Eloquent\Model;
 
 class Revision extends Model
@@ -10,7 +11,8 @@ class Revision extends Model
 
 	protected $fillable = [
 		'entity_id',
-		'published_at'
+		'published_at',
+		'user_id'
 	];
 
 	protected $dates = ['published_at'];
@@ -22,6 +24,18 @@ class Revision extends Model
 	public function entity()
 	{
 		return $this->belongsTo(Entity::class);
+	}
+
+	public function user()
+	{
+		return $this->belongsTo(User::class);
+	}
+
+	public function getUsernameAttribute()
+	{
+		if ($this->user) {
+			return $this->user->first_name ? $this->user->first_name . ' ' . $this->user->last_name : $this->user->email;
+		}
 	}
 
 	public function fieldValues()
