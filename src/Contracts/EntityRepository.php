@@ -1,6 +1,6 @@
 <?php
 
-namespace Bozboz\Entities\Contracts;
+namespace Bozboz\Jam\Contracts;
 
 interface EntityRepository
 {

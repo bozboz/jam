@@ -1,17 +1,17 @@
 <?php
 
-namespace Bozboz\Entities\Entities;
+namespace Bozboz\Jam\Entities;
 
 use Bozboz\Admin\Base\DynamicSlugTrait;
 use Bozboz\Admin\Base\ModelInterface;
 use Bozboz\Admin\Base\SanitisesInputTrait;
 use Bozboz\Admin\Base\Sorting\NestedSortableTrait;
 use Bozboz\Admin\Base\Sorting\Sortable;
-use Bozboz\Entities\Contracts\LinkBuilder;
-use Bozboz\Entities\Entities\Value;
-use Bozboz\Entities\Field;
-use Bozboz\Entities\Templates\Template;
-use Bozboz\Entities\Types\Type;
+use Bozboz\Jam\Contracts\LinkBuilder;
+use Bozboz\Jam\Entities\Value;
+use Bozboz\Jam\Field;
+use Bozboz\Jam\Templates\Template;
+use Bozboz\Jam\Types\Type;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use Kalnoy\Nestedset\Node;

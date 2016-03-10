@@ -1,12 +1,12 @@
 <?php
 
-namespace Bozboz\Entities\Types;
+namespace Bozboz\Jam\Types;
 
 use Bozboz\Admin\Base\ModelAdminDecorator;
 use Bozboz\Admin\Fields\CheckboxField;
 use Bozboz\Admin\Fields\MediaBrowser;
 use Bozboz\Admin\Fields\TextField;
-use Bozboz\Entities\Types\Type;
+use Bozboz\Jam\Types\Type;
 
 class TypeDecorator extends ModelAdminDecorator
 {

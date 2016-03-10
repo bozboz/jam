@@ -1,9 +1,9 @@
 <?php
 
-namespace Bozboz\Entities\Http\Controllers\Admin;
+namespace Bozboz\Jam\Http\Controllers\Admin;
 
-use Bozboz\Entities\Entities\Entity;
-use Bozboz\Entities\Templates\Template;
+use Bozboz\Jam\Entities\Entity;
+use Bozboz\Jam\Templates\Template;
 use Redirect;
 
 class EntityListController extends EntityController

@@ -1,13 +1,13 @@
 <?php
 
-namespace Bozboz\Entities\Entities;
+namespace Bozboz\Jam\Entities;
 
 use Bozboz\Admin\Reports\Actions\DropdownAction;
 use Bozboz\Admin\Reports\Actions\DropdownItem;
 use Bozboz\Admin\Reports\Actions\DropdownUnlinkedItem;
 use Bozboz\Admin\Reports\Actions\LinkAction;
 use Bozboz\Admin\Reports\ChecksPermissions;
-use Bozboz\Entities\Entities\Revision;
+use Bozboz\Jam\Entities\Revision;
 use Carbon\Carbon;
 
 class PublishAction extends DropdownAction

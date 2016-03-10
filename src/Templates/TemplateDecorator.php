@@ -1,13 +1,13 @@
 <?php
 
-namespace Bozboz\Entities\Templates;
+namespace Bozboz\Jam\Templates;
 
 use Bozboz\Admin\Base\ModelAdminDecorator;
 use Bozboz\Admin\Fields\HiddenField;
 use Bozboz\Admin\Fields\TextField;
-use Bozboz\Entities\Fields\FieldMapper;
-use Bozboz\Entities\Templates\Template;
-use Bozboz\Entities\Types\Type;
+use Bozboz\Jam\Fields\FieldMapper;
+use Bozboz\Jam\Templates\Template;
+use Bozboz\Jam\Types\Type;
 use Illuminate\Database\Eloquent\Builder;
 use Input;
 

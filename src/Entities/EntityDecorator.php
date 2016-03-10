@@ -1,18 +1,18 @@
 <?php
 
-namespace Bozboz\Entities\Entities;
+namespace Bozboz\Jam\Entities;
 
 use Bozboz\Admin\Base\ModelAdminDecorator;
 use Bozboz\Admin\Fields\HiddenField;
 use Bozboz\Admin\Fields\TextField;
 use Bozboz\Admin\Fields\URLField;
-use Bozboz\Entities\Entities\Entity;
-use Bozboz\Entities\Entities\Fields\PublishField;
-use Bozboz\Entities\Entities\Revision;
-use Bozboz\Entities\Fields\FieldMapper;
-use Bozboz\Entities\Templates\Template;
-use Bozboz\Entities\Templates\TemplateDecorator;
-use Bozboz\Entities\Types\Type;
+use Bozboz\Jam\Entities\Entity;
+use Bozboz\Jam\Entities\Fields\PublishField;
+use Bozboz\Jam\Entities\Revision;
+use Bozboz\Jam\Fields\FieldMapper;
+use Bozboz\Jam\Templates\Template;
+use Bozboz\Jam\Templates\TemplateDecorator;
+use Bozboz\Jam\Types\Type;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -86,7 +86,7 @@ class EntityDecorator extends ModelAdminDecorator
 	 * Iterate over a template's fields, and build an array of field instances
 	 * found in the FieldMapper lookup.
 	 *
-	 * @param  Bozboz\Entities\Entity  $instance
+	 * @param  Bozboz\Jam\Entity  $instance
 	 * @return array
 	 */
 	public function getTemplateFields($instance)
@@ -107,8 +107,8 @@ class EntityDecorator extends ModelAdminDecorator
 	/**
 	 * Return a new entity, associated with given $template
 	 *
-	 * @param  Bozboz\Entities\Templates\Template  $template
-	 * @return Bozboz\Entities\Entities\Entity
+	 * @param  Bozboz\Jam\Templates\Template  $template
+	 * @return Bozboz\Jam\Entities\Entity
 	 */
 	public function newEntityOfType(Template $template)
 	{
@@ -124,7 +124,7 @@ class EntityDecorator extends ModelAdminDecorator
 	 * attributes, associate it with the Entity.
 	 *
 	 * @param  array  $attributes
-	 * @return Bozboz\Entities\Entities\Entity
+	 * @return Bozboz\Jam\Entities\Entity
 	 */
 	public function newModelInstance($attributes = [])
 	{

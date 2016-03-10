@@ -1,17 +1,17 @@
 <?php
 
-namespace Bozboz\Entities\Fields;
+namespace Bozboz\Jam\Fields;
 
 use Bozboz\Admin\Fields\BelongsToField;
 use Bozboz\Admin\Fields\Field as AdminField;
 use Bozboz\Admin\Fields\SelectField;
 use Bozboz\Admin\Fields\TextField;
-use Bozboz\Entities\Entities\Entity;
-use Bozboz\Entities\Entities\EntityDecorator;
-use Bozboz\Entities\Entities\Revision;
-use Bozboz\Entities\Entities\Value;
-use Bozboz\Entities\Templates\Template;
-use Bozboz\Entities\Types\Type;
+use Bozboz\Jam\Entities\Entity;
+use Bozboz\Jam\Entities\EntityDecorator;
+use Bozboz\Jam\Entities\Revision;
+use Bozboz\Jam\Entities\Value;
+use Bozboz\Jam\Templates\Template;
+use Bozboz\Jam\Types\Type;
 
 class EntityList extends Field
 {

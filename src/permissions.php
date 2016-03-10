@@ -8,7 +8,7 @@ $permissions->define([
 
 ]);
 
-$entityTypes = Bozboz\Entities\Types\Type::whereVisible(true)->get();
+$entityTypes = Bozboz\Jam\Types\Type::whereVisible(true)->get();
 
 foreach ($entityTypes as $type) {
 	$permissions->define([

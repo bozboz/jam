@@ -1,6 +1,6 @@
 <?php
 
-namespace Bozboz\Entities\Entities;
+namespace Bozboz\Jam\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 

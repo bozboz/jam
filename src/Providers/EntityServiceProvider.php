@@ -1,11 +1,11 @@
 <?php
 
-namespace Bozboz\Entities\Providers;
+namespace Bozboz\Jam\Providers;
 
-use Bozboz\Entities\Entities\Entity;
-use Bozboz\Entities\Fields\Field;
-use Bozboz\Entities\Fields\FieldMapper;
-use Bozboz\Entities\Types\Type;
+use Bozboz\Jam\Entities\Entity;
+use Bozboz\Jam\Fields\Field;
+use Bozboz\Jam\Fields\FieldMapper;
+use Bozboz\Jam\Types\Type;
 use Illuminate\Support\ServiceProvider;
 
 class EntityServiceProvider extends ServiceProvider
@@ -13,13 +13,13 @@ class EntityServiceProvider extends ServiceProvider
 	public function register()
 	{
 		$this->app->bind(
-			\Bozboz\Entities\Contracts\EntityRepository::class,
-			\Bozboz\Entities\Entities\EntityRepository::class
+			\Bozboz\Jam\Contracts\EntityRepository::class,
+			\Bozboz\Jam\Entities\EntityRepository::class
 		);
 
 		$this->app->bind(
-			\Bozboz\Entities\Contracts\LinkBuilder::class,
-			\Bozboz\Entities\Entities\LinkBuilder::class
+			\Bozboz\Jam\Contracts\LinkBuilder::class,
+			\Bozboz\Jam\Entities\LinkBuilder::class
 		);
 
 		$this->app->singleton('FieldMapper', function ($app) {
@@ -28,7 +28,7 @@ class EntityServiceProvider extends ServiceProvider
 
 		Field::setMapper($this->app['FieldMapper']);
 
-		Entity::setLinkBuilder($this->app[\Bozboz\Entities\Contracts\LinkBuilder::class]);
+		Entity::setLinkBuilder($this->app[\Bozboz\Jam\Contracts\LinkBuilder::class]);
 	}
 
 	public function boot()
@@ -89,21 +89,21 @@ class EntityServiceProvider extends ServiceProvider
 	{
 		$mapper = $this->app['FieldMapper'];
 
-		$mapper->register('text',              \Bozboz\Entities\Fields\Text::class);
-		$mapper->register('textarea',          \Bozboz\Entities\Fields\Textarea::class);
-		$mapper->register('htmleditor',        \Bozboz\Entities\Fields\HTMLEditor::class);
-		$mapper->register('image',             \Bozboz\Entities\Fields\Image::class);
-		$mapper->register('gallery',           \Bozboz\Entities\Fields\Gallery::class);
-		$mapper->register('date',              \Bozboz\Entities\Fields\Date::class);
-		$mapper->register('date-time',         \Bozboz\Entities\Fields\DateTime::class);
-		$mapper->register('email',             \Bozboz\Entities\Fields\Email::class);
-		// $mapper->register('hidden',            \Bozboz\Entities\Fields\Hidden::class);
-		$mapper->register('password',          \Bozboz\Entities\Fields\Password::class);
-		// $mapper->register('select',            \Bozboz\Entities\Fields\Select::class);
-		$mapper->register('toggle',            \Bozboz\Entities\Fields\Toggle::class);
-		$mapper->register('foreign',           \Bozboz\Entities\Fields\Foreign::class);
-		$mapper->register('entity-list-field', \Bozboz\Entities\Fields\EntityList::class);
-		// $mapper->register('belongs-to-entity', \Bozboz\Entities\Fields\BelongsToEntity::class);
-		// $mapper->register('belongs-to-type',   \Bozboz\Entities\Fields\BelongsToType::class);
+		$mapper->register('text',              \Bozboz\Jam\Fields\Text::class);
+		$mapper->register('textarea',          \Bozboz\Jam\Fields\Textarea::class);
+		$mapper->register('htmleditor',        \Bozboz\Jam\Fields\HTMLEditor::class);
+		$mapper->register('image',             \Bozboz\Jam\Fields\Image::class);
+		$mapper->register('gallery',           \Bozboz\Jam\Fields\Gallery::class);
+		$mapper->register('date',              \Bozboz\Jam\Fields\Date::class);
+		$mapper->register('date-time',         \Bozboz\Jam\Fields\DateTime::class);
+		$mapper->register('email',             \Bozboz\Jam\Fields\Email::class);
+		// $mapper->register('hidden',            \Bozboz\Jam\Fields\Hidden::class);
+		$mapper->register('password',          \Bozboz\Jam\Fields\Password::class);
+		// $mapper->register('select',            \Bozboz\Jam\Fields\Select::class);
+		$mapper->register('toggle',            \Bozboz\Jam\Fields\Toggle::class);
+		$mapper->register('foreign',           \Bozboz\Jam\Fields\Foreign::class);
+		$mapper->register('entity-list-field', \Bozboz\Jam\Fields\EntityList::class);
+		// $mapper->register('belongs-to-entity', \Bozboz\Jam\Fields\BelongsToEntity::class);
+		// $mapper->register('belongs-to-type',   \Bozboz\Jam\Fields\BelongsToType::class);
 	}
 }

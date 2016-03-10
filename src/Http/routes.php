@@ -6,7 +6,7 @@
 |--------------------------------------------------------------------------
 */
 
-Route::group(array('namespace' => 'Bozboz\Entities\Http\Controllers\Admin', 'prefix' => 'admin'), function() {
+Route::group(array('namespace' => 'Bozboz\Jam\Http\Controllers\Admin', 'prefix' => 'admin'), function() {
 
 	Route::resource('entities', 'EntityController', ['except' => ['create']]);
 	Route::get('entities/{type}/create', 'EntityController@createOfType');

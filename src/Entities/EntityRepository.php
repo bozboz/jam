@@ -1,10 +1,10 @@
 <?php
 
-namespace Bozboz\Entities\Entities;
+namespace Bozboz\Jam\Entities;
 
-use Bozboz\Entities\Contracts\EntityRepository as EntityRepositoryInterface;
-use Bozboz\Entities\Entities\Entity;
-use Bozboz\Entities\Entities\EntityPath;
+use Bozboz\Jam\Contracts\EntityRepository as EntityRepositoryInterface;
+use Bozboz\Jam\Entities\Entity;
+use Bozboz\Jam\Entities\EntityPath;
 
 class EntityRepository implements EntityRepositoryInterface
 {

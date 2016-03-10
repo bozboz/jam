@@ -1,12 +1,12 @@
 <?php
 
-namespace Bozboz\Entities\Types;
+namespace Bozboz\Jam\Types;
 
 use Bozboz\Admin\Base\DynamicSlugTrait;
 use Bozboz\Admin\Base\Model;
 use Bozboz\Admin\Media\MediableTrait;
-use Bozboz\Entities\Entities\Entity;
-use Bozboz\Entities\Templates\Template;
+use Bozboz\Jam\Entities\Entity;
+use Bozboz\Jam\Templates\Template;
 
 class Type extends Model
 {

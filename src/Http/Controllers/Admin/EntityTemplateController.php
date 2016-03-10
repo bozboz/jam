@@ -1,13 +1,13 @@
 <?php
 
-namespace Bozboz\Entities\Http\Controllers\Admin;
+namespace Bozboz\Jam\Http\Controllers\Admin;
 
 use Bozboz\Admin\Http\Controllers\ModelAdminController;
 use Bozboz\Admin\Reports\Actions\CreateAction;
-use Bozboz\Entities\Templates\TemplateDecorator;
-use Bozboz\Entities\Templates\TemplateFieldsAction;
-use Bozboz\Entities\Templates\TemplateReport;
-use Bozboz\Entities\Types\Type;
+use Bozboz\Jam\Templates\TemplateDecorator;
+use Bozboz\Jam\Templates\TemplateFieldsAction;
+use Bozboz\Jam\Templates\TemplateReport;
+use Bozboz\Jam\Types\Type;
 use Input, Redirect;
 
 class EntityTemplateController extends ModelAdminController

@@ -1,10 +1,10 @@
 <?php
 
-namespace Bozboz\Entities\Entities;
+namespace Bozboz\Jam\Entities;
 
-use Bozboz\Entities\Contracts\LinkBuilder as Contract;
-use Bozboz\Entities\Entities\Entity;
-use Bozboz\Entities\Entities\EntityPath;
+use Bozboz\Jam\Contracts\LinkBuilder as Contract;
+use Bozboz\Jam\Entities\Entity;
+use Bozboz\Jam\Entities\EntityPath;
 
 class LinkBuilder implements Contract
 {
@@ -13,7 +13,7 @@ class LinkBuilder implements Contract
 	 * descendants and insert new path for self and all descendants
 	 * By default only the primary entity types have paths
 	 *
-	 * @param Bozboz\Entities\Entities\Entity $instance
+	 * @param Bozboz\Jam\Entities\Entity $instance
 	 */
 	public function updatePaths (Entity $instance)
 	{

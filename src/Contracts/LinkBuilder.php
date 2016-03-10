@@ -1,8 +1,8 @@
 <?php
 
-namespace Bozboz\Entities\Contracts;
+namespace Bozboz\Jam\Contracts;
 
-use Bozboz\Entities\Entities\Entity;
+use Bozboz\Jam\Entities\Entity;
 
 interface LinkBuilder
 {

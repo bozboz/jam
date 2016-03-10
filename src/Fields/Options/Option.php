@@ -1,6 +1,6 @@
 <?php
 
-namespace Bozboz\Entities\Fields\Options;
+namespace Bozboz\Jam\Fields\Options;
 
 use Illuminate\Database\Eloquent\Model;
 

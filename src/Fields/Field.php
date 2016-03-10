@@ -1,18 +1,18 @@
 <?php
 
-namespace Bozboz\Entities\Fields;
+namespace Bozboz\Jam\Fields;
 
 use Bozboz\Admin\Base\Model;
 use Bozboz\Admin\Base\Sorting\Sortable;
 use Bozboz\Admin\Base\Sorting\SortableTrait;
-use Bozboz\Entities\Contracts\Field as FieldInterface;
-use Bozboz\Entities\Entities\Entity;
-use Bozboz\Entities\Entities\EntityDecorator;
-use Bozboz\Entities\Entities\Revision;
-use Bozboz\Entities\Entities\Value;
-use Bozboz\Entities\Fields\FieldMapper;
-use Bozboz\Entities\Fields\Options\Option;
-use Bozboz\Entities\Templates\Template;
+use Bozboz\Jam\Contracts\Field as FieldInterface;
+use Bozboz\Jam\Entities\Entity;
+use Bozboz\Jam\Entities\EntityDecorator;
+use Bozboz\Jam\Entities\Revision;
+use Bozboz\Jam\Entities\Value;
+use Bozboz\Jam\Fields\FieldMapper;
+use Bozboz\Jam\Fields\Options\Option;
+use Bozboz\Jam\Templates\Template;
 
 class Field extends Model implements FieldInterface, Sortable
 {

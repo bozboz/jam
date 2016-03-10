@@ -1,6 +1,6 @@
 <?php
 
-namespace Bozboz\Entities\Templates;
+namespace Bozboz\Jam\Templates;
 
 use Bozboz\Admin\Reports\Actions\LinkAction;
 

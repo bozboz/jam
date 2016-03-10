@@ -1,6 +1,6 @@
 <?php
 
-namespace Bozboz\Entities\Types;
+namespace Bozboz\Jam\Types;
 
 use Bozboz\Admin\Services\Validators\Validator;
 

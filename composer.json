@@ -1,8 +1,8 @@
 {
-    "name": "bozboz/entities",
+    "name": "bozboz/jam",
     "autoload": {
         "psr-4": {
-            "Bozboz\\Entities\\": "src/"
+            "Bozboz\\Jam\\": "src/"
         }
     },
     "require": {

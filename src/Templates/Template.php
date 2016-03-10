@@ -1,17 +1,17 @@
 <?php
 
-namespace Bozboz\Entities\Templates;
+namespace Bozboz\Jam\Templates;
 
 use Bozboz\Admin\Base\DynamicSlugTrait;
 use Bozboz\Admin\Base\ModelInterface;
 use Bozboz\Admin\Base\SanitisesInputTrait;
 use Bozboz\Admin\Base\Sorting\NestedSortableTrait;
 use Bozboz\Admin\Base\Sorting\Sortable;
-use Bozboz\Entities\Entities\Entity;
-use Bozboz\Entities\Entities\Revision;
-use Bozboz\Entities\Entities\Value;
-use Bozboz\Entities\Fields\Field;
-use Bozboz\Entities\Types\Type;
+use Bozboz\Jam\Entities\Entity;
+use Bozboz\Jam\Entities\Revision;
+use Bozboz\Jam\Entities\Value;
+use Bozboz\Jam\Fields\Field;
+use Bozboz\Jam\Types\Type;
 use Kalnoy\Nestedset\Node;
 
 class Template extends Node implements ModelInterface, Sortable

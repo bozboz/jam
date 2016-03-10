@@ -1,13 +1,13 @@
 <?php
 
-namespace Bozboz\Entities\Http\Controllers\Admin;
+namespace Bozboz\Jam\Http\Controllers\Admin;
 
 use Bozboz\Admin\Http\Controllers\ModelAdminController;
 use Bozboz\Admin\Reports\Actions\CreateDropdownAction;
 use Bozboz\Admin\Reports\Actions\DropdownItem;
-use Bozboz\Entities\Fields\Field;
-use Bozboz\Entities\Fields\FieldDecorator;
-use Bozboz\Entities\Templates\Template;
+use Bozboz\Jam\Fields\Field;
+use Bozboz\Jam\Fields\FieldDecorator;
+use Bozboz\Jam\Templates\Template;
 use Input, Redirect;
 
 class EntityTemplateFieldController extends ModelAdminController

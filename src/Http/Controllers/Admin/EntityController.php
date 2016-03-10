@@ -1,6 +1,6 @@
 <?php
 
-namespace Bozboz\Entities\Http\Controllers\Admin;
+namespace Bozboz\Jam\Http\Controllers\Admin;
 
 use Bozboz\Admin\Http\Controllers\ModelAdminController;
 use Bozboz\Admin\Reports\Actions\CreateDropdownAction;
@@ -8,12 +8,12 @@ use Bozboz\Admin\Reports\Actions\DropdownDatePopupItem;
 use Bozboz\Admin\Reports\Actions\DropdownFormItem;
 use Bozboz\Admin\Reports\Actions\DropdownItem;
 use Bozboz\Admin\Reports\NestedReport;
-use Bozboz\Entities\Entities\Entity;
-use Bozboz\Entities\Entities\EntityDecorator;
-use Bozboz\Entities\Entities\PublishAction;
-use Bozboz\Entities\Entities\Revision;
-use Bozboz\Entities\Templates\Template;
-use Bozboz\Entities\Types\Type;
+use Bozboz\Jam\Entities\Entity;
+use Bozboz\Jam\Entities\EntityDecorator;
+use Bozboz\Jam\Entities\PublishAction;
+use Bozboz\Jam\Entities\Revision;
+use Bozboz\Jam\Templates\Template;
+use Bozboz\Jam\Types\Type;
 use Bozboz\Permissions\RuleStack;
 use Carbon\Carbon;
 use Illuminate\Http\Request;

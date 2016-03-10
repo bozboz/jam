@@ -1,12 +1,12 @@
 <?php
 
-namespace Bozboz\Entities\Entities\Fields;
+namespace Bozboz\Jam\Entities\Fields;
 
 use Bozboz\Admin\Fields\DateTimeField;
 use Bozboz\Admin\Fields\Field;
 use Bozboz\Admin\Fields\FieldGroup;
 use Bozboz\Admin\Fields\SelectField;
-use Bozboz\Entities\Entities\Revision;
+use Bozboz\Jam\Entities\Revision;
 
 class PublishField extends SelectField
 {

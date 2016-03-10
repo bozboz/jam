@@ -1,6 +1,6 @@
 <?php
 
-namespace Bozboz\Entities\Fields;
+namespace Bozboz\Jam\Fields;
 
 class FieldMapper
 {

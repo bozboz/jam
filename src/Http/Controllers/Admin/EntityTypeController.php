@@ -1,10 +1,10 @@
 <?php
 
-namespace Bozboz\Entities\Http\Controllers\Admin;
+namespace Bozboz\Jam\Http\Controllers\Admin;
 
 use Bozboz\Admin\Http\Controllers\ModelAdminController;
-use Bozboz\Entities\Types\TypeDecorator;
-use Bozboz\Entities\Types\TypeTemplatesAction;
+use Bozboz\Jam\Types\TypeDecorator;
+use Bozboz\Jam\Types\TypeTemplatesAction;
 
 class EntityTypeController extends ModelAdminController
 {

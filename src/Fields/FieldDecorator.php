@@ -1,15 +1,15 @@
 <?php
 
-namespace Bozboz\Entities\Fields;
+namespace Bozboz\Jam\Fields;
 
 use Bozboz\Admin\Base\ModelAdminDecorator;
 use Bozboz\Admin\Fields\BelongsToField;
 use Bozboz\Admin\Fields\HiddenField;
 use Bozboz\Admin\Fields\SelectField;
 use Bozboz\Admin\Fields\TextField;
-use Bozboz\Entities\Fields\FieldMapper;
-use Bozboz\Entities\Fields\TemplateField;
-use Bozboz\Entities\Templates\Template;
+use Bozboz\Jam\Fields\FieldMapper;
+use Bozboz\Jam\Fields\TemplateField;
+use Bozboz\Jam\Templates\Template;
 use Illuminate\Database\Eloquent\Builder;
 use Input;
 
@@ -59,7 +59,7 @@ class FieldDecorator extends ModelAdminDecorator
 	 * Get a new Field instance based on the type
 	 *
 	 * @param  array  $attributes
-	 * @return Bozboz\Entities\Fields\Field
+	 * @return Bozboz\Jam\Fields\Field
 	 */
 	public function newModelInstance($attributes = [])
 	{
