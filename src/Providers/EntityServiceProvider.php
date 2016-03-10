@@ -68,7 +68,7 @@ class EntityServiceProvider extends ServiceProvider
 
 			$entityTypes = Type::whereVisible(true)->get();
 			foreach ($entityTypes as $type) {
-				if ($menu->gate('view_entity_type', $type)) {
+				if ($menu->gate('view_'.$type->alias, $type)) {
 					$contentMenu[$type->name] = $url->route('admin.entities.index', ['type' => $type->alias]);
 				}
 			}
