@@ -6,7 +6,6 @@
         }
     },
     "require": {
-    	"bozboz/admin": "^2.*"
         "kalnoy/nestedset": "3.1.*"
     }
 }
