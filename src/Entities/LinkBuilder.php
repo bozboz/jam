@@ -18,7 +18,7 @@ class LinkBuilder implements Contract
 	public function updatePaths (Entity $instance)
 	{
 		if ($this->requiresPath($instance)) {
-			EntityPath::forEntity($instance)->delete();
+			$this->deletePaths($instance);
 			$this->addPaths($instance);
 			$instance->getDescendants()->map(function($instance) {
 				$this->addPaths($instance);
@@ -47,12 +47,16 @@ class LinkBuilder implements Contract
 	 */
 	public function addPaths(Entity $instance)
 	{
-		$path = $this->lookupPath($instance);
+		$path = trim($instance->getAncestors()->pluck('slug')->push($instance->slug)->implode('/'), '/');
+
 		$instance->paths()->withTrashed()->firstOrCreate(['path' => $path])->restore();
 	}
 
-	public function lookupPath(Entity $instance)
+	/**
+	 * Delete existing EntityPath instances for an entity
+	 */
+	public function deletePaths(Entity $instance)
 	{
-		return trim($instance->getAncestors()->pluck('slug')->push($instance->slug)->implode('/'), '/');
+		EntityPath::forEntity($instance)->delete();
 	}
 }
