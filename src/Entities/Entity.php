@@ -14,6 +14,7 @@ use Bozboz\Jam\Templates\Template;
 use Bozboz\Jam\Types\Type;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Request;
 use Kalnoy\Nestedset\Node;
 
 class Entity extends Node implements ModelInterface, Sortable
@@ -95,6 +96,13 @@ class Entity extends Node implements ModelInterface, Sortable
 		}
 
 		return $path;
+	}
+
+	public function getCanonicalTag()
+	{
+		if ($this->exists && $this->canonical_path != Request::path()) {
+			return '<link rel="canonical" href="'.url($this->canonical_path).'" />';
+		}
 	}
 
 	/**
@@ -243,7 +251,9 @@ class Entity extends Node implements ModelInterface, Sortable
 				$currentRevision->fieldValues()->lists('value', 'key')->all()
 			);
 			$currentValues['status'] = $currentRevision->status;
-			$currentValues['published_at'] = $currentRevision->published_at->format('Y-m-d H:i:s');
+			$currentValues['published_at'] = $currentRevision->published_at
+				? $currentRevision->published_at->format('Y-m-d H:i:s')
+				: null;
 
 			$input['published_at'] = $input['currentRevision']['published_at'];
 		}
