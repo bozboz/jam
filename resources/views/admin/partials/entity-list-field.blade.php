@@ -26,10 +26,10 @@
         </a>
     @endif
 
-    <ol class="cards secret-list grid sortable js-entity-list" data-model="{{ $model }}"><!--
+    <ol class="cards secret-list grid js-sortable js-entity-list" data-model="{{ $model }}"><!--
     @foreach ($entities as $entity)
-     --><li class="grid__item small-12 medium-4 large-3 xlarge-2" data-id="{{ $entity->id }}">
-            <div class="cards__item sorting-handle">
+     --><li class="js-nested-item grid__item small-12 medium-4 large-3 xlarge-2" data-id="{{ $entity->id }}">
+            <div class="cards__item sorting-handle js-sorting-handle">
                 <h4>{{ $entity->name }}</h4>
                 <a href="{{ route('admin.entity-list.edit', [$entity->id]) }}" class="cards__btn btn btn-info btn-sm">
                     <i class="fa-pencil fa"></i> Edit
