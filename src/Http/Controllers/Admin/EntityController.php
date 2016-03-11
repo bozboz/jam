@@ -17,6 +17,7 @@ use Bozboz\Jam\Types\Type;
 use Bozboz\Permissions\RuleStack;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Input, Redirect, DB;
 use Session;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -73,7 +74,7 @@ class EntityController extends ModelAdminController
 			});
 
 		return [
-			'create' => new CreateDropdownAction($options)
+			'create' => new CreateDropdownAction($options->all())
 		];
 	}
 
@@ -146,10 +147,7 @@ class EntityController extends ModelAdminController
 
 	public function publish($id)
 	{
-		$modelInstance = $this->decorator->findInstance($id);
-		$revision = $modelInstance->currentRevision;
-		$revision->published_at = $revision->freshTimestamp();
-		$revision->save();
+		$modelInstance = $this->_changeState($id, new Carbon);
 
 		$response = $this->getUpdateResponse($modelInstance);
 		$response->with('model.updated', sprintf(
@@ -162,10 +160,7 @@ class EntityController extends ModelAdminController
 
 	public function unpublish($id)
 	{
-		$modelInstance = $this->decorator->findInstance($id);
-		$revision = $modelInstance->currentRevision;
-		$revision->published_at = null;
-		$revision->save();
+		$modelInstance = $this->_changeState($id, null);
 
 		$response = $this->getUpdateResponse($modelInstance);
 		$response->with('model.updated', sprintf(
@@ -184,10 +179,7 @@ class EntityController extends ModelAdminController
 			Redirect::back()->with('error', 'Invalid schedule date.');
 		}
 
-		$modelInstance = $this->decorator->findInstance($id);
-		$revision = $modelInstance->currentRevision;
-		$revision->published_at = $scheduleDate;
-		$revision->save();
+		$modelInstance = $this->_changeState($id, $scheduleDate);
 
 		$response = $this->getUpdateResponse($modelInstance);
 		$response->with('model.updated', sprintf(
@@ -196,6 +188,26 @@ class EntityController extends ModelAdminController
 		));
 
 		return $response;
+	}
+
+	private function _changeState($id, $publishedAt)
+	{
+		DB::beginTransaction();
+
+		$modelInstance = $this->decorator->findInstance($id);
+		$revision = $modelInstance->latestRevision();
+
+		$newRevision = $revision->duplicate();
+
+		$newRevision->published_at = $publishedAt;
+		$newRevision->user()->associate(Auth::user());
+
+		$modelInstance->currentRevision()->associate($newRevision);
+		$modelInstance->save();
+
+		DB::commit();
+
+		return $modelInstance;
 	}
 
 	/**

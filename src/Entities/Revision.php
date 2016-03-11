@@ -21,6 +21,22 @@ class Revision extends Model
 	const PUBLISHED = 1;
 	const SCHEDULED = 2;
 
+	public function duplicate()
+	{
+		$newRevision = $this->replicate();
+		$newRevision->save();
+
+		$this->relations = [];
+
+		$this->fieldValues->each(function($value) use ($newRevision) {
+			$newValue = $value->replicate();
+			$newValue->revision()->associate($newRevision);
+			$newValue->save();
+		});
+
+		return $newRevision;
+	}
+
 	public function entity()
 	{
 		return $this->belongsTo(Entity::class);

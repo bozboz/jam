@@ -34,12 +34,14 @@ class EntityDecorator extends ModelAdminDecorator
 		switch ($instance->status) {
 			case Revision::PUBLISHED:
 				$publishedAt = $instance->currentRevision->published_at->format('d M Y H:i');
-				$statusLabel = "<small><abbr title='{$publishedAt}'>Published</abbr></small>";
+				$user = $instance->currentRevision->username;
+				$statusLabel = "<small><abbr title='{$publishedAt} by {$user}'>Published</abbr></small>";
 			break;
 
 			case Revision::SCHEDULED:
 				$publishedAt = $instance->currentRevision->published_at->format('d M Y H:i');
-				$statusLabel = "<small><abbr title='{$publishedAt}'>Scheduled</abbr></small>";
+				$user = $instance->currentRevision->username;
+				$statusLabel = "<small><abbr title='{$publishedAt} by {$user}'>Scheduled</abbr></small>";
 			break;
 
 			default:
@@ -59,7 +61,7 @@ class EntityDecorator extends ModelAdminDecorator
 
 	public function getHeading($plural = false)
 	{
-		$type = Type::whereAlias(Input::get('type'))->pluck('name');
+		$type = Type::whereAlias(Input::get('type'))->pluck('name')->first();
 		$name = preg_replace('/([a-z])([A-Z])/', '$1 $2', $type);
 		return $plural ? str_plural($name) : $name;
 	}

@@ -40,8 +40,6 @@ class Entity extends Node implements ModelInterface, Sortable
 
 	protected $values = [];
 
-	protected $latestRevision;
-
 	static public function boot()
 	{
 		parent::boot();
@@ -126,10 +124,7 @@ class Entity extends Node implements ModelInterface, Sortable
 	 */
 	public function latestRevision()
 	{
-		if (!$this->latestRevision) {
-			$this->latestRevison = $this->revisions()->latest()->with('fieldValues')->first();
-		}
-		return $this->latestRevison;
+		return $this->revisions()->latest()->with('fieldValues')->first();
 	}
 
 	public function scopeActive($query)

@@ -37,7 +37,6 @@ class PublishField extends SelectField
 	public function getJavascript()
 	{
 		$scheduleValue = Revision::SCHEDULED;
-		$scheduledDate = $this->instance->currentRevision->published_at;
 		return $this->dateInput->getJavascript() . <<<JAVASCRIPT
 			$(function() {
 				var publishDropdown = $('.js-publish-dropdown');
