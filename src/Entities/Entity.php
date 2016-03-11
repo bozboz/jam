@@ -165,7 +165,7 @@ class Entity extends Node implements ModelInterface, Sortable
 	protected function _loadValues($realValues, Revision $revision = null)
 	{
 		if (is_null($revision)) {
-			$revision = $this->revision;
+			$revision = $this->currentRevision;
 		}
 
 		if ($revision) {

@@ -86,6 +86,7 @@ class JamServiceProvider extends ServiceProvider
 		$mapper = $this->app['FieldMapper'];
 
 		$mapper->register('text',              \Bozboz\Jam\Fields\Text::class);
+		$mapper->register('textile',           \Bozboz\Jam\Fields\Textile::class);
 		$mapper->register('textarea',          \Bozboz\Jam\Fields\Textarea::class);
 		$mapper->register('htmleditor',        \Bozboz\Jam\Fields\HTMLEditor::class);
 		$mapper->register('image',             \Bozboz\Jam\Fields\Image::class);
@@ -93,13 +94,9 @@ class JamServiceProvider extends ServiceProvider
 		$mapper->register('date',              \Bozboz\Jam\Fields\Date::class);
 		$mapper->register('date-time',         \Bozboz\Jam\Fields\DateTime::class);
 		$mapper->register('email',             \Bozboz\Jam\Fields\Email::class);
-		// $mapper->register('hidden',            \Bozboz\Jam\Fields\Hidden::class);
 		$mapper->register('password',          \Bozboz\Jam\Fields\Password::class);
-		// $mapper->register('select',            \Bozboz\Jam\Fields\Select::class);
 		$mapper->register('toggle',            \Bozboz\Jam\Fields\Toggle::class);
 		$mapper->register('foreign',           \Bozboz\Jam\Fields\Foreign::class);
 		$mapper->register('entity-list-field', \Bozboz\Jam\Fields\EntityList::class);
-		// $mapper->register('belongs-to-entity', \Bozboz\Jam\Fields\BelongsToEntity::class);
-		// $mapper->register('belongs-to-type',   \Bozboz\Jam\Fields\BelongsToType::class);
 	}
 }
