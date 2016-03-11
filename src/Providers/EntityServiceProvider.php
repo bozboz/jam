@@ -41,10 +41,6 @@ class EntityServiceProvider extends ServiceProvider
 			"{$packageRoot}database/migrations" => database_path('migrations')
 		], 'migrations');
 
-		$this->publishes([
-			"{$packageRoot}/config/entities.php" => config_path('entities.php')
-		], 'config');
-
 		$permissions = $this->app['permission.handler'];
 
 		require __DIR__ . '/../permissions.php';
@@ -68,7 +64,7 @@ class EntityServiceProvider extends ServiceProvider
 
 			$entityTypes = Type::whereVisible(true)->get();
 			foreach ($entityTypes as $type) {
-				if ($menu->gate('view_'.$type->alias, $type)) {
+				if ($menu->gate('view_entity_type', $type)) {
 					$contentMenu[$type->name] = $url->route('admin.entities.index', ['type' => $type->alias]);
 				}
 			}

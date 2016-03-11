@@ -6,15 +6,8 @@ $permissions->define([
 	'hide_entity' => 'Bozboz\Permissions\Rules\Rule',
 	'schedule_entity' => 'Bozboz\Permissions\Rules\Rule',
 
+		'view_entity_type' => 'Bozboz\Permissions\Rules\ModelRule',
+		'create_entity_type' => 'Bozboz\Permissions\Rules\ModelRule',
+		'delete_entity_type' => 'Bozboz\Permissions\Rules\ModelRule',
+		'edit_entity_type' => 'Bozboz\Permissions\Rules\ModelRule',
 ]);
-
-$entityTypes = Bozboz\Jam\Types\Type::whereVisible(true)->get();
-
-foreach ($entityTypes as $type) {
-	$permissions->define([
-		'view_'.$type->alias => 'Bozboz\Permissions\Rules\ModelRule',
-		'create_'.$type->alias => 'Bozboz\Permissions\Rules\ModelRule',
-		'delete_'.$type->alias => 'Bozboz\Permissions\Rules\ModelRule',
-		'edit_'.$type->alias => 'Bozboz\Permissions\Rules\ModelRule',
-	]);
-}
