@@ -8,7 +8,7 @@ use Bozboz\Jam\Fields\FieldMapper;
 use Bozboz\Jam\Types\Type;
 use Illuminate\Support\ServiceProvider;
 
-class EntityServiceProvider extends ServiceProvider
+class JamServiceProvider extends ServiceProvider
 {
 	public function register()
 	{
