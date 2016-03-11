@@ -7,7 +7,7 @@
     },
     "require": {
         "bozboz/admin": "dev-for-entities",
-        "kalnoy/nestedset": ">=3.1 <=4.1",
+        "kalnoy/nestedset": "3.1.* - 4.1.*",
         "netcarver/textile": "^3.5"
     }
 }
