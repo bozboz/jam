@@ -34,7 +34,7 @@ class LinkBuilder implements Contract
 	 */
 	protected function requiresPath(Entity $instance)
 	{
-		return $instance->template->type->generate_paths
+		return $instance->template && $instance->template->type->generate_paths
 			&& (
 				$instance->isDirty('slug')
 				||
@@ -48,7 +48,6 @@ class LinkBuilder implements Contract
 	public function addPaths(Entity $instance)
 	{
 		$path = trim($instance->getAncestors()->pluck('slug')->push($instance->slug)->implode('/'), '/');
-
 		$instance->paths()->withTrashed()->firstOrCreate(['path' => $path])->restore();
 	}
 

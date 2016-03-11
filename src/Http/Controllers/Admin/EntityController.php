@@ -201,6 +201,7 @@ class EntityController extends ModelAdminController
 
 		$newRevision->published_at = $publishedAt;
 		$newRevision->user()->associate(Auth::user());
+		$newRevision->save();
 
 		$modelInstance->currentRevision()->associate($newRevision);
 		$modelInstance->save();
