@@ -15,6 +15,7 @@ class CreateEntityTemplatesTable extends Migration
         Schema::create('entity_templates', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+            $table->string('alias');
             $table->string('view')->nullable();
             $table->unsignedInteger('type_id');
 

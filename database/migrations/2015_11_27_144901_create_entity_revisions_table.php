@@ -16,7 +16,7 @@ class CreateEntityRevisionsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('entity_id');
             $table->unsignedInteger('user_id')->index()->nullable();
-            $table->datetime('published_at');
+            $table->datetime('published_at')->nullable();
             $table->timestamps();
 
             $table->foreign('entity_id')
@@ -26,6 +26,11 @@ class CreateEntityRevisionsTable extends Migration
             $table->foreign('user_id')
                   ->references('id')->on('users')
                   ->onDelete('set null');
+        });
+
+        Schema::table('entities', function (Blueprint $table) {
+            $table->foreign('revision_id')
+                  ->references('id')->on('entity_revisions');
         });
     }
 
