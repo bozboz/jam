@@ -72,7 +72,7 @@ class JamServiceProvider extends ServiceProvider
 				$menu['Content'] = $contentMenu;
 			}
 
-			if ($this->app['permission.checker']->allows('view_anything')) {
+			if ($menu->gate('manage_entities')) {
 				$menu['Entities'] = [
 					'Types' => $url->route('admin.entity-types.index'),
 				];
