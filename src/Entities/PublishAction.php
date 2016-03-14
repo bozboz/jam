@@ -14,7 +14,7 @@ class PublishAction extends DropdownAction
 {
 	protected $defaults = [
 		'warn' => null,
-		'btnClass' => 'btn-default',
+		'btnClass' => 'btn-default btn-sm',
 		'dropdownClass' => '',
 		'label' => null,
 		'icon' => null,
@@ -32,13 +32,13 @@ class PublishAction extends DropdownAction
 			case Revision::PUBLISHED:
 				$attributes['label'] = 'Published';
 				$attributes['icon'] = 'fa-check';
-				$attributes['btnClass'] = 'btn-success';
+				$attributes['btnClass'] = 'btn-success btn-sm';
 			break;
 
 			case Revision::SCHEDULED:
 				$attributes['label'] = 'Scheduled';
 				$attributes['icon'] = 'fa-clock-o';
-				$attributes['btnClass'] = 'btn-warning';
+				$attributes['btnClass'] = 'btn-warning btn-sm';
 			break;
 
 			default:
