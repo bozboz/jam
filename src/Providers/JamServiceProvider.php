@@ -60,16 +60,12 @@ class JamServiceProvider extends ServiceProvider
 		{
 			$url = $this->app['url'];
 
-			$contentMenu = $menu['Content'];
-
 			$entityTypes = Type::whereVisible(true)->get();
+
 			foreach ($entityTypes as $type) {
 				if ($menu->gate('view_entity_type', $type)) {
-					$contentMenu[$type->name] = $url->route('admin.entities.index', ['type' => $type->alias]);
+					$menu[$type->name] = $url->route('admin.entities.index', ['type' => $type->alias]);
 				}
-			}
-			if ($contentMenu) {
-				$menu['Content'] = $contentMenu;
 			}
 
 			if ($menu->gate('manage_entities')) {
