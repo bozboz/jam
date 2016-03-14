@@ -7,6 +7,7 @@ use Bozboz\Admin\Fields\TextField;
 use Bozboz\Admin\Reports\Filters\ArrayListingFilter;
 use Bozboz\Jam\Entities\Entity;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Input;
 
 class RevisionDecorator extends ModelAdminDecorator
 {
@@ -17,14 +18,17 @@ class RevisionDecorator extends ModelAdminDecorator
 
 	public function getColumns($instance)
 	{
-		return [
+		return array_filter([
+			'Name' => !Input::has('entity_id') ? $this->getLabel($instance) : null,
 			'Live Revision' => $instance->entity->currentRevision && $instance->entity->currentRevision->id === $instance->id
 				? '<i class="fa fa-check"></i>'
-				: null,
+				: false,
 			'Author' => $instance->username,
 			'Date' => $instance->created_at->format('d M Y H:i'),
 			'Sceduled For' => $instance->published_at > new Carbon ? $instance->published_at->format('d M Y H:i') : null
-		];
+		], function($item) {
+			return !is_null($item);
+		});
 	}
 
 	public function getLabel($instance)

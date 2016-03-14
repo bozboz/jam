@@ -15,8 +15,12 @@ use Bozboz\Jam\Types\Type;
 
 class EntityList extends Field
 {
+	private $parentEntity = null;
+	private $realValue = true;
+
 	public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
 	{
+		$this->parentEntity = $instance;
 		return new EntityListField($instance, $this, $this->getValue($value), [
 			'name' => $this->getInputName(),
 			'label' => $this->getInputLabel()
@@ -35,19 +39,30 @@ class EntityList extends Field
 
 	public function injectValue(Entity $entity, Revision $revision, $realValue)
 	{
+		$this->parentEntity = $entity;
 		$value = parent::injectValue($entity, $revision, $realValue);
 
 		if (!$realValue) {
+			$this->realValue = false;
 			$entity->setAttribute($value->key, $this->getValue($value));
 		}
 	}
 
 	public function getValue(Value $value)
 	{
-		return Entity::with('template.type', 'revisions')->whereHas('template.type', function ($query) {
+		$query = $this->parentEntity->children()->whereHas('template.type', function ($query) {
 			$query->whereAlias($this->getOption('type'));
-		})->defaultOrder()->get()->transform(function ($entity) {
-			$entity->loadValues();
+		})->defaultOrder();
+
+		if (!$this->realValue) {
+			return $query->active()->get()->transform(function ($entity) {
+				$entity->loadValues();
+				return $entity;
+			});
+		}
+
+		return $query->get()->transform(function ($entity) {
+			$entity->loadValues($entity->latestRevsion());
 			return $entity;
 		});
 	}

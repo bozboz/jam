@@ -24,8 +24,11 @@ class EntityRevisionController extends ModelAdminController
 	{
 		$modelInstance = $this->decorator->findInstance($id);
 		$entity = $modelInstance->entity;
-		$entity->currentRevision()->associate($modelInstance);
-		$entity->save();
+
+		if ($entity->currentRevision) {
+			$entity->currentRevision()->associate($modelInstance);
+			$entity->save();
+		}
 
 		Revision::whereEntityId($entity->id)->where('created_at', '>', $modelInstance->created_at)->delete();
 
@@ -40,17 +43,21 @@ class EntityRevisionController extends ModelAdminController
 
 	protected function getReportActions()
 	{
-		return [
-			new LinkAction(
-				['\\'.EntityController::class.'@index', 'type' => Entity::find(Input::get('entity_id'))->template->type->alias],
-				[app()->make(EntityController::class), 'canView'],
-				[
-					'label' => 'Back to listing',
-					'icon' => 'fa fa-list-alt',
-					'class' => 'btn-default pull-right',
-				]
-			)
-		];
+		if (Input::has('entity_id')) {
+			return [
+				new LinkAction(
+					['\\'.EntityController::class.'@index', 'type' => Entity::find(Input::get('entity_id'))->template->type->alias],
+					[app()->make(EntityController::class), 'canView'],
+					[
+						'label' => 'Back to listing',
+						'icon' => 'fa fa-list-alt',
+						'class' => 'btn-default pull-right',
+					]
+				)
+			];
+		} else {
+			return [];
+		}
 	}
 
 	protected function getRowActions()
