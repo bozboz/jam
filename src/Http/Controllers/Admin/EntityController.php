@@ -7,7 +7,9 @@ use Bozboz\Admin\Reports\Actions\CreateDropdownAction;
 use Bozboz\Admin\Reports\Actions\DropdownDatePopupItem;
 use Bozboz\Admin\Reports\Actions\DropdownFormItem;
 use Bozboz\Admin\Reports\Actions\DropdownItem;
+use Bozboz\Admin\Reports\Actions\LinkAction;
 use Bozboz\Admin\Reports\NestedReport;
+use Bozboz\Jam\Entities\EntityHistoryAction;
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\EntityDecorator;
 use Bozboz\Jam\Entities\PublishAction;
@@ -86,7 +88,7 @@ class EntityController extends ModelAdminController
 	protected function getRowActions()
 	{
 		return [
-			'published' => new PublishAction([
+			'publish' => new PublishAction([
 				new DropdownFormItem(
 					$this->getActionName('publish'),
 					[$this, 'canPublish'],
@@ -111,7 +113,11 @@ class EntityController extends ModelAdminController
 						'method' => 'SCHEDULE',
 					]
 				)
-			])
+			]),
+			'history' => new EntityHistoryAction(
+				'\\'.EntityRevisionController::class.'@index',
+				[app()->make(EntityRevisionController::class), 'canView']
+			)
 		] + parent::getRowActions();
 	}
 
@@ -123,16 +129,6 @@ class EntityController extends ModelAdminController
 		if ( ! $this->canCreate($instance)) App::abort(403);
 
 		return $this->renderFormFor($instance, $this->createView, 'POST', 'store');
-	}
-
-	public function edit($id)
-	{
-		$instance = $this->decorator->findInstance($id);
-		$instance->loadValues($instance->latestRevision());
-
-		if ( ! $this->canEdit($instance)) App::abort(403);
-
-		return $this->renderFormFor($instance, $this->editView, 'PUT', 'update');
 	}
 
 	protected function save($modelInstance, $input)
@@ -160,7 +156,9 @@ class EntityController extends ModelAdminController
 
 	public function unpublish($id)
 	{
-		$modelInstance = $this->_changeState($id, null);
+		$modelInstance = $this->decorator->findInstance($id);
+		$modelInstance->revision_id = null;
+		$modelInstance->save();
 
 		$response = $this->getUpdateResponse($modelInstance);
 		$response->with('model.updated', sprintf(
@@ -203,8 +201,12 @@ class EntityController extends ModelAdminController
 		$newRevision->user()->associate(Auth::user());
 		$newRevision->save();
 
-		$modelInstance->currentRevision()->associate($newRevision);
-		$modelInstance->save();
+		if ($publishedAt) {
+			$modelInstance->currentRevision()->associate($newRevision);
+			$modelInstance->save();
+		} else {
+			$modelInstance->currentRevision()->dissociate();
+		}
 
 		DB::commit();
 

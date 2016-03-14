@@ -2,11 +2,17 @@
 
 namespace Bozboz\Jam\Entities;
 
+use Bozboz\Admin\Base\ModelInterface;
+use Bozboz\Admin\Base\SanitisesInputTrait;
 use Bozboz\Admin\Users\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Revision extends Model
+class Revision extends Model implements ModelInterface
 {
+	use SoftDeletes;
+	use SanitisesInputTrait;
+
 	protected $table = 'entity_revisions';
 
 	protected $fillable = [
@@ -15,11 +21,15 @@ class Revision extends Model
 		'user_id'
 	];
 
-	protected $dates = ['published_at'];
+	protected $dates = ['published_at', 'deleted_at'];
 
-	const UNPUBLISHED = 0;
 	const PUBLISHED = 1;
 	const SCHEDULED = 2;
+
+	public function getValidator()
+	{
+		//
+	}
 
 	public function duplicate()
 	{
@@ -66,9 +76,7 @@ class Revision extends Model
 
 	public function getStatusAttribute()
 	{
-		if (is_null($this->published_at)) {
-			return static::UNPUBLISHED;
-		} elseif ($this->published_at->timestamp > time()) {
+		if ($this->published_at && $this->published_at->timestamp > time()) {
 			return static::SCHEDULED;
 		} else {
 			return static::PUBLISHED;

@@ -17,7 +17,9 @@ class CreateEntityRevisionsTable extends Migration
             $table->unsignedInteger('entity_id');
             $table->unsignedInteger('user_id')->index()->nullable();
             $table->datetime('published_at')->nullable();
+
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('entity_id')
                   ->references('id')->on('entities')

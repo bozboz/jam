@@ -61,7 +61,7 @@ JAVASCRIPT;
 	protected function getPublishingOptions()
 	{
 		return [
-			Revision::UNPUBLISHED => 'Hidden',
+			'' => 'Hidden',
 			Revision::PUBLISHED => 'Published',
 			Revision::SCHEDULED => 'Scheduled',
 		];

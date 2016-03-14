@@ -144,23 +144,32 @@ class Entity extends Node implements ModelInterface, Sortable
 
 	public function canPublish()
 	{
-		return $this->currentRevision->status != Revision::PUBLISHED;
+		return !$this->currentRevision || (
+			$this->currentRevision
+			&& $this->currentRevision->status != Revision::PUBLISHED
+		);
 	}
 
 	public function canHide()
 	{
-		return $this->currentRevision->status != Revision::UNPUBLISHED;
+		return $this->currentRevision;
 	}
 
 	public function canSchedule()
 	{
-		return $this->currentRevision->status != Revision::SCHEDULED && $this->currentRevision->status != Revision::PUBLISHED;
+		return !$this->currentRevision || (
+			$this->currentRevision
+			&& $this->currentRevision->status != Revision::SCHEDULED
+			&& $this->currentRevision->status != Revision::PUBLISHED
+		);
 	}
 
 	public function getStatusAttribute()
 	{
 		if ($this->currentRevision) {
 			return $this->currentRevision->status;
+		} else {
+			return false;
 		}
 	}
 
@@ -222,10 +231,8 @@ class Entity extends Node implements ModelInterface, Sortable
 		if ($this->requiresNewRevision($input)) {
 			if ($input['status'] == Revision::SCHEDULED) {
 				$publishedAt = $input['currentRevision']['published_at'];
-			} elseif ($input['status'] == Revision::PUBLISHED) {
-				$publishedAt = $this->freshTimestamp();
 			} else {
-				$publishedAt = null;
+				$publishedAt = $this->freshTimestamp();
 			}
 			$revision = $this->revisions()->create([
 				'published_at' => $publishedAt,

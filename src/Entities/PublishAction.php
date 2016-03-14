@@ -25,8 +25,9 @@ class PublishAction extends DropdownAction
 	{
 		$attributes = $this->attributes;
 		$currentRevision = $this->instance->currentRevision;
+		$status = $currentRevision ? $currentRevision->status : false;
 
-		switch ($currentRevision->status) {
+		switch ($status) {
 
 			case Revision::PUBLISHED:
 				$attributes['label'] = 'Published';
@@ -34,15 +35,15 @@ class PublishAction extends DropdownAction
 				$attributes['btnClass'] = 'btn-success';
 			break;
 
-			case Revision::UNPUBLISHED:
-				$attributes['label'] = 'Hidden';
-				$attributes['icon'] = 'fa-times';
-			break;
-
 			case Revision::SCHEDULED:
 				$attributes['label'] = 'Scheduled';
 				$attributes['icon'] = 'fa-clock-o';
 				$attributes['btnClass'] = 'btn-warning';
+			break;
+
+			default:
+				$attributes['label'] = 'Hidden';
+				$attributes['icon'] = 'fa-times';
 			break;
 
 		}

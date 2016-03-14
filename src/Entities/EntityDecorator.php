@@ -95,7 +95,12 @@ class EntityDecorator extends ModelAdminDecorator
 	{
 		$fields = [];
 
-		$instance->loadRealValues();
+		if (Input::has('revision_id')) {
+			$revision = Revision::find(Input::get('revision_id'));
+		} else {
+			$revision = $instance->latestRevision();
+		}
+		$instance->loadRealValues($revision);
 
 		foreach($instance->template->fields->sortBy('sorting') as $field) {
 			$fieldName = $field->name;
