@@ -62,7 +62,7 @@ class EntityList extends Field
 		}
 
 		return $query->get()->transform(function ($entity) {
-			$entity->loadValues($entity->latestRevsion());
+			$entity->loadValues($entity->latestRevision());
 			return $entity;
 		});
 	}
