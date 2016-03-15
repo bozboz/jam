@@ -6,9 +6,15 @@ class FieldMapper
 {
 	protected $mapping;
 
-	public function register($alias, $fieldClass)
+	public function register($aliasOrArray, $fieldClass = null)
 	{
-		$this->mapping[$alias] = $fieldClass;
+		if (is_array($aliasOrArray)) {
+			foreach ($aliasOrArray as $alias => $fieldClass) {
+				$this->register($alias, $fieldClass);
+			}
+		} else {
+			$this->mapping[$aliasOrArray] = $fieldClass;
+		}
 	}
 
 	public function has($alias)

@@ -81,18 +81,20 @@ class JamServiceProvider extends ServiceProvider
 	{
 		$mapper = $this->app['FieldMapper'];
 
-		$mapper->register('text',              \Bozboz\Jam\Fields\Text::class);
-		$mapper->register('textile',           \Bozboz\Jam\Fields\Textile::class);
-		$mapper->register('textarea',          \Bozboz\Jam\Fields\Textarea::class);
-		$mapper->register('htmleditor',        \Bozboz\Jam\Fields\HTMLEditor::class);
-		$mapper->register('image',             \Bozboz\Jam\Fields\Image::class);
-		$mapper->register('gallery',           \Bozboz\Jam\Fields\Gallery::class);
-		$mapper->register('date',              \Bozboz\Jam\Fields\Date::class);
-		$mapper->register('date-time',         \Bozboz\Jam\Fields\DateTime::class);
-		$mapper->register('email',             \Bozboz\Jam\Fields\Email::class);
-		$mapper->register('password',          \Bozboz\Jam\Fields\Password::class);
-		$mapper->register('toggle',            \Bozboz\Jam\Fields\Toggle::class);
-		$mapper->register('foreign',           \Bozboz\Jam\Fields\Foreign::class);
-		$mapper->register('entity-list-field', \Bozboz\Jam\Fields\EntityList::class);
+		$mapper->register([
+			'text'              => \Bozboz\Jam\Fields\Text::class,
+			'textile'           => \Bozboz\Jam\Fields\Textile::class,
+			'textarea'          => \Bozboz\Jam\Fields\Textarea::class,
+			'htmleditor'        => \Bozboz\Jam\Fields\HTMLEditor::class,
+			'image'             => \Bozboz\Jam\Fields\Image::class,
+			'gallery'           => \Bozboz\Jam\Fields\Gallery::class,
+			'date'              => \Bozboz\Jam\Fields\Date::class,
+			'date-time'         => \Bozboz\Jam\Fields\DateTime::class,
+			'email'             => \Bozboz\Jam\Fields\Email::class,
+			'password'          => \Bozboz\Jam\Fields\Password::class,
+			'toggle'            => \Bozboz\Jam\Fields\Toggle::class,
+			'foreign'           => \Bozboz\Jam\Fields\Foreign::class,
+			'entity-list-field' => \Bozboz\Jam\Fields\EntityList::class,
+		]);
 	}
 }
