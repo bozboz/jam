@@ -43,6 +43,10 @@ class CreateEntityRevisionsTable extends Migration
      */
     public function down()
     {
+        Schema::table('entities', function (Blueprint $table) {
+            $table->dropForeign('entities_revision_id_foreign');
+        });
+
         Schema::drop('entity_revisions');
     }
 }
