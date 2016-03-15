@@ -35,7 +35,7 @@
                     <div class="panel panel-danger"><div class="panel-heading">
                         Hidden
                     </div></div>
-                @elseif ($entity->currentRevision->published_at>new Carbon\Carbon)
+                @elseif ($entity->currentRevision->published_at->inFuture())
                     <div class="panel panel-warning"><div class="panel-heading">
                         <abbr title="{{ $entity->currentRevision->formatted_published_at }}">Scheduled</abbr>
                     </div></div>
