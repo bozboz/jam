@@ -229,10 +229,17 @@ class Entity extends Node implements ModelInterface, Sortable
 	public function newRevision($input)
 	{
 		if ($this->requiresNewRevision($input)) {
-			if ($input['status'] == Revision::SCHEDULED) {
-				$publishedAt = $input['currentRevision']['published_at'];
-			} else {
-				$publishedAt = $this->freshTimestamp();
+			switch ($input['status']) {
+				case Revision::SCHEDULED:
+					$publishedAt = $input['currentRevision']['published_at'];
+				break;
+
+				case Revision::PUBLISHED:
+					$publishedAt = $this->freshTimestamp();
+				break;
+
+				default:
+					$publishedAt = null;
 			}
 			$revision = $this->revisions()->create([
 				'published_at' => $publishedAt,
@@ -242,29 +249,35 @@ class Entity extends Node implements ModelInterface, Sortable
 			foreach ($this->template->fields as $field) {
 				$field->saveValue($revision, $input[$field->getInputName()]);
 			}
+
+			if ($publishedAt) {
+				$this->currentRevision()->associate($revision);
+			} else {
+				$this->currentRevision()->dissociate();
+			}
+			$this->save();
+
 			return $revision;
 		}
 	}
 
 	public function requiresNewRevision($input)
 	{
-		$currentRevision = $this->currentRevision;
+		$latestRevision = $this->latestRevision();
 
-		if ($currentRevision) {
+		if ($latestRevision) {
 			$templateFields = $this->template->fields->lists('name')->all();
 
 			$currentValues = array_merge(
 				array_fill_keys($templateFields, null),
-				$currentRevision->fieldValues()->lists('value', 'key')->all()
+				$latestRevision->fieldValues()->lists('value', 'key')->all()
 			);
-			$currentValues['status'] = $currentRevision->status;
-			$currentValues['published_at'] = $currentRevision->published_at
-				? $currentRevision->published_at->format('Y-m-d H:i:s')
-				: null;
+			$currentValues['status'] = $this->status;
+			$currentValues['published_at'] =  $latestRevision->getFormattedPublishedAtAttribute('Y-m-d H:i:s');
 
 			$input['published_at'] = $input['currentRevision']['published_at'];
 		}
 
-		return !$currentRevision || count(array_diff_assoc($currentValues, $input)) > 0;
+		return !$latestRevision || count(array_diff_assoc($currentValues, $input)) > 0;
 	}
 }

@@ -33,13 +33,13 @@ class EntityDecorator extends ModelAdminDecorator
 	{
 		switch ($instance->status) {
 			case Revision::PUBLISHED:
-				$publishedAt = $instance->currentRevision->published_at->format('d M Y H:i');
+				$publishedAt = $instance->currentRevision->formatted_published_at;
 				$user = $instance->currentRevision->username;
 				$statusLabel = "<small><abbr title='{$publishedAt} by {$user}'>Published</abbr></small>";
 			break;
 
 			case Revision::SCHEDULED:
-				$publishedAt = $instance->currentRevision->published_at->format('d M Y H:i');
+				$publishedAt = $instance->currentRevision->formatted_published_at;
 				$user = $instance->currentRevision->username;
 				$statusLabel = "<small><abbr title='{$publishedAt} by {$user}'>Scheduled</abbr></small>";
 			break;

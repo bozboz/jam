@@ -135,10 +135,6 @@ class EntityController extends ModelAdminController
 	{
 		parent::save($modelInstance, $input);
 		$revision = $modelInstance->newRevision($input);
-		if ($revision) {
-			$modelInstance->currentRevision()->associate($revision);
-			$modelInstance->save();
-		}
 	}
 
 	public function publish($id)
