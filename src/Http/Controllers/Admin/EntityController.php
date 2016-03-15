@@ -9,9 +9,9 @@ use Bozboz\Admin\Reports\Actions\DropdownFormItem;
 use Bozboz\Admin\Reports\Actions\DropdownItem;
 use Bozboz\Admin\Reports\Actions\LinkAction;
 use Bozboz\Admin\Reports\NestedReport;
-use Bozboz\Jam\Entities\EntityHistoryAction;
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\EntityDecorator;
+use Bozboz\Jam\Entities\EntityHistoryAction;
 use Bozboz\Jam\Entities\PublishAction;
 use Bozboz\Jam\Entities\Revision;
 use Bozboz\Jam\Templates\Template;
@@ -20,6 +20,7 @@ use Bozboz\Permissions\RuleStack;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Input, Redirect, DB;
 use Session;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -135,6 +136,20 @@ class EntityController extends ModelAdminController
 	{
 		parent::save($modelInstance, $input);
 		$revision = $modelInstance->newRevision($input);
+
+		if (Config::get('jam.revision_history_length')) {
+			$pastRevisionsQuery = Revision::whereEntityId($modelInstance->id);
+			if ($modelInstance->currentRevision) {
+				$pastRevisionsQuery->where('created_at', '<', $modelInstance->currentRevision->created_at);
+			}
+			Revision::whereIn(
+				'id',
+				$pastRevisionsQuery->orderBy('created_at', 'desc')
+					->withTrashed()
+					->skip(Config::get('jam.revision_history_length'))->take(100)
+					->pluck('id')
+			)->forceDelete();
+		}
 	}
 
 	public function publish($id)

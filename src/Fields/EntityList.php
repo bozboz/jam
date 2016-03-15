@@ -52,10 +52,10 @@ class EntityList extends Field
 	{
 		$query = $this->parentEntity->children()->whereHas('template.type', function ($query) {
 			$query->whereAlias($this->getOption('type'));
-		})->defaultOrder();
+		})->with('template.type', 'template.fields')->defaultOrder();
 
 		if (!$this->realValue) {
-			return $query->active()->get()->transform(function ($entity) {
+			return $query->with('currentRevision')->active()->get()->transform(function ($entity) {
 				$entity->loadValues();
 				return $entity;
 			});
@@ -85,7 +85,7 @@ class EntityListField extends AdminField
 
 	public function getInput()
 	{
-		return view('entities::admin.partials.entity-list-field', [
+		return view('jam::admin.partials.entity-list-field', [
 			'type' => Type::with('templates')->whereAlias($this->field->getOption('type'))->first(),
 			'entities' => $this->entityList,
 			'field' => $this->field,

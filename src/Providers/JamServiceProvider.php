@@ -35,11 +35,15 @@ class JamServiceProvider extends ServiceProvider
 	{
 		$packageRoot = __DIR__ . '/../../';
 
-		$this->loadViewsFrom("{$packageRoot}/resources/views", 'entities');
+		$this->loadViewsFrom("{$packageRoot}/resources/views", 'jam');
 
 		$this->publishes([
 			"{$packageRoot}database/migrations" => database_path('migrations')
 		], 'migrations');
+
+		$this->publishes([
+			"{$packageRoot}config/jam.php" => config_path('jam.php')
+		]);
 
 		$permissions = $this->app['permission.handler'];
 
@@ -69,7 +73,7 @@ class JamServiceProvider extends ServiceProvider
 			}
 
 			if ($menu->gate('manage_entities')) {
-				$menu['Entities'] = [
+				$menu['Jam'] = [
 					'Types' => $url->route('admin.entity-types.index'),
 				];
 			}
