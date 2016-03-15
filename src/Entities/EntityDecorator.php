@@ -61,7 +61,7 @@ class EntityDecorator extends ModelAdminDecorator
 
 	public function getHeading($plural = false)
 	{
-		$type = Type::whereAlias(Input::get('type'))->pluck('name')->first();
+		$type = Type::whereAlias(Input::get('type'))->value('name');
 		$name = preg_replace('/([a-z])([A-Z])/', '$1 $2', $type);
 		return $plural ? str_plural($name) : $name;
 	}
