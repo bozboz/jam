@@ -1,5 +1,11 @@
 {
     "name": "bozboz/jam",
+    "authors": [
+        {
+            "name": "Jim Hollington",
+            "email": "jim@bozboz.co.uk"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "Bozboz\\Jam\\": "src/"
