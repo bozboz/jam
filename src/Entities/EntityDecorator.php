@@ -66,6 +66,11 @@ class EntityDecorator extends ModelAdminDecorator
 		return $plural ? str_plural($name) : $name;
 	}
 
+	public function getHeadingForInstance($instance)
+	{
+		return $instance->template()->value('name');
+	}
+
 	public function getLabel($instance)
 	{
 		return $instance->name;
