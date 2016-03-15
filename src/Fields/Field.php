@@ -39,6 +39,11 @@ class Field extends Model implements FieldInterface, Sortable
         return 'sorting';
     }
 
+    protected static function sortPrependOnCreate()
+    {
+        return false;
+    }
+
     public function scopeModifySortingQuery($query, $instance)
     {
         $query->where('template_id', $instance->template_id);
