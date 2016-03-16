@@ -13,7 +13,7 @@ class AddTypeAliasToEntityValues extends Migration
     public function up()
     {
         Schema::table('entity_values', function (Blueprint $table) {
-            $table->integer('field_id')->after('id');
+            $table->unsignedInteger('field_id')->after('id');
             $table->string('type_alias')->after('field_id');
         });
 
