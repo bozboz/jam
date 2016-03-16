@@ -10,7 +10,9 @@ class Value extends Model
 
 	protected $fillable = [
 		'key',
-		'value'
+		'value',
+		'type_alias',
+		'field_id',
 	];
 
 	public function revision()

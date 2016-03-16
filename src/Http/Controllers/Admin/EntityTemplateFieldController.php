@@ -54,7 +54,10 @@ class EntityTemplateFieldController extends ModelAdminController
 
 		$template = $this->template->find($templateId);
 		$instance->template()->associate($template);
-		$instance->type_alias = $type;
+
+		if (!$instance->type_alias) {
+			$instance->type_alias = $type;
+		}
 
 		return $this->renderFormFor($instance, $this->createView, 'POST', 'store');
 	}

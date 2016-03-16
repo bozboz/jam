@@ -9,6 +9,7 @@ use Bozboz\Jam\Entities\Value;
 class EntityListForeign extends Foreign
 {
     protected $attributes = [
+	    'type_alias' => 'foreign',
     	'name' => 'entity_id',
     	'validation' => 'required|exists:entities,id',
     ];

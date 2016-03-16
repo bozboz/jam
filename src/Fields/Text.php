@@ -11,21 +11,18 @@ use Netcarver\Textile\Parser;
 
 class Text extends Field
 {
-	public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
-	{
-	    return new TextField([
-			'name' => $this->getInputName(),
-			'label' => $this->getInputLabel()
-		]);
-	}
-
-    public function injectValue(Entity $entity, Revision $revision, $realValue)
+    public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
     {
-        $value = parent::injectValue($entity, $revision, $realValue);
+        return new TextField([
+            'name' => $this->getInputName(),
+            'label' => $this->getInputLabel()
+        ]);
+    }
 
-        if (!$realValue) {
-            $entity->setAttribute($value->key, $this->getValue($value));
-        }
+    public function injectValue(Entity $entity, Value $value)
+    {
+        $value = parent::injectValue($entity, $value);
+        $entity->setAttribute($value->key, $this->getValue($value));
     }
 
     public function getValue(Value $value)

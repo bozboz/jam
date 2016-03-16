@@ -53,7 +53,7 @@ class EntityRepository implements EntityRepositoryInterface
 	{
 		$entity->setAttribute('breadcrumbs', $this->breadcrumbs($entity));
 		$entity->setAttribute('child_pages', $this->childPages($entity));
-		$entity->loadValues();
+		$entity->loadCurrentValues();
 	}
 
 	public function breadcrumbs(Entity $entity)

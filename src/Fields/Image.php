@@ -19,13 +19,10 @@ class Image extends Field
 		]);
 	}
 
-	public function injectValue(Entity $entity, Revision $revision, $realValue)
+	public function injectValue(Entity $entity, Value $value)
 	{
-		$value = parent::injectValue($entity, $revision, $realValue);
-
-		if (!$realValue) {
-			$entity->setAttribute($value->key, $this->getValue($value)->first());
-		}
+		$value = parent::injectValue($entity, $value);
+		$entity->setAttribute($value->key, $this->getValue($value)->first());
 	}
 
 	public function getvalue(Value $value)

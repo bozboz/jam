@@ -132,7 +132,14 @@ class Entity extends Node implements ModelInterface, Sortable
 	 */
 	public function latestRevision()
 	{
-		return $this->revisions()->latest()->with('fieldValues')->first();
+		return $this->revisions->first();
+	}
+
+	public function scopeWithLatestRevision($query)
+	{
+		$query->with(['revisions' => function($query) {
+			$query->latest()->limit(1);
+		}]);
 	}
 
 	public function scopeActive($query)
@@ -140,6 +147,11 @@ class Entity extends Node implements ModelInterface, Sortable
 		$query->whereHas('currentRevision', function($query) {
 			$query->isPublished();
 		});
+	}
+
+	public function currentValues()
+	{
+		return $this->hasMany(CurrentValue::class, 'revision_id', 'revision_id');
 	}
 
 	public function canPublish()
@@ -174,40 +186,27 @@ class Entity extends Node implements ModelInterface, Sortable
 	}
 
 	/**
-	 * Load values and inject them in to the entity
-	 * @param  bool $realValues true: inject actual db values,
-	 *                          false: inject values as you'd use them, i.e. relations, etc...
-	 * @param  Revision|null $revision Defaults to latestRevision
-	 */
-	protected function _loadValues($realValues, Revision $revision = null)
-	{
-		if (is_null($revision)) {
-			$revision = $this->currentRevision;
-		}
-
-		if ($revision) {
-			foreach ($this->template->fields as $field) {
-				$field->injectValue($this, $revision, $realValues);
-			}
-		}
-	}
-
-	/**
 	 * Load field values as the admin wants them as an array for all fields
 	 * @param  Revision|null $revision
 	 */
-	public function loadRealValues(Revision $revision = null)
+	public function loadAdminValues(Revision $revision = null)
 	{
-		$this->_loadValues(true, $revision);
+		if ($revision) {
+			foreach ($this->template->fields as $field) {
+				$field->injectAdminValue($this, $revision);
+			}
+		}
 	}
 
 	/**
 	 * Load field values as the frontend wants them as an array for all fields
 	 * @param  Revision|null $revision
 	 */
-	public function loadValues(Revision $revision = null)
+	public function loadCurrentValues()
 	{
-		$this->_loadValues(false, $revision);
+		$this->currentValues->each(function($value) {
+			$value->injectValue($this);
+		});
 	}
 
 	public function getValue($key)

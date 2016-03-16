@@ -19,14 +19,16 @@ class Gallery extends Field
 		]);
 	}
 
-	public function injectValue(Entity $entity, Revision $revision, $realValue)
+	public function injectValue(Entity $entity, Value $value)
 	{
-		$value = parent::injectValue($entity, $revision, $realValue);
-		$entity->setAttribute($this->getInputName(), $this->getValue($value)->getRelatedIds()->all());
+		parent::injectValue($entity, $value);
+		$entity->setAttribute($value->key, $this->getValue($value)->get());
+	}
 
-		if (!$realValue) {
-			$entity->setAttribute($value->key, $this->getValue($value)->get());
-		}
+	public function injectAdminValue(Entity $entity, Revision $revision)
+	{
+		$value = parent::injectAdminValue($entity, $revision);
+		$entity->setAttribute($this->getInputName(), $this->getValue($value)->getRelatedIds()->all());
 	}
 
 	public function getInputName()

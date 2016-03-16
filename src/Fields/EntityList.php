@@ -16,7 +16,6 @@ use Bozboz\Jam\Types\Type;
 class EntityList extends Field
 {
 	private $parentEntity = null;
-	private $realValue = true;
 
 	public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
 	{
@@ -37,34 +36,35 @@ class EntityList extends Field
 		];
 	}
 
-	public function injectValue(Entity $entity, Revision $revision, $realValue)
+	public function injectValue(Entity $entity, Value $value)
 	{
-		$this->parentEntity = $entity;
-		$value = parent::injectValue($entity, $revision, $realValue);
-
-		if (!$realValue) {
-			$this->realValue = false;
-			$entity->setAttribute($value->key, $this->getValue($value));
-		}
+		$field = $this->newQuery()->find($value->field_id);
+		$field->parentEntity = $entity;
+		$entity->setAttribute($value->key, $field->getValue($value, false));
 	}
 
-	public function getValue(Value $value)
+	public function injectAdminValue(Entity $entity, Revision $revision)
+	{
+		$this->parentEntity = $entity;
+        $value = $revision->fieldValues->where('key', $this->name)->first() ?: new Value(['key' => $this->name]);
+        $entity->setValue($value);
+        return $value;
+	}
+
+	public function getValue(Value $value, $adminValue = true)
 	{
 		$query = $this->parentEntity->children()->whereHas('template.type', function ($query) {
 			$query->whereAlias($this->getOption('type'));
-		})->with('template.type', 'template.fields')->defaultOrder();
+		})->defaultOrder();
 
-		if (!$this->realValue) {
-			return $query->with('currentRevision')->active()->get()->transform(function ($entity) {
-				$entity->loadValues();
+		if (!$adminValue) {
+			return $query->with('currentValues')->active()->get()->transform(function ($entity) {
+				$entity->loadCurrentValues();
 				return $entity;
 			});
 		}
 
-		return $query->get()->transform(function ($entity) {
-			$entity->loadValues($entity->latestRevision());
-			return $entity;
-		});
+		return $query->with('template.type', 'template.fields', 'currentRevision')->get();
 	}
 }
 

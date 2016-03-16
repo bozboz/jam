@@ -80,7 +80,7 @@ class EntityDecorator extends ModelAdminDecorator
 	{
 		$fields = new Collection(array_filter([
 			new TextField('name', ['label' => 'Name *']),
-			$instance->exists && $instance->template->type->visible ? new TextField('slug', ['label' => 'Slug *']) : null,
+			$instance->exists && $instance->template->type->generate_paths ? new TextField('slug', ['label' => 'Slug *']) : null,
 			new HiddenField('template_id'),
 			new HiddenField('user_id', Auth::id()),
 			new PublishField('status', $instance),
@@ -105,7 +105,7 @@ class EntityDecorator extends ModelAdminDecorator
 		} else {
 			$revision = $instance->latestRevision();
 		}
-		$instance->loadRealValues($revision);
+		$instance->loadAdminValues($revision);
 
 		foreach($instance->template->fields->sortBy('sorting') as $field) {
 			$fieldName = $field->name;
@@ -153,5 +153,10 @@ class EntityDecorator extends ModelAdminDecorator
 		$query->with('template')->whereHas('template.type', function($query) {
 			$query->whereAlias(\Input::get('type'));
 		})->orderBy($this->model->sortBy());
+	}
+
+	public function findInstance($id)
+	{
+		return $this->model->withLatestRevision()->whereId($id)->firstOrFail();
 	}
 }

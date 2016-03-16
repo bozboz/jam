@@ -89,11 +89,16 @@ class Field extends Model implements FieldInterface, Sortable
         return $this->belongsTo(Template::class);
     }
 
-    public function injectValue(Entity $entity, Revision $revision, $realValue)
+    public function injectValue(Entity $entity, Value $value)
+    {
+        $entity->setValue($value);
+        return $value;
+    }
+
+    public function injectAdminValue(Entity $entity, Revision $revision)
     {
         $value = $revision->fieldValues->where('key', $this->name)->first() ?: new Value(['key' => $this->name]);
         $entity->setValue($value);
-
         return $value;
     }
 
@@ -101,7 +106,6 @@ class Field extends Model implements FieldInterface, Sortable
     {
         return e($this->name);
     }
-
 
     public function getInputLabel()
     {
@@ -111,6 +115,7 @@ class Field extends Model implements FieldInterface, Sortable
     public function saveValue(Revision $revision, $value)
     {
         $fieldValue = [
+            'type_alias' => $this->type_alias,
             'field_id' => $this->id,
             'key' => $this->name,
             'value' => !is_array($value) ? $value : null,
