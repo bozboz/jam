@@ -29,15 +29,6 @@ class TypeDecorator extends ModelAdminDecorator
 		return $instance->name;
 	}
 
-	/**
-	 * @param  array  $attributes
-	 * @return Bozboz\Admin\Base\ModelInterface
-	 */
-	public function newModelInstance($attributes = array())
-	{
-		return $this->model->newInstance(['visible' => true]);
-	}
-
 	public function getFields($instance)
 	{
 		return [
