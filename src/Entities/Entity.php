@@ -276,7 +276,37 @@ class Entity extends Node implements ModelInterface, Sortable
 
 			$input['published_at'] = $input['currentRevision']['published_at'];
 		}
+		return !$latestRevision || count($this->diffValues($currentValues, $input)) > 0;
+	}
 
-		return !$latestRevision || count(array_diff_assoc($currentValues, $input)) > 0;
+	protected function diffValues($array1, $array2)
+	{
+	    foreach($array1 as $key => $value)
+	    {
+	        if(is_array($value))
+	        {
+	              if(!isset($array2[$key]))
+	              {
+	                  $difference[$key] = $value;
+	              }
+	              elseif(!is_array($array2[$key]))
+	              {
+	                  $difference[$key] = $value;
+	              }
+	              else
+	              {
+	                  $new_diff = $this->diffValues($value, $array2[$key]);
+	                  if($new_diff != FALSE)
+	                  {
+	                        $difference[$key] = $new_diff;
+	                  }
+	              }
+	          }
+	          elseif(!isset($array2[$key]) || $array2[$key] != $value)
+	          {
+	              $difference[$key] = $value;
+	          }
+	    }
+	    return !isset($difference) ? 0 : $difference;
 	}
 }
