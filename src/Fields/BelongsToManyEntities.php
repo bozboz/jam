@@ -33,7 +33,7 @@ class BelongsToManyEntities extends BelongsToEntity
     public function injectValue(Entity $entity, Value $value)
     {
         parent::injectValue($entity, $value);
-        $relations = $this->getValue($value)->with('CurrentValues')->get()->map(function($entity) {
+        $relations = $this->getValue($value)->with('CurrentValues')->get()->each(function($entity) {
             $entity->loadCurrentValues();
         });
         $entity->setAttribute($value->key, $relations);
@@ -43,18 +43,5 @@ class BelongsToManyEntities extends BelongsToEntity
     {
         $value = parent::injectAdminValue($entity, $revision);
         $entity->setAttribute($this->getInputName(), $this->getValue($value)->getRelatedIds()->all());
-    }
-
-    public function getValue(Value $value)
-    {
-        return $value->belongsToMany(Entity::class, 'entity_entity');
-    }
-
-    public function saveValue(Revision $revision, $value)
-    {
-        $valueObj = parent::saveValue($revision, $value);
-        $this->getValue($valueObj)->sync($value);
-
-        return $valueObj;
     }
 }

@@ -80,7 +80,6 @@ class JamServiceProvider extends ServiceProvider
 		});
 	}
 
-
 	protected function registerFieldTypes()
 	{
 		$mapper = $this->app['FieldMapper'];
@@ -102,6 +101,7 @@ class JamServiceProvider extends ServiceProvider
 			'entity-list-foreign'      => \Bozboz\Jam\Fields\EntityListForeign::class,
 			'belongs-to-entity'        => \Bozboz\Jam\Fields\BelongsToEntity::class,
 			'belongs-to-many-entities' => \Bozboz\Jam\Fields\BelongsToManyEntities::class,
+			'hidden'                   => \Bozboz\Jam\Fields\Hidden::class,
 		]);
 	}
 }

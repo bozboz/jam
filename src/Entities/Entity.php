@@ -230,11 +230,8 @@ class Entity extends Node implements ModelInterface, Sortable
 		if ($this->requiresNewRevision($input)) {
 			switch ($input['status']) {
 				case Revision::SCHEDULED:
-					$publishedAt = $input['currentRevision']['published_at'];
-				break;
-
 				case Revision::PUBLISHED:
-					$publishedAt = $this->freshTimestamp();
+					$publishedAt = $input['currentRevision']['published_at'];
 				break;
 
 				default:

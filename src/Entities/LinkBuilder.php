@@ -47,8 +47,13 @@ class LinkBuilder implements Contract
 	 */
 	public function addPaths(Entity $instance)
 	{
-		$path = trim($instance->getAncestors()->pluck('slug')->push($instance->slug)->implode('/'), '/');
+		$path = $this->calculatePathForInstance($instance);
 		$instance->paths()->withTrashed()->firstOrCreate(['path' => $path])->restore();
+	}
+
+	protected function calculatePathForInstance(Entity $instance)
+	{
+		return trim($instance->getAncestors()->pluck('slug')->push($instance->slug)->implode('/'), '/');
 	}
 
 	/**

@@ -19,4 +19,9 @@ class CurrentValue extends Value
         $instance->field = (new Field())->newInstance(['type_alias' => $attributes->type_alias], false);
         return $instance;
     }
+
+    public function getForeignKey()
+    {
+        return 'value_id';
+    }
 }
