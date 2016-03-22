@@ -6,5 +6,5 @@ use Bozboz\Jam\Entities\Entity;
 
 interface LinkBuilder
 {
-	// public function build(Entity $entity);
+	public function updatePaths(Entity $instance);
 }
