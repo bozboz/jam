@@ -91,7 +91,7 @@ class EntityRepository implements EntityRepositoryInterface
 
 	public function loadCurrentValues($entities, $fields = ['*'])
 	{
-		if (!$entities instanceof Collection) {
+		if ($entities instanceof Entity) {
 			$entityCollection = collect([$entities]);
 		} else {
 			$entityCollection = $entities;
