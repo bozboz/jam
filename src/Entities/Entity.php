@@ -149,6 +149,34 @@ class Entity extends Node implements ModelInterface, Sortable
 		});
 	}
 
+	public function scopeJoinValueByKey($query, $key, $alias = 'entity_values')
+	{
+		$query->join("entity_values as {$alias}", 'entities.revision_id', '=', "{$alias}.revision_id");
+		$query->where("{$alias}.key", $key);
+	}
+
+	public function scopeWhereValue($query, $key, $value)
+	{
+		$alias = 'where_value_'.uniqid();
+		$query->joinValueByKey($key, $alias)->where("{$alias}.value", $value);
+	}
+
+	public function scopeWhereBelongsToEntity($query, $relation, $related)
+	{
+		$alias = 'belongs_to_value_'.uniqid();
+		$query->joinValueByKey($relation, $alias);
+		$query->where("{$alias}.foreign_key", is_int($related) ? $related : $related->getKey());
+	}
+
+	public function scopeWhereBelongsToManyEntity($query, $relation, $related)
+	{
+		$valueAlias = 'belongs_to_many_value_'.uniqid();
+		$entityEntityAlias = 'belongs_to_many_entity_'.uniqid();
+		$query->joinValueByKey($relation, $valueAlias);
+		$query->join("entity_entity as {$entityEntityAlias}", "{$entityEntityAlias}.value_id", '=', "{$valueAlias}.id");
+		$query->where("{$entityEntityAlias}.entity_id", is_int($related) ? $related : $related->getKey());
+	}
+
 	public function currentValues()
 	{
 		return $this->hasMany(CurrentValue::class, 'revision_id', 'revision_id');
