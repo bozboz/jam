@@ -44,7 +44,7 @@ class Entity extends Node implements ModelInterface, Sortable
 	static public function boot()
 	{
 		parent::boot();
-		static::saved([static::$linkBuilder, 'updatePaths']);
+		static::saved([static::getLinkBuilder(), 'updatePaths']);
 	}
 
     public static function setLinkBuilder(LinkBuilder $linkBuilder)
@@ -78,6 +78,11 @@ class Entity extends Node implements ModelInterface, Sortable
 	public function getSlugSourceField()
 	{
 		return 'name';
+	}
+
+	public function getForeignKey()
+	{
+		return 'entity_id';
 	}
 
 	public function paths()

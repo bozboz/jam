@@ -54,7 +54,7 @@ class JamServiceProvider extends ServiceProvider
 		$this->buildAdminMenu();
 
 		if (! $this->app->routesAreCached()) {
-			require "{$packageRoot}/src/Http/routes.php";
+			require "{$packageRoot}src/Http/routes.php";
 		}
 	}
 

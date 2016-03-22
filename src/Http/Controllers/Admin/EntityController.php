@@ -9,6 +9,8 @@ use Bozboz\Admin\Reports\Actions\DropdownFormItem;
 use Bozboz\Admin\Reports\Actions\DropdownItem;
 use Bozboz\Admin\Reports\Actions\LinkAction;
 use Bozboz\Admin\Reports\NestedReport;
+use Bozboz\Jam\Contracts\EntityRepository;
+use Bozboz\Jam\Contracts\LinkBuilder;
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\EntityDecorator;
 use Bozboz\Jam\Entities\EntityHistoryAction;
@@ -27,11 +29,13 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class EntityController extends ModelAdminController
 {
+	protected $repository;
 	protected $type;
 
-	public function __construct(EntityDecorator $decorator)
+	public function __construct(EntityDecorator $decorator, EntityRepository $repository)
 	{
 		parent::__construct($decorator);
+		$this->repository = $repository;
 	}
 
 	public function index()
@@ -116,10 +120,15 @@ class EntityController extends ModelAdminController
 				)
 			]),
 			'history' => new EntityHistoryAction(
-				'\\'.EntityRevisionController::class.'@index',
-				[app()->make(EntityRevisionController::class), 'canView']
+				'\\'.$this->getEntityRevisionController().'@index',
+				[app()->make($this->getEntityRevisionController()), 'canView']
 			)
 		] + parent::getRowActions();
+	}
+
+	public function getEntityRevisionController()
+	{
+		return EntityRevisionController::class;
 	}
 
 	public function createOfType($type)
@@ -135,7 +144,7 @@ class EntityController extends ModelAdminController
 	protected function save($modelInstance, $input)
 	{
 		parent::save($modelInstance, $input);
-		$revision = $modelInstance->newRevision($input);
+		$revision = $this->repository->newRevision($modelInstance, $input);
 
 		if (Config::get('jam.revision_history_length')) {
 			$pastRevisionsQuery = Revision::whereEntityId($modelInstance->id);

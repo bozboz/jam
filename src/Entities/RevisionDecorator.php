@@ -18,17 +18,14 @@ class RevisionDecorator extends ModelAdminDecorator
 
 	public function getColumns($instance)
 	{
-		return array_filter([
-			'Name' => !Input::has('entity_id') ? $this->getLabel($instance) : null,
+		return [
 			'Live Revision' => $instance->entity->currentRevision && $instance->entity->currentRevision->id === $instance->id
 				? '<i class="fa fa-check"></i>'
 				: false,
 			'Author' => $instance->username,
 			'Date' => $instance->created_at->format('d M Y H:i'),
 			'Sceduled For' => $instance->published_at > new Carbon ? $instance->published_at->format('d M Y H:i') : null
-		], function($item) {
-			return !is_null($item);
-		});
+		];
 	}
 
 	public function getLabel($instance)

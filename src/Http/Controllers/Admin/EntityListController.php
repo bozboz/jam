@@ -66,6 +66,11 @@ class EntityListController extends EntityController
 		return $template->fields->where('type_alias', 'foreign')->pluck('name')->first();
 	}
 
+	protected function getEntityController()
+	{
+		return EntityController::class;
+	}
+
 	/**
 	 * The generic response after a successful store/update action.
 	 */
@@ -73,13 +78,13 @@ class EntityListController extends EntityController
 	{
 		$instance->loadAdminValues();
 		$foreignKey = $this->foreignKey($instance->template);
-		return \Redirect::action('\\' . EntityController::class . '@edit', [$instance->getAttribute($foreignKey)]);
+		return \Redirect::action('\\' . $this->getEntityController() . '@edit', [$instance->getAttribute($foreignKey)]);
 	}
 
 	protected function getListingUrl($instance)
 	{
 		$instance->loadAdminValues();
 		$foreignKey = $this->foreignKey($instance->template);
-		return action('\\' . EntityController::class . '@edit', [$instance->getAttribute($foreignKey)]);
+		return action('\\' . $this->getEntityController() . '@edit', [$instance->getAttribute($foreignKey)]);
 	}
 }

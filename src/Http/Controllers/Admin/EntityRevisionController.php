@@ -46,8 +46,8 @@ class EntityRevisionController extends ModelAdminController
 		if (Input::has('entity_id')) {
 			return [
 				new LinkAction(
-					['\\'.EntityController::class.'@index', 'type' => Entity::find(Input::get('entity_id'))->template->type->alias],
-					[app()->make(EntityController::class), 'canView'],
+					['\\'.$this->getEntityController().'@index', 'type' => Entity::find(Input::get('entity_id'))->template->type->alias],
+					[app()->make($this->getEntityController()), 'canView'],
 					[
 						'label' => 'Back to listing',
 						'icon' => 'fa fa-list-alt',
@@ -64,12 +64,12 @@ class EntityRevisionController extends ModelAdminController
 	{
 		return [
 			new EntityAtRevisionAction(
-				'\\'.EntityController::class.'@edit',
-				[app()->make(EntityController::class), 'canEdit']
+				'\\'.$this->getEntityController().'@edit',
+				[app()->make($this->getEntityController()), 'canEdit']
 			),
 			new FormAction(
 				$this->getActionName('revert'),
-				[app()->make(EntityController::class), 'canEdit'],
+				[app()->make($this->getEntityController()), 'canEdit'],
 				[
 					'label' => 'Revert',
 					'icon' => 'fa fa-undo',
@@ -79,6 +79,11 @@ class EntityRevisionController extends ModelAdminController
 				]
 			),
 		];
+	}
+
+	protected function getEntityController()
+	{
+		return EntityController::class;
 	}
 
 	public function getSuccessResponse($instance)
