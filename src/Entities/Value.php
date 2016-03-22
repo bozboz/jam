@@ -2,6 +2,7 @@
 
 namespace Bozboz\Jam\Entities;
 
+use Bozboz\Jam\Fields\Field;
 use Illuminate\Database\Eloquent\Model;
 
 class Value extends Model
@@ -11,6 +12,7 @@ class Value extends Model
 	protected $fillable = [
 		'key',
 		'value',
+		'foreign_key',
 		'type_alias',
 		'field_id',
 	];
@@ -18,6 +20,18 @@ class Value extends Model
 	public function revision()
 	{
 		return $this->belongsTo(Revision::class);
+	}
+
+	public function duplicate($revision)
+	{
+		$newValue = $this->replicate();
+		$newValue->revision()->associate($revision);
+		$newValue->save();
+
+		$field = (new Field)->newInstance(['type_alias' => $this->type_alias]);
+		$field->duplicateValue($this, $newValue);
+
+		return $newValue;
 	}
 
 	public function __toString()

@@ -15,4 +15,5 @@ interface Field
 	public function getInputName();
 	public function saveValue(Revision $revision, $value);
 	public function getValue(Value $value);
+	public function duplicateValue(Value $oldValue, Value $newValue);
 }

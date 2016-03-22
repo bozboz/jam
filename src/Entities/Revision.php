@@ -36,12 +36,8 @@ class Revision extends Model implements ModelInterface
 		$newRevision = $this->replicate();
 		$newRevision->save();
 
-		$this->relations = [];
-
 		$this->fieldValues->each(function($value) use ($newRevision) {
-			$newValue = $value->replicate();
-			$newValue->revision()->associate($newRevision);
-			$newValue->save();
+			$newValue = $value->duplicate($newRevision);
 		});
 
 		return $newRevision;

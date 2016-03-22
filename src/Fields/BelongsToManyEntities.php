@@ -44,4 +44,22 @@ class BelongsToManyEntities extends BelongsToEntity
         $value = parent::injectAdminValue($entity, $revision);
         $entity->setAttribute($this->getInputName(), $this->getValue($value)->getRelatedIds()->all());
     }
+
+    public function getValue(Value $value)
+    {
+        return $value->belongsToMany(Entity::class, 'entity_entity');
+    }
+
+    public function saveValue(Revision $revision, $value)
+    {
+        $valueObj = parent::saveValue($revision, json_encode($value));
+        $this->getValue($valueObj)->sync($value);
+
+        return $valueObj;
+    }
+
+    public function duplicateValue(Value $oldValue, Value $newValue)
+    {
+        $this->getValue($newValue)->sync($this->getValue($oldValue)->pluck('entity_id')->toArray());
+    }
 }

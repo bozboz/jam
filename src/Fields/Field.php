@@ -130,6 +130,11 @@ class Field extends Model implements FieldInterface, Sortable
         return $value->value;
     }
 
+    public function duplicateValue(Value $oldValue, Value $newValue)
+    {
+
+    }
+
     /**
      * Create a new instance of the given model.
      *

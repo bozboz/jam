@@ -16,21 +16,22 @@ class BelongsToEntity extends Field
 {
     public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
     {
-        $options = ['' => '- Select -'] + Entity::where(function($query) {
-            if (property_exists($this->options_array, 'template')) {
-                $query->whereHas('template', function($query) {
-                    $query->whereId($this->options_array->template);
-                });
-            } elseif (property_exists($this->options_array, 'type')) {
-                $query->whereHas('template.type', function($query) {
-                    $query->whereId($this->options_array->type);
-                });
+        return new BelongsToField($decorator, $this->getValue($value), [
+                'name' => $this->getInputName(),
+                'label' => $this->getInputLabel()
+            ],
+            function($query) {
+                if (property_exists($this->options_array, 'template')) {
+                    $query->whereHas('template', function($query) {
+                        $query->whereId($this->options_array->template);
+                    });
+                } elseif (property_exists($this->options_array, 'type')) {
+                    $query->whereHas('template.type', function($query) {
+                        $query->whereId($this->options_array->type);
+                    });
+                }
             }
-        })->lists('name', 'id')->toArray();
-
-        return new SelectField($this->getInputName(), [
-            'options' => $options
-        ]);
+        );
     }
 
     public function getOptionFields()
@@ -48,14 +49,14 @@ class BelongsToEntity extends Field
 
     public function getValue(Value $value)
     {
-        return $value->belongsToMany(Entity::class, 'entity_entity', 'value_id', 'entity_id');
+        return $value->belongsTo(Entity::class, 'foreign_key');
     }
 
     public function saveValue(Revision $revision, $value)
     {
         $valueObj = parent::saveValue($revision, $value);
-        $this->getValue($valueObj)->sync((array)$value);
-
+        $valueObj->foreign_key = $value;
+        $valueObj->save();
         return $valueObj;
     }
 }
