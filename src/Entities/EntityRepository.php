@@ -3,9 +3,12 @@
 namespace Bozboz\Jam\Entities;
 
 use Bozboz\Jam\Contracts\EntityRepository as EntityRepositoryInterface;
+use Bozboz\Jam\Entities\CurrentValue;
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\EntityPath;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Kalnoy\Nestedset\Collection;
 
 class EntityRepository implements EntityRepositoryInterface
 {
@@ -54,7 +57,7 @@ class EntityRepository implements EntityRepositoryInterface
 	{
 		$entity->setAttribute('breadcrumbs', $this->breadcrumbs($entity));
 		$entity->setAttribute('child_pages', $this->childPages($entity));
-		$entity->loadCurrentValues();
+		$this->loadCurrentValues($entity);
 	}
 
 	public function breadcrumbs(Entity $entity)
@@ -67,9 +70,85 @@ class EntityRepository implements EntityRepositoryInterface
 		});
 	}
 
-	public function childPages(Entity $entity)
+	public function childPages(Entity $entity, $fields = [])
 	{
-		return $entity->children()->active()->get();
+		$children = $entity->children()->with('template')->active()->get();
+		return $this->loadCurrentListingValues($children);
+	}
+
+	public function loadCurrentListingValues($entities)
+	{
+		$listingFields = array_filter(array_unique(explode(',', $entities->map(function($entity) {
+			return $entity->template->listing_fields;
+		})->implode(','))));
+
+		if ($listingFields) {
+			return $this->loadCurrentValues($entities, $listingFields);
+		} else {
+			return $entities;
+		}
+	}
+
+	public function loadCurrentValues($entities, $fields = ['*'])
+	{
+		if (!$entities instanceof Collection) {
+			$entityCollection = collect([$entities]);
+		} else {
+			$entityCollection = $entities;
+		}
+
+		$revisionIds = $entityCollection->map(function($entity) {
+			return $entity->revision_id;
+		});
+
+		if (!count($revisionIds)) {
+			return $entities;
+		}
+
+		$query = DB::table('entity_values as ev')->select(
+				'ev.revision_id',
+				'ev.id as value_id',
+				'ev.key',
+				'ev.value',
+				'ev.foreign_key',
+				'ev.type_alias',
+				'etfo.key as option_key',
+				'etfo.value as option_value'
+			)
+			->leftJoin('entity_template_field_options as etfo', 'ev.field_id', '=', 'etfo.field_id')
+			->whereIn('ev.revision_id', $revisionIds);
+
+		if ($fields[0] != '*') {
+			$query->whereIn('ev.key', $fields);
+		}
+
+		$results = $query->get();
+
+		$values = [];
+		foreach ($results as $row) {
+			if (!array_key_exists($row->revision_id, $values)) {
+				$values[$row->revision_id] = [];
+			}
+			if (!array_key_exists($row->value_id, $values[$row->revision_id])) {
+				$values[$row->revision_id][$row->value_id] = [
+					'key' => $row->key,
+					'value' => $row->value,
+					'type_alias' => $row->type_alias,
+					'options' => []
+				];
+			}
+			$values[$row->revision_id][$row->value_id]['options'][$row->option_key] = $row->option_value;
+		}
+
+		foreach($values as $revisionId => $revisionValues) {
+			$entity = $entityCollection->where('revision_id', $revisionId)->first();
+			foreach ($revisionValues as $valueId => $valueAttributes) {
+				$value = new CurrentValue($valueAttributes);
+				$value->injectValue($entity);
+			}
+		}
+
+		return $entities;
 	}
 
 	public function newRevision(Entity $entity, $input)

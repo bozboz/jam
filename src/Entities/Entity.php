@@ -231,17 +231,6 @@ class Entity extends Node implements ModelInterface, Sortable
 		}
 	}
 
-	/**
-	 * Load field values as the frontend wants them as an array for all fields
-	 * @param  Revision|null $revision
-	 */
-	public function loadCurrentValues()
-	{
-		$this->currentValues->each(function($value) {
-			$value->injectValue($this);
-		});
-	}
-
 	public function getValue($key)
 	{
 		return array_key_exists($key, $this->values) ? $this->values[$key] : new Value(compact('key'));

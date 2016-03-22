@@ -27,6 +27,7 @@ class Text extends Field
 
     public function getValue(Value $value)
     {
+        return $value->value;
         $parser = new Parser;
         return $parser->setBlockTags(false)->parse($value->value);
     }

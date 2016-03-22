@@ -25,6 +25,7 @@ class Field extends Model implements FieldInterface, Sortable
         'validation',
         'template_id',
         'type_alias',
+        'options_array'
     ];
 
     protected static $mapper;
@@ -71,7 +72,11 @@ class Field extends Model implements FieldInterface, Sortable
 
     public function getOption($key)
     {
-        return $this->options->where('key', $key)->pluck('value')->first();
+        if (array_key_exists('options_array', $this->attributes) && $this->attributes['options_array']) {
+            return $this->attributes['options_array'][$key];
+        } else {
+            return $this->options->where('key', $key)->pluck('value')->first();
+        }
     }
 
     public function getOptionsArrayAttribute()

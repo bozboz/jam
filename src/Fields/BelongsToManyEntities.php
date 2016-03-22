@@ -33,9 +33,8 @@ class BelongsToManyEntities extends BelongsToEntity
     public function injectValue(Entity $entity, Value $value)
     {
         parent::injectValue($entity, $value);
-        $relations = $this->getValue($value)->with('CurrentValues')->get()->each(function($entity) {
-            $entity->loadCurrentValues();
-        });
+        $repository = app()->make(\Bozboz\Jam\Contracts\EntityRepository::class);
+        $repository->loadCurrentListingValues($this->getValue($value));
         $entity->setAttribute($value->key, $relations);
     }
 

@@ -25,7 +25,15 @@ class Template extends Node implements ModelInterface, Sortable
 	protected $fillable = [
 		'name',
 		'view',
-		'type_id'
+		'listing_view',
+		'listing_fields',
+		'type_id',
+	];
+
+	protected $nullable = [
+		'view',
+		'listing_view',
+		'listing_fields',
 	];
 
 	protected function getSlugSourceField()
