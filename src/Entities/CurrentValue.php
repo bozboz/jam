@@ -7,8 +7,10 @@ use Bozboz\Jam\Fields\Field;
 class CurrentValue extends Value
 {
     protected $fillable = [
+        'id',
         'key',
         'value',
+        'foreign_key',
         'type_alias',
         'options',
     ];

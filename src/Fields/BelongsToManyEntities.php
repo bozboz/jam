@@ -22,8 +22,8 @@ class BelongsToManyEntities extends BelongsToEntity
                         $query->whereId($this->options_array->template);
                     });
                 } elseif (property_exists($this->options_array, 'type')) {
-                    $query->whereHas('template.type', function($query) {
-                        $query->whereId($this->options_array->type);
+                    $query->whereHas('template', function($query) {
+                        $query->whereTypeAlias($this->options_array->type);
                     });
                 }
             }
@@ -33,7 +33,7 @@ class BelongsToManyEntities extends BelongsToEntity
     public function injectValue(Entity $entity, Value $value)
     {
         parent::injectValue($entity, $value);
-        $repository = app()->make(\Bozboz\Jam\Contracts\EntityRepository::class);
+        $repository = app(\Bozboz\Jam\Contracts\EntityRepository::class);
         $relations = $repository->loadCurrentListingValues($this->getValue($value)->active()->get());
         $entity->setAttribute($value->key, $relations);
     }

@@ -110,7 +110,6 @@ class EntityRepository implements EntityRepositoryInterface
 		} else {
 			$entityCollection = $entities;
 		}
-
 		$revisionIds = $entityCollection->map(function($entity) {
 			return $entity->revision_id;
 		});
@@ -141,7 +140,9 @@ class EntityRepository implements EntityRepositoryInterface
 		$values = [];
 		foreach ($results as $row) {
 			$values[$row->revision_id][$row->value_id]['key'] = $row->key;
+			$values[$row->revision_id][$row->value_id]['id'] = $row->value_id;
 			$values[$row->revision_id][$row->value_id]['value'] = $row->value;
+			$values[$row->revision_id][$row->value_id]['foreign_key'] = $row->foreign_key;
 			$values[$row->revision_id][$row->value_id]['type_alias'] = $row->type_alias;
 			if ($row->option_key) {
 				$values[$row->revision_id][$row->value_id]['options'][$row->option_key] = $row->option_value;

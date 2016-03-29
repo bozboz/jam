@@ -43,8 +43,10 @@ class BelongsToEntity extends Field
     {
         parent::injectValue($entity, $value);
         $relation = $this->getValue($value)->first();
-        $repository = app()->make(\Bozboz\Jam\Contracts\EntityRepository::class);
-        $repository->loadCurrentListingValues($relation);
+        if ($relation) {
+            $repository = app(\Bozboz\Jam\Contracts\EntityRepository::class);
+            $repository->loadCurrentValues($relation);
+        }
         $entity->setAttribute($value->key, $relation);
     }
 
