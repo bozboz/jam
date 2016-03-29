@@ -9,7 +9,6 @@ use Bozboz\Admin\Fields\URLField;
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\Fields\PublishField;
 use Bozboz\Jam\Entities\Revision;
-use Bozboz\Jam\Fields\FieldMapper;
 use Bozboz\Jam\Templates\Template;
 use Bozboz\Jam\Templates\TemplateDecorator;
 use Bozboz\Jam\Types\Type;
@@ -20,13 +19,16 @@ use Illuminate\Support\Facades\Input;
 
 class EntityDecorator extends ModelAdminDecorator
 {
-	protected $fieldMapper;
+	protected $type;
 
-	public function __construct(Entity $entity, FieldMapper $fieldMapper)
+	public function __construct(Entity $entity)
 	{
-		$this->fieldMapper = $fieldMapper;
-
 		parent::__construct($entity);
+	}
+
+	public function setType($type)
+	{
+		$this->type = $type;
 	}
 
 	public function getColumns($instance)
@@ -48,22 +50,25 @@ class EntityDecorator extends ModelAdminDecorator
 				$statusLabel = null;
 			break;
 		}
+		$path = $instance->canonical_path;
 		return [
 			'Name' => $this->getLabel($instance)
-				. ( $instance->template->type->generate_paths
-					? '&nbsp;&nbsp;<a href="/'.$instance->canonical_path.'" target="_blank" title="Go to '.$this->getLabel($instance).'"><i class="fa fa-external-link"></i></a>'
+				. ( $path
+					? '&nbsp;&nbsp;<a href="/'.$path.'" target="_blank" title="Go to '.$this->getLabel($instance).'"><i class="fa fa-external-link"></i></a>'
 					: null
 			),
 			'Status' => $statusLabel,
 		];
 	}
 
+	public function isSortable()
+	{
+		return $this->type->getSorter()->isSortable();
+	}
 
 	public function getHeading($plural = false)
 	{
-		$type = Type::whereAlias(Input::get('type'))->value('name');
-		$name = preg_replace('/([a-z])([A-Z])/', '$1 $2', $type);
-		return $plural ? str_plural($name) : $name;
+		return $this->type->getHeading($plural);
 	}
 
 	public function getHeadingForInstance($instance)
@@ -80,7 +85,7 @@ class EntityDecorator extends ModelAdminDecorator
 	{
 		$fields = new Collection(array_filter([
 			new TextField('name', ['label' => 'Name *']),
-			$instance->exists && $instance->template->type->generate_paths ? new TextField('slug', ['label' => 'Slug *']) : null,
+			$instance->exists && false && $instance->template->type->generate_paths ? new TextField('slug', ['label' => 'Slug *']) : null,
 			new HiddenField('template_id'),
 			new HiddenField('user_id', Auth::id()),
 			new PublishField('status', $instance),
@@ -124,7 +129,7 @@ class EntityDecorator extends ModelAdminDecorator
 	 */
 	public function newEntityOfType(Template $template)
 	{
-		$entity = $this->model->newInstance();
+		$entity = $this->model->newInstance(['type_alias' => $template->type_alias]);
 
 		$entity->template()->associate($template);
 
@@ -150,9 +155,11 @@ class EntityDecorator extends ModelAdminDecorator
 
 	protected function modifyListingQuery(Builder $query)
 	{
-		$query->with('template')->whereHas('template.type', function($query) {
-			$query->whereAlias(\Input::get('type'));
-		})->orderBy($this->model->sortBy());
+		$query->with('template')->whereHas('template', function($query) {
+			$query->whereTypeAlias(\Input::get('type'));
+		});
+
+		$this->type->getSorter()->sortQuery($query);
 	}
 
 	public function findInstance($id)

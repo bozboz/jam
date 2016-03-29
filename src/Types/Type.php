@@ -2,48 +2,79 @@
 
 namespace Bozboz\Jam\Types;
 
-use Bozboz\Admin\Base\DynamicSlugTrait;
-use Bozboz\Admin\Base\Model;
-use Bozboz\Admin\Media\MediableTrait;
-use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Templates\Template;
+use Illuminate\Support\Fluent;
 
-class Type extends Model
+class Type extends Fluent implements \Bozboz\Admin\Base\ModelInterface
 {
-	use DynamicSlugTrait;
-	use MediableTrait;
+    protected $defaults = [
+        'menu_title' => null,
+        'name' => 'Unknown',
+        'sorter' => \Bozboz\Jam\Types\Sorting\DefaultSort::class,
+        'report' => \Bozboz\Admin\Reports\NestedReport::class,
+        'link_builder' => null,
+        'menu_builder' => \Bozboz\Jam\Types\Menu\Content::class,
+        'entity' => \Bozboz\Jam\Entities\Entity::class
+    ];
 
-	protected $table = 'entity_types';
+    public function entities()
+    {
+        return $this->templates()->get()->entities;
+    }
 
-	protected $fillable = [
-		'name',
-		'alias',
-		'visible',
-		'generate_paths',
-	];
+    public function getHeading($plural)
+    {
+        return $plural ? str_plural($this->name) : $this->name;
+    }
 
-	public function getSlugSourceField()
-	{
-		return 'name';
-	}
+    public function templates()
+    {
+        return Template::whereTypeAlias($this->alias);
+    }
 
-	public function getSlugField()
-	{
-		return 'alias';
-	}
+    public function getEntity($attributes = [])
+    {
+        return $this->getObj('entity', $attributes);
+    }
 
-	public function entities()
-	{
-		return $this->hasManyThrough(Entity::class, Template::class);
-	}
+    public function getLinkBuilder()
+    {
+        return $this->getObj('link_builder');
+    }
 
-	public function templates()
-	{
-		return $this->hasMany(Template::class);
-	}
+    public function isVisible()
+    {
+        return !is_null($this->get('link_builder', $this->defaults->link_builder));
+    }
 
-	public function getValidator()
-	{
-		return new TypeValidator;
-	}
+    public function addToMenu($menu, $url)
+    {
+        return  $this->getObj('menu_builder')->buildMenu($this, $menu, $url);
+    }
+
+    public function getSorter()
+    {
+        return $this->getObj('sorter');
+    }
+
+    public function getReport($decorator)
+    {
+        return $this->getObj('report', $decorator);
+    }
+
+    protected function getObj($type, $arg = null)
+    {
+        $class = $this->get($type, $this->defaults[$type]);
+        return new $class($arg);
+    }
+
+    public function getValidator()
+    {
+        # code...
+    }
+
+    public function sanitiseInput($input)
+    {
+        # code...
+    }
 }

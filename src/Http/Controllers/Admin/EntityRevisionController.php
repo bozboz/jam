@@ -46,7 +46,7 @@ class EntityRevisionController extends ModelAdminController
 		if (Input::has('entity_id')) {
 			return [
 				new LinkAction(
-					['\\'.$this->getEntityController().'@index', 'type' => Entity::find(Input::get('entity_id'))->template->type->alias],
+					['\\'.$this->getEntityController().'@index', 'type' => Entity::find(Input::get('entity_id'))->template->type_alias],
 					[app()->make($this->getEntityController()), 'canView'],
 					[
 						'label' => 'Back to listing',

@@ -10,7 +10,7 @@ use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\EntityDecorator;
 use Bozboz\Jam\Entities\Revision;
 use Bozboz\Jam\Entities\Value;
-use Bozboz\Jam\Fields\FieldMapper;
+use Bozboz\Jam\Mapper;
 use Bozboz\Jam\Fields\Options\Option;
 use Bozboz\Jam\Templates\Template;
 
@@ -24,8 +24,7 @@ class Field extends Model implements FieldInterface, Sortable
         'name',
         'validation',
         'template_id',
-        'type_alias',
-        'options_array'
+        'type_alias'
     ];
 
     protected static $mapper;
@@ -50,7 +49,7 @@ class Field extends Model implements FieldInterface, Sortable
         $query->where('template_id', $instance->template_id);
     }
 
-    public static function setMapper(FieldMapper $mapper)
+    public static function setMapper(Mapper $mapper)
     {
         static::$mapper = $mapper;
     }

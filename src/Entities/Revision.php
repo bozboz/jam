@@ -79,10 +79,10 @@ class Revision extends Model implements ModelInterface
 		}
 	}
 
-	public function getFormattedPublishedAtAttribute($format = 'd-m-Y H:i')
+	public function getFormattedPublishedAtAttribute($format = null)
 	{
 		if ($this->published_at) {
-			return $this->published_at->format($format);
+			return $this->published_at->format($format?:'d-m-Y H:i');
 		}
 	}
 }

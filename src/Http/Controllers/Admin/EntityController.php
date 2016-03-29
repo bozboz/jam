@@ -8,7 +8,6 @@ use Bozboz\Admin\Reports\Actions\DropdownDatePopupItem;
 use Bozboz\Admin\Reports\Actions\DropdownFormItem;
 use Bozboz\Admin\Reports\Actions\DropdownItem;
 use Bozboz\Admin\Reports\Actions\LinkAction;
-use Bozboz\Admin\Reports\NestedReport;
 use Bozboz\Jam\Contracts\EntityRepository;
 use Bozboz\Jam\Contracts\LinkBuilder;
 use Bozboz\Jam\Entities\Entity;
@@ -44,7 +43,8 @@ class EntityController extends ModelAdminController
 			return Redirect::to('/admin');
 		}
 
-		$this->type = Type::with('templates')->where('alias', Input::get('type'))->first();
+		$this->type = app('EntityMapper')->get(Input::get('type'));
+		$this->decorator->setType($this->type);
 
 		if (!$this->type) {
 			throw new NotFoundHttpException;
@@ -60,7 +60,7 @@ class EntityController extends ModelAdminController
 	 */
 	protected function getListingReport()
 	{
-		return new NestedReport($this->decorator);
+		return $this->type->getReport($this->decorator);
 	}
 
 	/**
@@ -70,9 +70,7 @@ class EntityController extends ModelAdminController
 	 */
 	protected function getReportActions()
 	{
-		$options = Template::whereHas('type', function($query) {
-				$query->whereAlias(Input::get('type'));
-			})->orderBy('name')->get()->map(function($template) {
+		$options = Template::whereTypeAlias(Input::get('type'))->orderBy('name')->get()->map(function($template) {
 				return new DropdownItem(
 					[$this->getActionName('createOfType'), $template->alias],
 					[$this, 'canCreate'],
@@ -238,12 +236,12 @@ class EntityController extends ModelAdminController
 	 */
 	protected function getSuccessResponse($instance)
 	{
-		return \Redirect::action($this->getActionName('index'), ['type' => $instance->template->type->alias]);
+		return \Redirect::action($this->getActionName('index'), ['type' => $instance->template->type_alias]);
 	}
 
 	protected function getListingUrl($instance)
 	{
-		return action($this->getActionName('index'), ['type' => $instance->template->type->alias]);
+		return action($this->getActionName('index'), ['type' => $instance->template->type_alias]);
 	}
 
 	public function canPublish($instance)

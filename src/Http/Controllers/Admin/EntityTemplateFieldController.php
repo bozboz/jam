@@ -35,7 +35,7 @@ class EntityTemplateFieldController extends ModelAdminController
 	 */
 	protected function getReportActions()
 	{
-		$options = collect(array_keys(Field::getMapper()->getAll()))->map(function($type) {
+		$options = Field::getMapper()->getAll()->keys()->map(function($type) {
 			return new DropdownItem(
 				[$this->getActionName('createForTemplate'), 'template_id' => Input::get('template_id'), 'type' => $type],
 				[$this, 'canCreate'],

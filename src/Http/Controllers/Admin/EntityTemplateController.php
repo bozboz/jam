@@ -22,7 +22,7 @@ class EntityTemplateController extends ModelAdminController
 
 	public function index()
 	{
-		if (!Input::get('type_id')) {
+		if (!Input::get('type')) {
 			return Redirect::route('admin.entity-types.index');
 		}
 		return parent::index();
@@ -47,29 +47,28 @@ class EntityTemplateController extends ModelAdminController
 	{
 		return [
 			'create' => new CreateAction(
-				[$this->getActionName('createForType'), Input::get('type_id')],
+				[$this->getActionName('createForType'), Input::get('type')],
 				[$this, 'canCreate']
 			)
 		];
 	}
 
-	public function createForType($typeId)
+	public function createForType($typeAlias)
 	{
 		$instance = $this->decorator->newModelInstance();
 
-		$type = $this->type->find($typeId);
-		$instance->type()->associate($type);
+		$instance->type_alias = $typeAlias;
 
 		return $this->renderFormFor($instance, $this->createView, 'POST', 'store');
 	}
 
 	protected function getSuccessResponse($instance)
 	{
-		return Redirect::action($this->getActionName('index'), ['type_id' => $instance->type_id]);
+		return Redirect::action($this->getActionName('index'), ['type' => $instance->type_alias]);
 	}
 
 	protected function getListingUrl($instance)
 	{
-		return action($this->getActionName('index'), ['type_id' => $instance->type_id]);
+		return action($this->getActionName('index'), ['type' => $instance->type_alias]);
 	}
 }

@@ -14,7 +14,7 @@ class TypeTemplatesAction extends LinkAction
 
 	public function getUrl()
 	{
-		return action($this->action, ['type_id' => $this->instance->id]);
+		return action($this->action, ['type' => $this->instance->alias]);
 	}
 }
 

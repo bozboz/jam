@@ -4,8 +4,8 @@ namespace Bozboz\Jam\Providers;
 
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Fields\Field;
-use Bozboz\Jam\Fields\FieldMapper;
 use Bozboz\Jam\Types\Type;
+use Bozboz\Jam\Mapper;
 use Illuminate\Support\ServiceProvider;
 
 class JamServiceProvider extends ServiceProvider
@@ -22,13 +22,15 @@ class JamServiceProvider extends ServiceProvider
 			\Bozboz\Jam\Entities\LinkBuilder::class
 		);
 
-		$this->app->singleton('FieldMapper', function ($app) {
-			return new FieldMapper;
+		$this->app->singleton('EntityMapper', function ($app) {
+			return new Mapper;
 		});
+		Entity::setMapper($this->app['EntityMapper']);
 
+		$this->app->singleton('FieldMapper', function ($app) {
+			return new Mapper;
+		});
 		Field::setMapper($this->app['FieldMapper']);
-
-		Entity::setLinkBuilder($this->app[\Bozboz\Jam\Contracts\LinkBuilder::class]);
 	}
 
 	public function boot()
@@ -49,6 +51,7 @@ class JamServiceProvider extends ServiceProvider
 
 		require __DIR__ . '/../permissions.php';
 
+        $this->registerEntityTypes();
 		$this->registerFieldTypes();
 
 		$this->buildAdminMenu();
@@ -64,13 +67,12 @@ class JamServiceProvider extends ServiceProvider
 		{
 			$url = $this->app['url'];
 
-			$entityTypes = Type::whereVisible(true)->get();
-
-			foreach ($entityTypes as $type) {
-				if ($menu->gate('view_entity_type', $type)) {
-					$menu[$type->name] = $url->route('admin.entities.index', ['type' => $type->alias]);
+			$entityTypes = $this->app['EntityMapper']->getAll()->each(function($type, $alias) use ($url, $menu) {
+				$type->alias = $alias;
+				if ($type->templates()->count()) {
+					$type->addToMenu($menu, $url);
 				}
-			}
+			});
 
 			if ($menu->gate('manage_entities')) {
 				$menu['Jam'] = [
@@ -79,6 +81,19 @@ class JamServiceProvider extends ServiceProvider
 			}
 		});
 	}
+
+    protected function registerEntityTypes()
+    {
+        $mapper = $this->app['EntityMapper'];
+
+        $mapper->register([
+            'pages' => new \Bozboz\Jam\Types\Type([
+            	'name' => 'Pages',
+            	'entity' => Entity::class,
+            	'link_builder' => \Bozboz\Jam\Entities\LinkBuilder::class
+            ]),
+        ]);
+    }
 
 	protected function registerFieldTypes()
 	{

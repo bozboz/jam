@@ -8,6 +8,6 @@ class TemplateValidator extends Validator
 {
 	protected $rules = [
 		'name' => 'required',
-		'type_id' => 'required|exists:entity_types,id'
+		'type_alias' => 'required'
 	];
 }

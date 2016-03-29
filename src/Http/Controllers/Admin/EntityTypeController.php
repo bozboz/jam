@@ -21,6 +21,11 @@ class EntityTypeController extends ModelAdminController
 		return 'manage_entities';
 	}
 
+	protected function getReportActions()
+	{
+		return [];
+	}
+
 	/**
 	 * Return an array of actions each row can perform
 	 *
@@ -28,11 +33,11 @@ class EntityTypeController extends ModelAdminController
 	 */
 	protected function getRowActions()
 	{
-		return array_merge([
+		return [
 			new TypeTemplatesAction(
 					'\\'.EntityTemplateController::class.'@index',
 					[$this, 'canEdit']
 			)
-		], parent::getRowActions());
+		];
 	}
 }

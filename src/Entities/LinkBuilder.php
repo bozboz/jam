@@ -34,12 +34,9 @@ class LinkBuilder implements Contract
 	 */
 	protected function requiresPath(Entity $instance)
 	{
-		return $instance->template && $instance->template->type->generate_paths
-			&& (
-				$instance->isDirty('slug')
+		return $instance->isDirty('slug')
 				||
-				$instance->isDirty('parent_id')
-			);
+				$instance->isDirty('parent_id');
 	}
 
 	/**

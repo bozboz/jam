@@ -6,6 +6,7 @@ use Bozboz\Admin\Base\ModelAdminDecorator;
 use Bozboz\Admin\Fields\CheckboxField;
 use Bozboz\Admin\Fields\MediaBrowser;
 use Bozboz\Admin\Fields\TextField;
+use Bozboz\Jam\Mapper;
 use Bozboz\Jam\Types\Type;
 
 class TypeDecorator extends ModelAdminDecorator
@@ -19,8 +20,6 @@ class TypeDecorator extends ModelAdminDecorator
 	{
 		return [
 			'Name' => $this->getLabel($instance),
-			'Generates Paths' => $instance->generate_paths ? '<i class="fa fa-check"></i>' : '',
-			'Visible' => $instance->visible ? '<i class="fa fa-check"></i>' : '',
 		];
 	}
 
@@ -39,8 +38,15 @@ class TypeDecorator extends ModelAdminDecorator
 		];
 	}
 
-	public function getSyncRelations()
+	public function getListingModels()
 	{
-		return ['media'];
+		return app('EntityMapper')->getAll()->keys()->map(function($typeAlias) {
+			return new Type([
+				'id' => uniqid(),
+				'alias' => $typeAlias,
+				'name' => $typeAlias,
+				'visible' => true
+			]);
+		});
 	}
 }

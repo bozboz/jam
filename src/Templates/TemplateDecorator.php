@@ -5,7 +5,6 @@ namespace Bozboz\Jam\Templates;
 use Bozboz\Admin\Base\ModelAdminDecorator;
 use Bozboz\Admin\Fields\HiddenField;
 use Bozboz\Admin\Fields\TextField;
-use Bozboz\Jam\Fields\FieldMapper;
 use Bozboz\Jam\Templates\Template;
 use Bozboz\Jam\Types\Type;
 use Illuminate\Database\Eloquent\Builder;
@@ -15,9 +14,9 @@ class TemplateDecorator extends ModelAdminDecorator
 {
 	protected $fieldMapper;
 
-	public function __construct(Template $instance, FieldMapper $fieldMapper)
+	public function __construct(Template $instance)
 	{
-		$this->fieldMapper = $fieldMapper;
+		$this->fieldMapper = app('FieldMapper');
 		parent::__construct($instance);
 	}
 
@@ -35,7 +34,7 @@ class TemplateDecorator extends ModelAdminDecorator
 
 	public function getHeading($plural = false)
 	{
-		return (Input::has('type_id') ? Type::find(Input::get('type_id'))->name . ' ' : '')
+		return ''//(Input::has('type_id') ? Type::find(Input::get('type_id'))->name . ' ' : '')
 		       . parent::getHeading($plural);
 	}
 
@@ -47,12 +46,12 @@ class TemplateDecorator extends ModelAdminDecorator
 			new TextField('view'),
 			new TextField('listing_view'),
 			new TextField('listing_fields'),
-			new HiddenField('type_id')
+			new HiddenField('type_alias')
 		];
 	}
 
 	protected function modifyListingQuery(Builder $query)
 	{
-		$query->whereTypeId(Input::get('type_id'))->orderBy($this->model->sortBy());
+		$query->whereTypeAlias(Input::get('type'))->orderBy($this->model->sortBy());
 	}
 }

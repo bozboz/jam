@@ -7,7 +7,6 @@ use Bozboz\Admin\Fields\BelongsToField;
 use Bozboz\Admin\Fields\HiddenField;
 use Bozboz\Admin\Fields\SelectField;
 use Bozboz\Admin\Fields\TextField;
-use Bozboz\Jam\Fields\FieldMapper;
 use Bozboz\Jam\Fields\TemplateField;
 use Bozboz\Jam\Templates\Template;
 use Illuminate\Database\Eloquent\Builder;
@@ -16,11 +15,9 @@ use Input;
 class FieldDecorator extends ModelAdminDecorator
 {
 	protected $adminFieldClass;
-	protected $mapper;
 
-	public function __construct(Field $instance, FieldMapper $mapper)
+	public function __construct(Field $instance)
 	{
-		$this->mapper = $mapper;
 		parent::__construct($instance);
 	}
 
@@ -57,7 +54,7 @@ class FieldDecorator extends ModelAdminDecorator
 
 	protected function getTypeOptions()
 	{
-		$types = array_keys(Field::getMapper()->getAll());
+		$types = Field::getMapper()->getAll()->keys();
 		return ['' => '- Select -']+array_combine($types, $types);
 	}
 

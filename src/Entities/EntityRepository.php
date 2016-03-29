@@ -12,6 +12,13 @@ use Kalnoy\Nestedset\Collection;
 
 class EntityRepository implements EntityRepositoryInterface
 {
+	protected $mapper;
+
+	function __construct()
+	{
+		$this->mapper = app()->make('EntityMapper');
+	}
+
 	public function find($id)
 	{
 		$entity = Entity::active()->whereId($id)->first();
@@ -23,6 +30,11 @@ class EntityRepository implements EntityRepositoryInterface
 		$entity->setAttribute('canonical', $entity->canonical_path);
 
 		return $entity;
+	}
+
+	public function forType($typeAlias)
+	{
+		$entities = (new $this->mapper->get($typeAlias))->all();
 	}
 
 	public function getForPath($path)
@@ -78,14 +90,16 @@ class EntityRepository implements EntityRepositoryInterface
 
 	public function loadCurrentListingValues($entities)
 	{
-		$listingFields = array_filter(array_unique(explode(',', $entities->map(function($entity) {
-			return $entity->template->listing_fields;
-		})->implode(','))));
+		if ($entities) {
+			$listingFields = array_filter(array_unique(explode(',', $entities->map(function($entity) {
+				return $entity->template->listing_fields;
+			})->implode(','))));
 
-		if ($listingFields) {
-			return $this->loadCurrentValues($entities, $listingFields);
-		} else {
-			return $entities;
+			if ($listingFields) {
+				return $this->loadCurrentValues($entities, $listingFields);
+			} else {
+				return $entities;
+			}
 		}
 	}
 

@@ -27,7 +27,7 @@ class Template extends Node implements ModelInterface, Sortable
 		'view',
 		'listing_view',
 		'listing_fields',
-		'type_id',
+		'type_alias',
 	];
 
 	protected $nullable = [

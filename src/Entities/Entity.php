@@ -7,9 +7,10 @@ use Bozboz\Admin\Base\ModelInterface;
 use Bozboz\Admin\Base\SanitisesInputTrait;
 use Bozboz\Admin\Base\Sorting\NestedSortableTrait;
 use Bozboz\Admin\Base\Sorting\Sortable;
-use Bozboz\Jam\Contracts\LinkBuilder;
+use Bozboz\Jam\Entities\LinkBuilder;
 use Bozboz\Jam\Entities\Value;
 use Bozboz\Jam\Field;
+use Bozboz\Jam\Mapper;
 use Bozboz\Jam\Templates\Template;
 use Bozboz\Jam\Types\Type;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -26,8 +27,6 @@ class Entity extends Node implements ModelInterface, Sortable
 		sort as traitSort;
 	}
 
-	protected static $linkBuilder;
-
 	protected $table = 'entities';
 
 	protected $nullable = [];
@@ -37,6 +36,8 @@ class Entity extends Node implements ModelInterface, Sortable
 		'slug',
 	];
 
+	protected static $mapper;
+
 	protected $dates = ['deleted_at'];
 
 	protected $values = [];
@@ -44,18 +45,23 @@ class Entity extends Node implements ModelInterface, Sortable
 	static public function boot()
 	{
 		parent::boot();
-		static::saved([static::getLinkBuilder(), 'updatePaths']);
+		static::saved([__CLASS__, 'updatePaths']);
 	}
 
-    public static function setLinkBuilder(LinkBuilder $linkBuilder)
-    {
-        static::$linkBuilder = $linkBuilder;
-    }
+	public static function setMapper(Mapper $mapper)
+	{
+		static::$mapper = $mapper;
+	}
 
-    public static function getLinkBuilder()
-    {
-        return static::$linkBuilder;
-    }
+	public static function getMapper()
+	{
+		return static::$mapper;
+	}
+
+	public static function updatePaths($entity)
+	{
+		$entity->getMapper()->get($entity->template->type_alias)->getLinkBuilder()->updatePaths($entity);
+	}
 
 	public function sortBy()
 	{
@@ -65,7 +71,7 @@ class Entity extends Node implements ModelInterface, Sortable
 	public function sort($before, $after, $parent)
 	{
 		$this->traitSort($before, $after, $parent);
-		static::$linkBuilder->updatePaths($this);
+		$this->getMapper()->get($this->template->type_alias)->getLinkBuilder()->updatePaths($this);
 	}
 
 	public function getValidator()
@@ -94,7 +100,7 @@ class Entity extends Node implements ModelInterface, Sortable
 	{
 		if ($this->paths->count()) {
 			$path = $this->paths->where('canonical_id', null)->pluck('path')->first();
-		} elseif ($this->template->type->visible) {
+		} elseif ($this->template->type->isVisible()) {
 			$path = "/{$this->id}/{$this->slug}";
 		} else {
 			$path = null;
@@ -245,5 +251,25 @@ class Entity extends Node implements ModelInterface, Sortable
 	public function template()
 	{
 		return $this->belongsTo(Template::class);
+	}
+
+	/**
+	 * Create a new instance of the given model.
+	 *
+	 * @param  array  $attributes
+	 * @param  bool   $exists
+	 * @return static
+	 */
+	public function newInstance($attributes = [], $exists = false)
+	{
+		if (array_key_exists('type_alias', $attributes)) {
+			$mapper = static::getMapper();
+			$model = $mapper->get($attributes['type_alias'])->getEntity((array) $attributes);
+		} else {
+			$model = new static((array) $attributes);
+		}
+		$model->exists = $exists;
+
+		return $model;
 	}
 }

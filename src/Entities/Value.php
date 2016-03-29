@@ -22,6 +22,11 @@ class Value extends Model
 		return $this->belongsTo(Revision::class);
 	}
 
+	public function getForeignKey()
+	{
+		return 'value_id';
+	}
+
 	public function duplicate($revision)
 	{
 		$newValue = $this->replicate();
