@@ -54,7 +54,7 @@ class FieldDecorator extends ModelAdminDecorator
 
 	protected function getTypeOptions()
 	{
-		$types = Field::getMapper()->getAll()->keys();
+		$types = Field::getMapper()->getAll()->keys()->toArray();
 		return ['' => '- Select -']+array_combine($types, $types);
 	}
 

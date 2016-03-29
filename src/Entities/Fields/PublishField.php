@@ -37,15 +37,26 @@ class PublishField extends SelectField
 	public function getJavascript()
 	{
 		$scheduleValue = Revision::SCHEDULED;
+		$publishedValue = Revision::PUBLISHED;
 		return $this->dateInput->getJavascript() . <<<JAVASCRIPT
 			$(function() {
 				var publishDropdown = $('.js-publish-dropdown');
 
-				function toggleDateInput(select) {
-					if (select.val() == {$scheduleValue}) {
-						select.next().removeClass('hidden');
-					} else {
-						select.next().addClass('hidden');
+				function toggleDateInput(select, first) {
+					var date = select.next();
+					date.find('label').html('Scheduled Date');
+					if (!first) {
+						date.find('.js-datetimepicker').datetimepicker('setDate',  null);
+					}
+					switch (select.val()) {
+						case '{$publishedValue}':
+							date.find('label').html('Published Date');
+						case '{$scheduleValue}':
+							date.removeClass('hidden');
+						break;
+
+						default:
+							date.addClass('hidden');
 					}
 				}
 
@@ -53,7 +64,7 @@ class PublishField extends SelectField
 					toggleDateInput($(this));
 				});
 
-				toggleDateInput(publishDropdown);
+				toggleDateInput(publishDropdown, true);
 			});
 JAVASCRIPT;
 	}

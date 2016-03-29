@@ -9,9 +9,11 @@ class TypeSelectField extends SelectField
 {
     public function __construct($name)
     {
-        parent::__construct('options_array['.$name.'_type]', [
+        parent::__construct('options_array['.e(strtolower($name)).'_type]', [
             'label' => $name,
-            'options' => app('EntityMapper')->getAll()->prepend(['- All -', '']),
+            'options' => app('EntityMapper')->getAll()->map(function($type) {
+                return $type->name;
+            })->prepend('- All -', ''),
             'class' => 'js-entity-type-select form-control select2'
         ]);
     }

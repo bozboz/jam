@@ -44,7 +44,7 @@ class Type extends Fluent implements \Bozboz\Admin\Base\ModelInterface
 
     public function isVisible()
     {
-        return !is_null($this->get('link_builder', $this->defaults->link_builder));
+        return !is_null($this->get('link_builder', $this->defaults['link_builder']));
     }
 
     public function addToMenu($menu, $url)

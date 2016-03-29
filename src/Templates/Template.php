@@ -73,6 +73,6 @@ class Template extends Node implements ModelInterface, Sortable
 
 	public function type()
 	{
-		return $this->belongsTo(Type::class);
+		return Entity::getMapper()->get($this->type_alias);
 	}
 }

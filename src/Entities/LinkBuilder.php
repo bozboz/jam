@@ -45,6 +45,7 @@ class LinkBuilder implements Contract
 	public function addPaths(Entity $instance)
 	{
 		$path = $this->calculatePathForInstance($instance);
+		EntityPath::onlyTrashed()->where('entity_id', '<>', $instance->id)->wherePath($path)->forceDelete();
 		$instance->paths()->withTrashed()->firstOrCreate(['path' => $path])->restore();
 	}
 

@@ -1,8 +1,9 @@
 <?php
 
-namespace Bozboz\JamBlog\Fields;
+namespace Bozboz\Jam\Fields;
 
 use Bozboz\Admin\Fields\FieldGroup;
+use Bozboz\Admin\Fields\SelectField;
 use Bozboz\Jam\Templates\Template;
 use Bozboz\Jam\Types\Type;
 
@@ -11,12 +12,14 @@ class TemplateSelectField extends FieldGroup
     public function __construct($name)
     {
         parent::__construct($name, [
-            new SelectField('options_array['.$name.'_type]', [
+            new SelectField('options_array[type]', [
                 'label' => 'Type',
-                'options' => ['' => '- All -']+Type::lists('name', 'id')->toArray(),
+                'options' => app('EntityMapper')->getAll()->map(function($type) {
+                    return $type->name;
+                })->prepend('- All -', ''),
                 'class' => 'js-entity-type-select form-control select2'
             ]),
-            new SelectField('options_array['.$name.'_template]', [
+            new SelectField('options_array[template]', [
                 'label' => 'Template',
                 'options' => ['' => '- All -']+Template::lists('name', 'id')->toArray(),
                 'class' => 'js-entity-template-select form-control select2'
@@ -26,14 +29,14 @@ class TemplateSelectField extends FieldGroup
 
     public function getJavascript()
     {
-        $types = Type::with('templates')->get()->map(function($type) {
-            $templates = $type->templates->pluck('name', 'id');
+        $types = app('EntityMapper')->getAll()->map(function($type) {
+            $templates = $type->templates()->pluck('name', 'id');
             return [
                 'id' => $type->id,
                 'templates' => $templates
             ];
         })->toArray();
-        $types = json_encode(array_combine(array_column($types, 'id'), array_column($types, 'templates')));
+        $types = json_encode(array_combine(array_keys($types), array_column($types, 'templates')));
         return <<<JAVASCRIPT
             jQuery(function($) {
                 var types = {$types};

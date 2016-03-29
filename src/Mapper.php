@@ -37,6 +37,11 @@ class Mapper
 
 	public function getAll()
 	{
-		return collect($this->mapping);
+		return collect($this->mapping)->each(function($map, $alias) {
+			if (!is_string($map)) {
+				$map->alias = $alias;
+			}
+			return $map;
+		});
 	}
 }

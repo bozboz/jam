@@ -85,7 +85,7 @@ class EntityDecorator extends ModelAdminDecorator
 	{
 		$fields = new Collection(array_filter([
 			new TextField('name', ['label' => 'Name *']),
-			$instance->exists && false && $instance->template->type->generate_paths ? new TextField('slug', ['label' => 'Slug *']) : null,
+			$instance->exists && $instance->template->type()->isVisible() ? new TextField('slug', ['label' => 'Slug *']) : null,
 			new HiddenField('template_id'),
 			new HiddenField('user_id', Auth::id()),
 			new PublishField('status', $instance),

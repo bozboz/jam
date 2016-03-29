@@ -26,8 +26,8 @@ class BelongsToEntity extends Field
                         $query->whereId($this->options_array->template);
                     });
                 } elseif (property_exists($this->options_array, 'type')) {
-                    $query->whereHas('template.type', function($query) {
-                        $query->whereId($this->options_array->type);
+                    $query->whereHas('template', function($query) {
+                        $query->whereTypeAlias($this->options_array->type);
                     });
                 }
             }

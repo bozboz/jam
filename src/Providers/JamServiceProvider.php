@@ -68,7 +68,6 @@ class JamServiceProvider extends ServiceProvider
 			$url = $this->app['url'];
 
 			$entityTypes = $this->app['EntityMapper']->getAll()->each(function($type, $alias) use ($url, $menu) {
-				$type->alias = $alias;
 				if ($type->templates()->count()) {
 					$type->addToMenu($menu, $url);
 				}

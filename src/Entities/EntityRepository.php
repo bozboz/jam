@@ -140,18 +140,12 @@ class EntityRepository implements EntityRepositoryInterface
 
 		$values = [];
 		foreach ($results as $row) {
-			if (!array_key_exists($row->revision_id, $values)) {
-				$values[$row->revision_id] = [];
+			$values[$row->revision_id][$row->value_id]['key'] = $row->key;
+			$values[$row->revision_id][$row->value_id]['value'] = $row->value;
+			$values[$row->revision_id][$row->value_id]['type_alias'] = $row->type_alias;
+			if ($row->option_key) {
+				$values[$row->revision_id][$row->value_id]['options'][$row->option_key] = $row->option_value;
 			}
-			if (!array_key_exists($row->value_id, $values[$row->revision_id])) {
-				$values[$row->revision_id][$row->value_id] = [
-					'key' => $row->key,
-					'value' => $row->value,
-					'type_alias' => $row->type_alias,
-					'options' => []
-				];
-			}
-			$values[$row->revision_id][$row->value_id]['options'][$row->option_key] = $row->option_value;
 		}
 
 		foreach($values as $revisionId => $revisionValues) {

@@ -17,8 +17,8 @@ class CurrentValue extends Value
     {
         $field = (new Field())->newInstance([
             'type_alias' => $this->type_alias,
-            'options_array' => $this->options
         ], false);
+        $field->options_array = $this->options;
         $field->injectValue($entity, $this);
     }
 }
