@@ -12,8 +12,13 @@ class CurrentValue extends Value
         $field = (new Field())->newInstance([
             'type_alias' => $this->type_alias,
         ], false);
-        $field->options_array = array_combine(explode(',', $this->option_keys), explode(',', $this->option_values));
+        $field->options_array = $this->getOptions();
         $field->injectValue($entity, $this);
+    }
+
+    public function getOptions()
+    {
+        return array_combine(explode(',', $this->option_keys), explode(',', $this->option_values));
     }
 
     public function scopeSelectFields($query, $fields)
@@ -21,6 +26,11 @@ class CurrentValue extends Value
         if ($fields[0] !== '*') {
             $query->whereIn('entity_values.key', $fields);
         }
+    }
+
+    public function scopeForRevisions($query, $revisionIds)
+    {
+        $query->whereIn('entity_values.revision_id', $revisionIds);
     }
 
     public function newQuery()
