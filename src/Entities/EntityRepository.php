@@ -74,7 +74,7 @@ class EntityRepository implements EntityRepositoryInterface
 
 	public function breadcrumbs(Entity $entity)
 	{
-		return $entity->ancestors()->active()->get()->push($entity)->map(function($crumb) {
+		return $entity->ancestors()->with('template')->active()->get()->push($entity)->map(function($crumb) {
 			return (object) [
 				'url' => $crumb->canonical_path,
 				'label' => $crumb->name
@@ -84,7 +84,9 @@ class EntityRepository implements EntityRepositoryInterface
 
 	public function childPages(Entity $entity, $fields = [])
 	{
-		$children = $entity->children()->with('template')->active()->get();
+		$children = $entity->children()->with(['template', 'currentRevision', 'paths' => function($query) {
+            $query->whereNull('canonical_id');
+        }])->active()->ordered()->get();
 		return $this->loadCurrentListingValues($children);
 	}
 
@@ -118,44 +120,12 @@ class EntityRepository implements EntityRepositoryInterface
 			return $entities;
 		}
 
-		$query = DB::table('entity_values as ev')->select(
-				'ev.revision_id',
-				'ev.id as value_id',
-				'ev.key',
-				'ev.value',
-				'ev.foreign_key',
-				'ev.type_alias',
-				'etfo.key as option_key',
-				'etfo.value as option_value'
-			)
-			->leftJoin('entity_template_field_options as etfo', 'ev.field_id', '=', 'etfo.field_id')
-			->whereIn('ev.revision_id', $revisionIds);
+		$query = CurrentValue::selectFields($fields)->forRevisions($revisionIds)->get();
 
-		if ($fields[0] != '*') {
-			$query->whereIn('ev.key', $fields);
-		}
-
-		$results = $query->get();
-
-		$values = [];
-		foreach ($results as $row) {
-			$values[$row->revision_id][$row->value_id]['key'] = $row->key;
-			$values[$row->revision_id][$row->value_id]['id'] = $row->value_id;
-			$values[$row->revision_id][$row->value_id]['value'] = $row->value;
-			$values[$row->revision_id][$row->value_id]['foreign_key'] = $row->foreign_key;
-			$values[$row->revision_id][$row->value_id]['type_alias'] = $row->type_alias;
-			if ($row->option_key) {
-				$values[$row->revision_id][$row->value_id]['options'][$row->option_key] = $row->option_value;
-			}
-		}
-
-		foreach($values as $revisionId => $revisionValues) {
-			$entity = $entityCollection->where('revision_id', $revisionId)->first();
-			foreach ($revisionValues as $valueId => $valueAttributes) {
-				$value = new CurrentValue($valueAttributes);
-				$value->injectValue($entity);
-			}
-		}
+		$values->map(function($value) use ($entityCollection) {
+			$entity = $entityCollection->where('revision_id', $value->revision_id)->first();
+			$value->injectValue($entity);
+		});
 
 		return $entities;
 	}
