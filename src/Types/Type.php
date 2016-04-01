@@ -7,11 +7,10 @@ use Illuminate\Support\Fluent;
 
 class Type extends Fluent implements \Bozboz\Admin\Base\ModelInterface
 {
-    protected $defaults = [
+    protected $attributes = [
         'menu_title' => null,
         'name' => 'Unknown',
-        'sorter' => \Bozboz\Jam\Types\Sorting\DefaultSort::class,
-        'report' => \Bozboz\Admin\Reports\NestedReport::class,
+        'report' => \Bozboz\Admin\Reports\Report::class,
         'link_builder' => null,
         'menu_builder' => \Bozboz\Jam\Types\Menu\Content::class,
         'entity' => \Bozboz\Jam\Entities\Entity::class
@@ -42,19 +41,22 @@ class Type extends Fluent implements \Bozboz\Admin\Base\ModelInterface
         return $this->getObj('link_builder');
     }
 
+    public function updatePaths($entity)
+    {
+        $linkBuilder = $this->getLinkBuilder();
+        if ($linkBuilder) {
+            $linkBuilder->updatePaths($entity);
+        }
+    }
+
     public function isVisible()
     {
-        return !is_null($this->get('link_builder', $this->defaults['link_builder']));
+        return !is_null($this->link_builder);
     }
 
     public function addToMenu($menu, $url)
     {
         return  $this->getObj('menu_builder')->buildMenu($this, $menu, $url);
-    }
-
-    public function getSorter()
-    {
-        return $this->getObj('sorter');
     }
 
     public function getReport($decorator)
@@ -64,7 +66,7 @@ class Type extends Fluent implements \Bozboz\Admin\Base\ModelInterface
 
     protected function getObj($type, $arg = null)
     {
-        $class = $this->get($type, $this->defaults[$type]);
+        $class = $this->get($type);
         return new $class($arg);
     }
 
