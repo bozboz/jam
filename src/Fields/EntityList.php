@@ -58,7 +58,7 @@ class EntityList extends Field
         })->defaultOrder();
 
         if (!$adminValue) {
-            $repository = app()->make(\Bozboz\Jam\Contracts\EntityRepository::class);
+            $repository = app()->make(\Bozboz\Jam\Repositories\Contracts\EntityRepository::class);
             return $repository->loadCurrentListingValues($query->active()->get());
         }
 

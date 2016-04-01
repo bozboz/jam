@@ -1,6 +1,6 @@
 <?php
 
-namespace Bozboz\Jam\Contracts;
+namespace Bozboz\Jam\Fields\Contracts;
 
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\EntityDecorator;

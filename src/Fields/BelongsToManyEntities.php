@@ -33,8 +33,8 @@ class BelongsToManyEntities extends BelongsToEntity
     public function injectValue(Entity $entity, Value $value)
     {
         parent::injectValue($entity, $value);
-        $repository = app(\Bozboz\Jam\Contracts\EntityRepository::class);
-        $relations = $repository->loadCurrentListingValues($this->getValue($value)->active()->get());
+        $repository = app(\Bozboz\Jam\Repositories\Contracts\EntityRepository::class);
+        $relations = $repository->loadCurrentListingValues($this->getValue($value)->ordered()->active()->get());
         $entity->setAttribute($value->key, $relations);
     }
 
@@ -46,13 +46,14 @@ class BelongsToManyEntities extends BelongsToEntity
 
     public function getValue(Value $value)
     {
-        return $value->belongsToMany(Entity::class, 'entity_entity');
+        $class = app('EntityMapper')->get($this->getOption('type'))->getEntity();
+        return $value->belongsToMany(get_class($class), 'entity_entity');
     }
 
     public function saveValue(Revision $revision, $value)
     {
         $valueObj = parent::saveValue($revision, json_encode($value));
-        $this->getValue($valueObj)->sync($value);
+        $this->getValue($valueObj)->sync($value ?: []);
 
         return $valueObj;
     }

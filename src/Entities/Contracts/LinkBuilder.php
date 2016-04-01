@@ -1,6 +1,6 @@
 <?php
 
-namespace Bozboz\Jam\Contracts;
+namespace Bozboz\Jam\Repositories\Contracts;
 
 use Bozboz\Jam\Entities\Entity;
 

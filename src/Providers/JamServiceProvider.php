@@ -13,12 +13,12 @@ class JamServiceProvider extends ServiceProvider
 	public function register()
 	{
 		$this->app->bind(
-			\Bozboz\Jam\Contracts\EntityRepository::class,
-			\Bozboz\Jam\Entities\EntityRepository::class
+			\Bozboz\Jam\Repositories\Contracts\EntityRepository::class,
+			\Bozboz\Jam\Repositories\EntityRepository::class
 		);
 
 		$this->app->bind(
-			\Bozboz\Jam\Contracts\LinkBuilder::class,
+			\Bozboz\Jam\Entities\Contracts\LinkBuilder::class,
 			\Bozboz\Jam\Entities\LinkBuilder::class
 		);
 
@@ -86,9 +86,9 @@ class JamServiceProvider extends ServiceProvider
         $mapper = $this->app['EntityMapper'];
 
         $mapper->register([
-            'pages' => new \Bozboz\Jam\Types\Type([
+            'pages' => new \Bozboz\Jam\Types\NestedType([
             	'name' => 'Pages',
-            	'entity' => Entity::class,
+            	'entity' => \Bozboz\Jam\Entities\SortableEntity::class,
             	'link_builder' => \Bozboz\Jam\Entities\LinkBuilder::class
             ]),
         ]);

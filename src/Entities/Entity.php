@@ -6,7 +6,6 @@ use Bozboz\Admin\Base\DynamicSlugTrait;
 use Bozboz\Admin\Base\ModelInterface;
 use Bozboz\Admin\Base\SanitisesInputTrait;
 use Bozboz\Admin\Base\Sorting\NestedSortableTrait;
-use Bozboz\Admin\Base\Sorting\Sortable;
 use Bozboz\Jam\Entities\LinkBuilder;
 use Bozboz\Jam\Entities\Value;
 use Bozboz\Jam\Field;
@@ -18,14 +17,11 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Request;
 use Kalnoy\Nestedset\Node;
 
-class Entity extends Node implements ModelInterface, Sortable
+class Entity extends Node implements ModelInterface
 {
 	use SanitisesInputTrait;
 	use SoftDeletes;
 	use DynamicSlugTrait;
-	use NestedSortableTrait {
-		sort as traitSort;
-	}
 
 	protected $table = 'entities';
 
@@ -60,18 +56,19 @@ class Entity extends Node implements ModelInterface, Sortable
 
 	public static function updatePaths($entity)
 	{
-		$entity->getMapper()->get($entity->template->type_alias)->getLinkBuilder()->updatePaths($entity);
+		if ($entity->template) {
+			$entity->getMapper()->get($entity->template->type_alias)->updatePaths($entity);
+		}
 	}
 
-	public function sortBy()
+	public function scopeOrdered($query)
 	{
-		return '_lft';
+		$query->orderBy('name');
 	}
 
-	public function sort($before, $after, $parent)
+	public function isSortable()
 	{
-		$this->traitSort($before, $after, $parent);
-		$this->getMapper()->get($this->template->type_alias)->getLinkBuilder()->updatePaths($this);
+		return true;
 	}
 
 	public function getValidator()
@@ -157,6 +154,13 @@ class Entity extends Node implements ModelInterface, Sortable
 	{
 		$query->whereHas('currentRevision', function($query) {
 			$query->isPublished();
+		});
+	}
+
+	public function scopeOfType($query, $typeAlias)
+	{
+		$query->whereHas('template', function($query) use ($typeAlias) {
+			$query->whereTypeAlias($typeAlias);
 		});
 	}
 

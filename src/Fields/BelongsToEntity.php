@@ -44,7 +44,7 @@ class BelongsToEntity extends Field
         parent::injectValue($entity, $value);
         $relation = $this->getValue($value)->first();
         if ($relation) {
-            $repository = app(\Bozboz\Jam\Contracts\EntityRepository::class);
+            $repository = app(\Bozboz\Jam\Repositories\Contracts\EntityRepository::class);
             $repository->loadCurrentValues($relation);
         }
         $entity->setAttribute($value->key, $relation);

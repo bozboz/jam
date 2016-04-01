@@ -2,7 +2,7 @@
 
 namespace Bozboz\Jam\Entities;
 
-use Bozboz\Jam\Contracts\LinkBuilder as Contract;
+use Bozboz\Jam\Entities\Contracts\LinkBuilder as Contract;
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\EntityPath;
 

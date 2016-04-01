@@ -29,6 +29,7 @@ class EntityDecorator extends ModelAdminDecorator
 	public function setType($type)
 	{
 		$this->type = $type;
+		$this->model = $type->getEntity();
 	}
 
 	public function getColumns($instance)
@@ -59,11 +60,6 @@ class EntityDecorator extends ModelAdminDecorator
 			),
 			'Status' => $statusLabel,
 		];
-	}
-
-	public function isSortable()
-	{
-		return $this->type->getSorter()->isSortable();
 	}
 
 	public function getHeading($plural = false)
@@ -159,7 +155,7 @@ class EntityDecorator extends ModelAdminDecorator
 			$query->whereTypeAlias(\Input::get('type'));
 		});
 
-		$this->type->getSorter()->sortQuery($query);
+		$query->ordered();
 	}
 
 	public function findInstance($id)

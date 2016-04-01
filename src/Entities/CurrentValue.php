@@ -10,9 +10,10 @@ class CurrentValue extends Value
     public function injectValue(Entity $entity)
     {
         $field = (new Field())->newInstance([
+            'id' => $this->field_id,
             'type_alias' => $this->type_alias,
         ], false);
-        $field->options_array = $this->getOptions();
+        $field->options_array = array_merge($this->options_array ?: [], $this->getOptions());
         $field->injectValue($entity, $this);
     }
 

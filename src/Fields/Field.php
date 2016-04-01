@@ -5,7 +5,7 @@ namespace Bozboz\Jam\Fields;
 use Bozboz\Admin\Base\Model;
 use Bozboz\Admin\Base\Sorting\Sortable;
 use Bozboz\Admin\Base\Sorting\SortableTrait;
-use Bozboz\Jam\Contracts\Field as FieldInterface;
+use Bozboz\Jam\Fields\Contracts\Field as FieldInterface;
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\EntityDecorator;
 use Bozboz\Jam\Entities\Revision;
@@ -21,6 +21,7 @@ class Field extends Model implements FieldInterface, Sortable
     protected $table = 'entity_template_fields';
 
     protected $fillable = [
+        'id',
         'name',
         'validation',
         'template_id',
@@ -71,7 +72,7 @@ class Field extends Model implements FieldInterface, Sortable
 
     public function getOption($key)
     {
-        if (array_key_exists('options_array', $this->attributes) && $this->attributes['options_array']) {
+        if (array_key_exists('options_array', $this->attributes) && array_key_exists($key, $this->attributes['options_array'])) {
             return $this->attributes['options_array'][$key];
         } else {
             return $this->options->where('key', $key)->pluck('value')->first();

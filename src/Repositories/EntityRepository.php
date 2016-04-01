@@ -1,8 +1,8 @@
 <?php
 
-namespace Bozboz\Jam\Entities;
+namespace Bozboz\Jam\Repositories;
 
-use Bozboz\Jam\Contracts\EntityRepository as EntityRepositoryInterface;
+use Bozboz\Jam\Repositories\Contracts\EntityRepository as EntityRepositoryInterface;
 use Bozboz\Jam\Entities\CurrentValue;
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\EntityPath;
@@ -70,6 +70,8 @@ class EntityRepository implements EntityRepositoryInterface
 		$entity->setAttribute('breadcrumbs', $this->breadcrumbs($entity));
 		$entity->setAttribute('child_pages', $this->childPages($entity));
 		$this->loadCurrentValues($entity);
+
+		return $entity;
 	}
 
 	public function breadcrumbs(Entity $entity)
@@ -120,7 +122,7 @@ class EntityRepository implements EntityRepositoryInterface
 			return $entities;
 		}
 
-		$query = CurrentValue::selectFields($fields)->forRevisions($revisionIds)->get();
+		$values = CurrentValue::selectFields($fields)->forRevisions($revisionIds)->get();
 
 		$values->map(function($value) use ($entityCollection) {
 			$entity = $entityCollection->where('revision_id', $value->revision_id)->first();
