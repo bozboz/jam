@@ -95,15 +95,22 @@ class Entity extends Node implements ModelInterface
 
 	public function getCanonicalPathAttribute()
 	{
-		if ($this->paths->count()) {
+		if (array_key_exists('canonical_path', $this->attributes)) {
+			$path = $this->attributes['canonical_path'];
+		} elseif ($this->paths->count()) {
 			$path = $this->paths->where('canonical_id', null)->pluck('path')->first();
-		} elseif ($this->template->type->isVisible()) {
+		} elseif ($this->template->type()->isVisible()) {
 			$path = "/{$this->id}/{$this->slug}";
 		} else {
 			$path = null;
 		}
 
 		return $path;
+	}
+
+	public function setCanonicalPathAttribute($path)
+	{
+		$this->attributes['canonical_path'] = $path;
 	}
 
 	public function getCanonicalTag()
