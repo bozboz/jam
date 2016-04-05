@@ -93,6 +93,13 @@ class Entity extends Node implements ModelInterface
 		return $this->hasMany(EntityPath::class);
 	}
 
+	public function scopeWithCanonicalPath($query)
+	{
+		$query->with(['paths' => function($query) {
+			$query->whereNull('canonical_id');
+		}]);
+	}
+
 	public function getCanonicalPathAttribute()
 	{
 		if (array_key_exists('canonical_path', $this->attributes)) {
