@@ -29,4 +29,9 @@ class Image extends Field
 	{
 		return Media::forModel($value, 'foreign_key');
 	}
+
+    protected function usesForeignKey()
+    {
+        return true;
+    }
 }

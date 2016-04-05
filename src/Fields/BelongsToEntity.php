@@ -55,11 +55,8 @@ class BelongsToEntity extends Field
         return $value->belongsTo(Entity::class, 'foreign_key');
     }
 
-    public function saveValue(Revision $revision, $value)
+    protected function usesForeignKey()
     {
-        $valueObj = parent::saveValue($revision, $value);
-        $valueObj->foreign_key = $value;
-        $valueObj->save();
-        return $valueObj;
+        return true;
     }
 }

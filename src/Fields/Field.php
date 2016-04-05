@@ -124,10 +124,16 @@ class Field extends Model implements FieldInterface, Sortable
             'field_id' => $this->id,
             'key' => $this->name,
             'value' => !is_array($value) ? $value : null,
+            'foreign_key' => $this->usesForeignKey() ? $value : null
         ];
         $valueObj = $revision->fieldValues()->create($fieldValue);
 
         return $valueObj;
+    }
+
+    protected function usesForeignKey()
+    {
+        return false;
     }
 
     public function getValue(Value $value)
