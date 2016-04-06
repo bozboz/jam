@@ -8,7 +8,7 @@ use Bozboz\Admin\Fields\TextField;
 use Bozboz\Jam\Templates\Template;
 use Bozboz\Jam\Types\Type;
 use Illuminate\Database\Eloquent\Builder;
-use Input;
+use Illuminate\Support\Facades\Input;
 
 class TemplateDecorator extends ModelAdminDecorator
 {

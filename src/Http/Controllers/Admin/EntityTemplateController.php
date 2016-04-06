@@ -8,7 +8,8 @@ use Bozboz\Jam\Templates\TemplateDecorator;
 use Bozboz\Jam\Templates\TemplateFieldsAction;
 use Bozboz\Jam\Templates\TemplateReport;
 use Bozboz\Jam\Types\Type;
-use Input, Redirect;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Redirect;
 
 class EntityTemplateController extends ModelAdminController
 {
