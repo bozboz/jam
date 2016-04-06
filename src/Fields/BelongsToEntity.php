@@ -45,7 +45,7 @@ class BelongsToEntity extends Field
         $relation = $this->getValue($value)->first();
         if ($relation) {
             $repository = app(\Bozboz\Jam\Repositories\Contracts\EntityRepository::class);
-            $repository->loadCurrentValues($relation);
+            // $repository->loadCurrentValues($relation);
         }
         $entity->setAttribute($value->key, $relation);
     }
