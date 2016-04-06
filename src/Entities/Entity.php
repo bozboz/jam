@@ -194,7 +194,7 @@ class Entity extends Node implements ModelInterface
 	{
 		$alias = 'belongs_to_value_'.uniqid();
 		$query->joinValueByKey($relation, $alias);
-		$query->where("{$alias}.foreign_key", is_int($related) ? $related : $related->getKey());
+		$query->whereIn("{$alias}.foreign_key", is_object($related) ? (array)$related->getKey() : (array)$related);
 	}
 
 	public function scopeWhereBelongsToManyEntity($query, $relation, $related)
@@ -203,7 +203,7 @@ class Entity extends Node implements ModelInterface
 		$entityEntityAlias = 'belongs_to_many_entity_'.uniqid();
 		$query->joinValueByKey($relation, $valueAlias);
 		$query->join("entity_entity as {$entityEntityAlias}", "{$entityEntityAlias}.value_id", '=', "{$valueAlias}.id");
-		$query->where("{$entityEntityAlias}.entity_id", is_int($related) ? $related : $related->getKey());
+		$query->whereIn("{$entityEntityAlias}.entity_id", is_object($related) ? (array)$related->getKey() : (array)$related);
 	}
 
 	public function currentValues()
