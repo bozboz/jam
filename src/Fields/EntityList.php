@@ -31,7 +31,9 @@ class EntityList extends Field
         return [
             new SelectField('options_array[type]', [
                 'label' => 'Type',
-                'options' => Type::lists('name', 'alias')->prepend('- Please Select -')
+                'options' => app('EntityMapper')->getAll()->map(function($type) {
+                    return $type->name;
+                })->prepend('- Please Select -')
             ]),
         ];
     }
@@ -53,8 +55,8 @@ class EntityList extends Field
 
     public function getValue(Value $value, $adminValue = true)
     {
-        $query = $this->parentEntity->children()->whereHas('template.type', function ($query) {
-            $query->whereAlias($this->getOption('type'));
+        $query = $this->parentEntity->children()->whereHas('template', function ($query) {
+            $query->whereTypeAlias($this->getOption('type'));
         })->defaultOrder();
 
         if (!$adminValue) {
@@ -62,7 +64,7 @@ class EntityList extends Field
             return $repository->loadCurrentListingValues($query->active()->get());
         }
 
-        return $query->with('template.type', 'template.fields', 'currentRevision')->get();
+        return $query->with('template', 'template.fields', 'currentRevision')->get();
     }
 }
 
@@ -84,7 +86,7 @@ class EntityListField extends AdminField
     public function getInput()
     {
         return view('jam::admin.partials.entity-list-field', [
-            'type' => Type::with('templates')->whereAlias($this->field->getOption('type'))->first(),
+            'templates' => Template::whereTypeAlias($this->field->getOption('type'))->get(),
             'entities' => $this->entityList,
             'field' => $this->field,
             'parentEntity' => $this->parentEntity,

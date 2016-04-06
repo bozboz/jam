@@ -51,7 +51,7 @@ class LinkBuilder implements Contract
 
 	protected function calculatePathForInstance(Entity $instance)
 	{
-		return trim($instance->getAncestors()->pluck('slug')->push($instance->slug)->implode('/'), '/');
+		return str_pad(trim($instance->getAncestors()->pluck('slug')->push($instance->slug)->implode('/'), '/'), 1, '/');
 	}
 
 	/**

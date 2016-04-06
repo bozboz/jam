@@ -1,7 +1,7 @@
 <input type="hidden" name="{{ $field->name }}" value="{{ $parentEntity->id }}">
 
 @if ($parentEntity->exists)
-    @if ($type->templates->count()>1)
+    @if ($templates->count()>1)
         <div class="btn-group">
             <button href="#" class="dropdown-toggle btn btn-sm btn-primary" data-toggle="dropdown" aria-expanded="false">
                 <i class="fa fa-plus-square"></i>
@@ -10,7 +10,7 @@
                 <span class="sr-only">Toggle Dropdown</span>
             </button>
             <ul class="dropdown-menu" role="menu">
-                @foreach($type->templates as $template)
+                @foreach($templates as $template)
                 <li>
                     <a class="" type="submit" href="{{ route('admin.entity-list.create-for-list', [$template->alias, $parentEntity->id]) }}">
                         {{ $template->name }}
@@ -20,7 +20,7 @@
             </ul>
         </div>
     @else
-        <a class="btn btn-sm btn-primary" type="submit" href="{{ route('admin.entity-list.create-for-list', [$type->templates->first()->alias, $parentEntity->id]) }}">
+        <a class="btn btn-sm btn-primary" type="submit" href="{{ route('admin.entity-list.create-for-list', [$templates->first()->alias, $parentEntity->id]) }}">
             <i class="fa fa-plus-square"></i>
             New
         </a>
