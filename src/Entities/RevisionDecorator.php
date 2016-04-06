@@ -24,7 +24,7 @@ class RevisionDecorator extends ModelAdminDecorator
 				: false,
 			'Author' => $instance->username,
 			'Date' => $instance->created_at->format('d M Y H:i'),
-			'Sceduled For' => $instance->published_at > new Carbon ? $instance->published_at->format('d M Y H:i') : null
+			'Scheduled For' => $instance->published_at > new Carbon ? $instance->published_at->format('d M Y H:i') : null
 		];
 	}
 
