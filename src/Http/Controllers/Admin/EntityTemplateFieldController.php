@@ -8,7 +8,8 @@ use Bozboz\Admin\Reports\Actions\DropdownItem;
 use Bozboz\Jam\Fields\Field;
 use Bozboz\Jam\Fields\FieldDecorator;
 use Bozboz\Jam\Templates\Template;
-use Input, Redirect;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Redirect;
 
 class EntityTemplateFieldController extends ModelAdminController
 {

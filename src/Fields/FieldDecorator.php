@@ -10,7 +10,7 @@ use Bozboz\Admin\Fields\TextField;
 use Bozboz\Jam\Fields\TemplateField;
 use Bozboz\Jam\Templates\Template;
 use Illuminate\Database\Eloquent\Builder;
-use Input;
+use Illuminate\Support\Facades\Input;
 
 class FieldDecorator extends ModelAdminDecorator
 {

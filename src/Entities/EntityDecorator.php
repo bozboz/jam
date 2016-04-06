@@ -152,7 +152,7 @@ class EntityDecorator extends ModelAdminDecorator
 	protected function modifyListingQuery(Builder $query)
 	{
 		$query->with('template')->whereHas('template', function($query) {
-			$query->whereTypeAlias(\Input::get('type'));
+			$query->whereTypeAlias(Input::get('type'));
 		});
 
 		$query->ordered();
