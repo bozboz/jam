@@ -38,6 +38,9 @@ class Type extends Fluent implements \Bozboz\Admin\Base\ModelInterface
 
     public function getLinkBuilder()
     {
+        if (is_callable($this->link_builder)) {
+            return call_user_func($this->link_builder);
+        }
         return $this->getObj('link_builder');
     }
 

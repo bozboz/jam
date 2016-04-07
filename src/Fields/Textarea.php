@@ -7,7 +7,7 @@ use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\EntityDecorator;
 use Bozboz\Jam\Entities\Value;
 
-class Textarea extends Field
+class Textarea extends Text
 {
 	public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
 	{
@@ -16,4 +16,9 @@ class Textarea extends Field
 			'label' => $this->getInputLabel()
 		]);
 	}
+
+    public function getValue(Value $value)
+    {
+        return nl2br(parent::getValue($value));
+    }
 }

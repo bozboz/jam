@@ -60,6 +60,11 @@ class EntityTemplateFieldController extends ModelAdminController
 			$instance->type_alias = $type;
 		}
 
+		if ($instance->saveImmediately()) {
+			$this->save($instance, $instance->toArray());
+			return $this->getSuccessResponse($instance);
+		}
+
 		return $this->renderFormFor($instance, $this->createView, 'POST', 'store');
 	}
 

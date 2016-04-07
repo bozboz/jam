@@ -22,7 +22,7 @@ class EntityListController extends EntityController
 		$foreignKey = $this->foreignKey($template);
 
 		if (!$foreignKey) {
-			throw new \LogicException("Attempting to use entity list field with no foreign key set on template.");
+			throw new \LogicException("Attempting to use entity list field with no entity-list-foreign field in template.");
 		}
 
 		$instance->setAttribute($foreignKey, $parent->id);
@@ -30,40 +30,12 @@ class EntityListController extends EntityController
 		return $this->renderFormFor($instance, $this->createView, 'POST', 'store');
 	}
 
-	public function store()
-	{
-		$input = Input::except('after_save');
-		$modelInstance = $this->decorator->newModelInstance($input);
-		$input[$modelInstance->getKeyName()] = 'NULL';
-		$validation = $modelInstance->getValidator();
-		$input = $this->decorator->sanitiseInput($input);
-
-		if ($validation->failsStore($input)) {
-			return Redirect::back()->withErrors($validation->getErrors())->withInput();
-		}
-
-		DB::beginTransaction();
-
-		$this->save($modelInstance, $input);
-
-		$foreignKey = $this->foreignKey($modelInstance->template);
-		$parent = $this->decorator->findInstance(Input::get($foreignKey));
-		$modelInstance->appendToNode($parent)->save();
-
-		DB::commit();
-
-		$response = $this->reEdit($modelInstance) ?: $this->getStoreResponse($modelInstance);
-		$response->with('model.created', sprintf(
-			'Successfully created "%s"',
-			$this->decorator->getLabel($modelInstance)
-		));
-
-		return $response;
-	}
-
+	/**
+	 * Ensure that the entity has a foreign key field
+	 */
 	private function foreignKey($template)
 	{
-		return $template->fields->where('type_alias', 'foreign')->pluck('name')->first();
+		return $template->fields->where('name', 'list_parent')->pluck('name')->first();
 	}
 
 	protected function getEntityController()
@@ -71,20 +43,26 @@ class EntityListController extends EntityController
 		return EntityController::class;
 	}
 
+	private function getParentId($instance)
+	{
+		$revision = $instance->latestRevision();
+		if ($revision) {
+			$instance->loadAdminValues($revision);
+			$foreignKey = $this->foreignKey($instance->template);
+			return $instance->getAttribute($foreignKey);
+		}
+	}
+
 	/**
 	 * The generic response after a successful store/update action.
 	 */
 	protected function getSuccessResponse($instance)
 	{
-		$instance->loadAdminValues($instance->latestRevision());
-		$foreignKey = $this->foreignKey($instance->template);
-		return \Redirect::action('\\' . $this->getEntityController() . '@edit', [$instance->getAttribute($foreignKey)]);
+		return \Redirect::action('\\' . $this->getEntityController() . '@edit', [$this->getParentId($instance)]);
 	}
 
 	protected function getListingUrl($instance)
 	{
-		$instance->loadAdminValues($instance->latestRevision());
-		$foreignKey = $this->foreignKey($instance->template);
-		return action('\\' . $this->getEntityController() . '@edit', [$instance->getAttribute($foreignKey)]);
+		return action('\\' . $this->getEntityController() . '@edit', [$this->getParentId($instance)]);
 	}
 }

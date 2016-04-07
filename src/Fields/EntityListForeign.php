@@ -10,7 +10,12 @@ class EntityListForeign extends Foreign
 {
     protected $attributes = [
 	    'type_alias' => 'foreign',
-    	'name' => 'entity_id',
+    	'name' => 'list_parent',
     	'validation' => 'required|exists:entities,id',
     ];
+
+    public function saveImmediately()
+    {
+        return true;
+    }
 }

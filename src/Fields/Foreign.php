@@ -13,4 +13,9 @@ class Foreign extends Field
     {
         return new HiddenField($this->name);
     }
+
+    public function usesForeignKey()
+    {
+        return true;
+    }
 }

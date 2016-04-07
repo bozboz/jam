@@ -96,14 +96,14 @@ class Field extends Model implements FieldInterface, Sortable
 
     public function injectValue(Entity $entity, Value $value)
     {
-        $entity->setValue($value);
+        $entity->setValue($value, $this->getValue($value));
         return $value;
     }
 
     public function injectAdminValue(Entity $entity, Revision $revision)
     {
         $value = $revision->fieldValues->where('key', $this->name)->first() ?: new Value(['key' => $this->name]);
-        $entity->setValue($value);
+        $entity->setValue($value, $value->value);
         return $value;
     }
 
@@ -144,6 +144,11 @@ class Field extends Model implements FieldInterface, Sortable
     public function duplicateValue(Value $oldValue, Value $newValue)
     {
 
+    }
+
+    public function saveImmediately()
+    {
+        return false;
     }
 
     /**

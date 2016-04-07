@@ -154,7 +154,7 @@ class Entity extends Node implements ModelInterface
 	 */
 	public function latestRevision()
 	{
-		return $this->revisions->first();
+		return Revision::whereEntityId($this->id)->latest()->first();
 	}
 
 	public function scopeWithLatestRevision($query)
@@ -260,10 +260,10 @@ class Entity extends Node implements ModelInterface
 		return array_key_exists($key, $this->values) ? $this->values[$key] : new Value(compact('key'));
 	}
 
-	public function setValue(Value $value)
+	public function setValue(Value $valueObj, $value)
 	{
-		$this->values[$value->key] = $value;
-		$this->setAttribute($value->key, $value->value);
+		// $this->values[$valueObj->key] = $valueObj;
+		$this->setAttribute($valueObj->key, $value);
 	}
 
 	public function template()

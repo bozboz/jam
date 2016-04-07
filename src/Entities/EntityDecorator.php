@@ -106,7 +106,10 @@ class EntityDecorator extends ModelAdminDecorator
 		} else {
 			$revision = $instance->latestRevision();
 		}
-		$instance->loadAdminValues($revision);
+
+		if ($revision) {
+			$instance->loadAdminValues($revision);
+		}
 
 		foreach($instance->template->fields->sortBy('sorting') as $field) {
 			$fieldName = $field->name;
