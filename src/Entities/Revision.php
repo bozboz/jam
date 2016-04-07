@@ -2,13 +2,13 @@
 
 namespace Bozboz\Jam\Entities;
 
+use Bozboz\Admin\Base\Model;
 use Bozboz\Admin\Base\ModelInterface;
 use Bozboz\Admin\Base\SanitisesInputTrait;
 use Bozboz\Admin\Users\User;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Revision extends Model implements ModelInterface
+class Revision extends Model
 {
 	use SoftDeletes;
 	use SanitisesInputTrait;
