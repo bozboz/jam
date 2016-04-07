@@ -113,6 +113,7 @@ class JamServiceProvider extends ServiceProvider
 			'foreign'                  => \Bozboz\Jam\Fields\Foreign::class,
 			'entity-list-field'        => \Bozboz\Jam\Fields\EntityList::class,
 			'entity-list-foreign'      => \Bozboz\Jam\Fields\EntityListForeign::class,
+			'belongs-to-type'          => \Bozboz\Jam\Fields\BelongsToType::class,
 			'belongs-to-entity'        => \Bozboz\Jam\Fields\BelongsToEntity::class,
 			'belongs-to-many-entities' => \Bozboz\Jam\Fields\BelongsToManyEntities::class,
 			'hidden'                   => \Bozboz\Jam\Fields\Hidden::class,
