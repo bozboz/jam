@@ -37,10 +37,22 @@ class RevisionDecorator extends ModelAdminDecorator
 	{
 	}
 
-	public function getListingFilters()
+	/**
+	 * Retrieve a full or paginated collection of instances of $this->model
+	 *
+	 * @param  boolean  $limit
+	 * @return Illuminate\Pagination\Paginator
+	 */
+	public function getListingForEntity($id)
 	{
-		return [
-			new ArrayListingFilter('entity_id', Entity::lists('name', 'id'))
-		];
+		$query = $this->getModelQuery()->whereEntityId($id);
+
+		if ($this->isSortable()) {
+			return $query->get();
+		}
+
+		return $query->paginate(
+			Input::get('per-page', $this->listingPerPageLimit())
+		);
 	}
 }

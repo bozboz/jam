@@ -9,6 +9,7 @@ use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\EntityAtRevisionAction;
 use Bozboz\Jam\Entities\Revision;
 use Bozboz\Jam\Entities\RevisionDecorator;
+use Bozboz\Jam\Entities\RevisionReport;
 use Bozboz\Jam\Http\Controllers\Admin\EntityController;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
@@ -18,6 +19,20 @@ class EntityRevisionController extends ModelAdminController
 	public function __construct(RevisionDecorator $decorator)
 	{
 		parent::__construct($decorator);
+	}
+
+	public function indexForEntity($id)
+	{
+		if ( ! $this->canView()) App::abort(403);
+
+		$report = new RevisionReport($this->decorator, $id);
+
+		$report->setReportActions($this->getReportActions());
+		$report->setRowActions($this->getRowActions());
+
+		return $report->render(
+			$this->getReportParams()
+		);
 	}
 
 	public function revert($id)
@@ -88,6 +103,6 @@ class EntityRevisionController extends ModelAdminController
 
 	public function getSuccessResponse($instance)
 	{
-		return Redirect::action($this->getActionName('index'), ['entity_id' => $instance->entity->id]);
+		return Redirect::action($this->getActionName('indexForEntity'), ['entity_id' => $instance->entity->id]);
 	}
 }
