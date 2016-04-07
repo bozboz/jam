@@ -67,7 +67,9 @@ class Type extends Fluent implements \Bozboz\Admin\Base\ModelInterface
     protected function getObj($type, $arg = null)
     {
         $class = $this->get($type);
-        return new $class($arg);
+        if ($class) {
+            return new $class($arg);
+        }
     }
 
     public function getValidator()

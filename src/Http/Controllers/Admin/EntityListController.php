@@ -76,14 +76,14 @@ class EntityListController extends EntityController
 	 */
 	protected function getSuccessResponse($instance)
 	{
-		$instance->loadAdminValues();
+		$instance->loadAdminValues($instance->latestRevision());
 		$foreignKey = $this->foreignKey($instance->template);
 		return \Redirect::action('\\' . $this->getEntityController() . '@edit', [$instance->getAttribute($foreignKey)]);
 	}
 
 	protected function getListingUrl($instance)
 	{
-		$instance->loadAdminValues();
+		$instance->loadAdminValues($instance->latestRevision());
 		$foreignKey = $this->foreignKey($instance->template);
 		return action('\\' . $this->getEntityController() . '@edit', [$instance->getAttribute($foreignKey)]);
 	}

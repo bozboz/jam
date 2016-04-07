@@ -246,7 +246,7 @@ class Entity extends Node implements ModelInterface
 	 * Load field values as the admin wants them as an array for all fields
 	 * @param  Revision|null $revision
 	 */
-	public function loadAdminValues(Revision $revision = null)
+	public function loadAdminValues(Revision $revision)
 	{
 		if ($revision) {
 			foreach ($this->template->fields as $field) {
