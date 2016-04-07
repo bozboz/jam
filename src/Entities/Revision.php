@@ -26,11 +26,6 @@ class Revision extends Model implements ModelInterface
 	const PUBLISHED = 1;
 	const SCHEDULED = 2;
 
-	public function getValidator()
-	{
-		//
-	}
-
 	public function duplicate()
 	{
 		$newRevision = $this->replicate();
