@@ -61,7 +61,7 @@ class EntityList extends Field
 
         if (!$adminValue) {
             $repository = app()->make(\Bozboz\Jam\Repositories\Contracts\EntityRepository::class);
-            return $repository->loadCurrentListingValues($query->active()->get());
+            return $repository->loadCurrentValues($query->active()->get());
         }
 
         return $query->with('template', 'template.fields', 'currentRevision')->get();
