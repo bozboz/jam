@@ -67,7 +67,7 @@ class Revision extends Model implements ModelInterface
 
 	public function getStatusAttribute()
 	{
-		if ($this->published_at && $this->published_at->timestamp > time()) {
+		if ($this->published_at && $this->published_at->isFuture()) {
 			return static::SCHEDULED;
 		} else {
 			return static::PUBLISHED;
