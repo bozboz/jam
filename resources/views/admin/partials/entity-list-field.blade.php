@@ -4,7 +4,7 @@
     @if ($templates->count()>1)
         <div class="btn-group">
             <button href="#" class="dropdown-toggle btn btn-sm btn-primary" data-toggle="dropdown" aria-expanded="false">
-                <i class="fa fa-plus-square"></i>
+                <i class="fa fa-plus"></i>
                 New
                 <span class="caret"></span>
                 <span class="sr-only">Toggle Dropdown</span>
@@ -21,7 +21,7 @@
         </div>
     @else
         <a class="btn btn-sm btn-primary" type="submit" href="{{ route('admin.entity-list.create-for-list', [$templates->first()->alias, $parentEntity->id]) }}">
-            <i class="fa fa-plus-square"></i>
+            <i class="fa fa-plus"></i>
             New
         </a>
     @endif
