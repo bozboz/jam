@@ -49,9 +49,16 @@ A template is made up of a list of fields. Jam comes with the following field ty
 
 ## Entities
 
+TODO
+
 ## Values
+
+TODO
 
 ---
 
 # Setting up an Entity List Field
 
+The first thing you need to do when using the entity list field is set up the entity type and templates for the list. 
+
+For example, if you wanted to create an entity list field for a set of calls to action then you'd add a type called something like "Call To Action" and give that a template. Once you've added the required fields to the template you must add an entity-list-foreign field to it. Then on the template that you want your new calls to action to display on you add an entity-list-field and select the call to action type in the field options. Now when you go to edit an entity with this template there will be a listing of call to action entities in the form. 
