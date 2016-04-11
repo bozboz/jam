@@ -55,13 +55,9 @@ class TypeDecorator extends ModelAdminDecorator
 
 	public function getListingModels()
 	{
-		return app('EntityMapper')->getAll()->keys()->map(function($typeAlias) {
-			return new Type([
-				'id' => uniqid(),
-				'alias' => $typeAlias,
-				'name' => $typeAlias,
-				'visible' => true
-			]);
+		return app('EntityMapper')->getAll()->map(function($type) {
+			$type->id = uniqid();
+			return $type;
 		});
 	}
 }

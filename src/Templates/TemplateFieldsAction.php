@@ -8,7 +8,7 @@ class TemplateFieldsAction extends LinkAction
 {
 	protected $attributes = [
 		'label' => 'Fields',
-		'icon' => 'fa fa-file-o',
+		'icon' => 'fa fa-list-ul',
 		'class' => 'btn-default',
 	];
 
