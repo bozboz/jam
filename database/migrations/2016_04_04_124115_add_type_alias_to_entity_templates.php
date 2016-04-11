@@ -13,7 +13,7 @@ class AddTypeAliasToEntityTemplates extends Migration
     public function up()
     {
         Schema::table('entity_templates', function (Blueprint $table) {
-            $table->string('type_alias')->after('view');
+            $table->string('type_alias')->after('view')->index();
         });
 
         DB::table('entity_templates')->update([
