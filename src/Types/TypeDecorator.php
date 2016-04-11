@@ -28,6 +28,7 @@ class TypeDecorator extends ModelAdminDecorator
 					'\\'.EntityTemplateFieldController::class.'@index',
 					[app(EntityTemplateController::class), 'canEdit'],
 					[
+						'class' => 'btn-info',
 						'label' => $template->name,
 					]
 				);

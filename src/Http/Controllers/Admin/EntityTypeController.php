@@ -40,14 +40,15 @@ class EntityTypeController extends ModelAdminController
 				'\\'.EntityTemplateController::class.'@index',
 				[$this, 'canEdit'],
 				[
-					'label' => 'See All'
+					'class' => 'btn-primary',
+					'label' => 'See All',
 				]
 			),
 			new TypeTemplatesAction(
 				'\\'.EntityTemplateController::class.'@createForType',
 				[app(EntityTemplateController::class), 'canCreate'],
 				[
-					'class' => 'btn-success btn-create btn btn-sm',
+					'class' => 'btn-success',
 					'icon' => 'fa fa-plus',
 					'label' => 'New Template'
 				]
