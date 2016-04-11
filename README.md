@@ -33,8 +33,8 @@ Once you've got some types you need to give them some templates. A template dict
 A template is made up of a list of fields. Jam comes with the following field types:
 
 - `text` Standard singe line text input. The value will be put through Markdown upon front end retrieval to allow for some basic formatting.
-- `textarea`Exactly the same as `text` but multiline.
-- `htmleditor`Summernote WYSIWYG field.
+- `textarea` Exactly the same as `text` but multiline.
+- `htmleditor` Summernote WYSIWYG field.
 - `image` Single media library field.
 - `gallery` Multiselect media library field.
 - `date` Datepicker.
@@ -46,6 +46,12 @@ A template is made up of a list of fields. Jam comes with the following field ty
 - `belongs-to-entity` Allows you to link one entity to another. When adding the field to a template you will be given the option to limit the available entities to a specific type or template.
 - `belongs-to-many-entities` Same as `belongs-to-entity` but allows you to pick many entities rather than just one.
 - `hidden` Allows you to add a hidden field to the create/edit form of entities that will save the value entered when the field is created. 
+
+## Entities
+
+## Values
+
+---
 
 # Setting up an Entity List Field
 
