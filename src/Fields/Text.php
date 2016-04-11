@@ -7,7 +7,7 @@ use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\EntityDecorator;
 use Bozboz\Jam\Entities\Revision;
 use Bozboz\Jam\Entities\Value;
-use Netcarver\Textile\Parser;
+use Michelf\Markdown;
 
 class Text extends Field
 {
@@ -19,15 +19,8 @@ class Text extends Field
         ]);
     }
 
-    public function injectValue(Entity $entity, Value $value)
-    {
-        $value = parent::injectValue($entity, $value);
-        $entity->setAttribute($value->key, $this->getValue($value));
-    }
-
     public function getValue(Value $value)
     {
-        $parser = new Parser;
-        return $parser->setBlockTags(false)->parse($value->value);
+        return Markdown::defaultTransform($value->value);
     }
 }

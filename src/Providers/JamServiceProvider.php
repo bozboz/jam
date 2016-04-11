@@ -102,17 +102,14 @@ class JamServiceProvider extends ServiceProvider
 
 		$mapper->register([
 			'text'                     => \Bozboz\Jam\Fields\Text::class,
-			'textile'                  => \Bozboz\Jam\Fields\Textile::class,
 			'textarea'                 => \Bozboz\Jam\Fields\Textarea::class,
 			'htmleditor'               => \Bozboz\Jam\Fields\HTMLEditor::class,
 			'image'                    => \Bozboz\Jam\Fields\Image::class,
 			'gallery'                  => \Bozboz\Jam\Fields\Gallery::class,
 			'date'                     => \Bozboz\Jam\Fields\Date::class,
 			'date-time'                => \Bozboz\Jam\Fields\DateTime::class,
-			'email'                    => \Bozboz\Jam\Fields\Email::class,
-			'password'                 => \Bozboz\Jam\Fields\Password::class,
 			'toggle'                   => \Bozboz\Jam\Fields\Toggle::class,
-			'foreign'                  => \Bozboz\Jam\Fields\Foreign::class,
+			// 'foreign'                  => \Bozboz\Jam\Fields\Foreign::class,
 			'entity-list-field'        => \Bozboz\Jam\Fields\EntityList::class,
 			'entity-list-foreign'      => \Bozboz\Jam\Fields\EntityListForeign::class,
 			'belongs-to-type'          => \Bozboz\Jam\Fields\BelongsToType::class,
