@@ -7,9 +7,8 @@ use Bozboz\Admin\Reports\Actions\LinkAction;
 class TypeTemplatesAction extends LinkAction
 {
 	protected $attributes = [
-		'label' => 'Templates',
 		'icon' => 'fa fa-file-o',
-		'class' => 'btn-default',
+		'class' => 'btn-info',
 	];
 
 	public function getUrl()

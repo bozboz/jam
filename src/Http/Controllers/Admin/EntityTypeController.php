@@ -4,8 +4,10 @@ namespace Bozboz\Jam\Http\Controllers\Admin;
 
 use Bozboz\Admin\Http\Controllers\ModelAdminController;
 use Bozboz\Admin\Permissions\RestrictAllPermissionsTrait;
+use Bozboz\Admin\Reports\Actions\CreateAction;
 use Bozboz\Jam\Types\TypeDecorator;
 use Bozboz\Jam\Types\TypeTemplatesAction;
+use Illuminate\Support\Facades\Input;
 
 class EntityTypeController extends ModelAdminController
 {
@@ -35,8 +37,20 @@ class EntityTypeController extends ModelAdminController
 	{
 		return [
 			new TypeTemplatesAction(
-					'\\'.EntityTemplateController::class.'@index',
-					[$this, 'canEdit']
+				'\\'.EntityTemplateController::class.'@index',
+				[$this, 'canEdit'],
+				[
+					'label' => 'See All'
+				]
+			),
+			new TypeTemplatesAction(
+				'\\'.EntityTemplateController::class.'@createForType',
+				[app(EntityTemplateController::class), 'canCreate'],
+				[
+					'class' => 'btn-success btn-create btn btn-sm',
+					'icon' => 'fa fa-plus',
+					'label' => 'New Template'
+				]
 			)
 		];
 	}

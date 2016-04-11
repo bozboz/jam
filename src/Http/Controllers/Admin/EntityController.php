@@ -115,7 +115,7 @@ class EntityController extends ModelAdminController
 				)
 			]),
 			'history' => new EntityHistoryAction(
-				'\\'.$this->getEntityRevisionController().'@index',
+				'\\'.$this->getEntityRevisionController().'@indexForEntity',
 				[app()->make($this->getEntityRevisionController()), 'canView']
 			)
 		] + parent::getRowActions();

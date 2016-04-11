@@ -9,9 +9,9 @@ class Type extends Fluent implements \Bozboz\Admin\Base\ModelInterface
 {
     protected $attributes = [
         'menu_title' => null,
-        'name' => 'Unknown',
+        'name' => null,
         'report' => \Bozboz\Admin\Reports\Report::class,
-        'link_builder' => null,
+        'link_builder' => \Bozboz\Jam\Entities\LinksDisabled::class,
         'menu_builder' => \Bozboz\Jam\Types\Menu\Content::class,
         'entity' => \Bozboz\Jam\Entities\Entity::class
     ];
@@ -38,18 +38,13 @@ class Type extends Fluent implements \Bozboz\Admin\Base\ModelInterface
 
     public function getLinkBuilder()
     {
-        if (is_callable($this->link_builder)) {
-            return call_user_func($this->link_builder);
-        }
         return $this->getObj('link_builder');
     }
 
     public function updatePaths($entity)
     {
         $linkBuilder = $this->getLinkBuilder();
-        if ($linkBuilder) {
-            $linkBuilder->updatePaths($entity);
-        }
+        $linkBuilder->updatePaths($entity);
     }
 
     public function isVisible()
@@ -70,7 +65,9 @@ class Type extends Fluent implements \Bozboz\Admin\Base\ModelInterface
     protected function getObj($type, $arg = null)
     {
         $class = $this->get($type);
-        if ($class) {
+        if (is_callable($class)) {
+            return call_user_func($class);
+        } elseif ($class) {
             return new $class($arg);
         }
     }
