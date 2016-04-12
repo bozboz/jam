@@ -34,11 +34,6 @@ class EntityController extends ModelAdminController
 		$this->repository = $repository;
 	}
 
-	public function index()
-	{
-		return Redirect::to('admin');
-	}
-
 	public function show($type)
 	{
 		$this->type = app('EntityMapper')->get($type);
