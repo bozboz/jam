@@ -36,11 +36,12 @@ class EntityController extends ModelAdminController
 
 	public function index()
 	{
-		if (!Input::get('type')) {
-			return Redirect::to('/admin');
-		}
+		return Redirect::to('admin');
+	}
 
-		$this->type = app('EntityMapper')->get(Input::get('type'));
+	public function show($type)
+	{
+		$this->type = app('EntityMapper')->get($type);
 		$this->decorator->setType($this->type);
 
 		if (!$this->type) {
@@ -67,7 +68,7 @@ class EntityController extends ModelAdminController
 	 */
 	protected function getReportActions()
 	{
-		$options = Template::whereTypeAlias(Input::get('type'))->orderBy('name')->get()->map(function($template) {
+		$options = Template::whereTypeAlias($this->type->alias)->orderBy('name')->get()->map(function($template) {
 				return new DropdownItem(
 					[$this->getActionName('createOfType'), $template->alias],
 					[$this, 'canCreate'],
@@ -238,7 +239,7 @@ class EntityController extends ModelAdminController
 
 	protected function getListingUrl($instance)
 	{
-		return action($this->getActionName('index'), ['type' => $instance->template->type_alias]);
+		return action($this->getActionName('show'), ['type' => $instance->template->type_alias]);
 	}
 
 	public function canPublish($instance)

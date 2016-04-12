@@ -6,6 +6,6 @@ class Content
 {
 	public function buildMenu($type, $menu, $url)
 	{
-		$menu[$type->name] = $url->route('admin.entities.index', ['type' => $type->alias]);
+		$menu[$type->name] = $url->route('admin.entities.show', ['type' => $type->alias]);
 	}
 }
