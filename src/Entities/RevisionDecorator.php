@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Input;
 
 class RevisionDecorator extends ModelAdminDecorator
 {
+	protected $entity;
+
 	public function __construct(Revision $instance)
 	{
 		parent::__construct($instance);
@@ -37,6 +39,11 @@ class RevisionDecorator extends ModelAdminDecorator
 	{
 	}
 
+	public function getHeading($plural = false)
+	{
+		return $this->entity->name.' '.parent::getHeading($plural);
+	}
+
 	/**
 	 * Retrieve a full or paginated collection of instances of $this->model
 	 *
@@ -45,6 +52,9 @@ class RevisionDecorator extends ModelAdminDecorator
 	 */
 	public function getListingForEntity($id)
 	{
+		$entity = Entity::find($id);
+		$this->entity = $entity;
+
 		$query = $this->getModelQuery()->whereEntityId($id);
 
 		if ($this->isSortable()) {
