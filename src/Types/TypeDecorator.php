@@ -23,7 +23,7 @@ class TypeDecorator extends ModelAdminDecorator
 	{
 		return [
 			'Name' => $this->getLabel($instance),
-			'Templates' => $instance->templates()->get()->map(function($template) {
+			'Templates' => $instance->templates()->orderBy('name')->get()->map(function($template) {
 				$action = new TemplateFieldsAction(
 					'\\'.EntityTemplateFieldController::class.'@index',
 					[app(EntityTemplateController::class), 'canEdit'],
@@ -58,6 +58,6 @@ class TypeDecorator extends ModelAdminDecorator
 		return app('EntityMapper')->getAll()->map(function($type) {
 			$type->id = uniqid();
 			return $type;
-		});
+		})->sortBy('name');
 	}
 }
