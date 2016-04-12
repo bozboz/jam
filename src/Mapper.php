@@ -42,6 +42,6 @@ class Mapper
 				$map->alias = $alias;
 			}
 			return $map;
-		});
+		})->sort();
 	}
 }

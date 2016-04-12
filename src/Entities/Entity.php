@@ -30,6 +30,7 @@ class Entity extends Node implements ModelInterface
 	protected $fillable = [
 		'name',
 		'slug',
+		'parent_id'
 	];
 
 	protected static $mapper;
@@ -73,8 +74,15 @@ class Entity extends Node implements ModelInterface
 
 	public function getValidator()
 	{
+		$validation = (array) $this->template->fields->map(function($field) {
+			return [
+				'name' => $field->getInputName(),
+				'validation' => $field->validation
+			];
+		})->all();
+
 		return new EntityValidator(
-			(array) $this->template->fields()->lists('validation', 'name')->all()
+			array_filter(array_combine(array_column($validation, 'name'), array_column($validation, 'validation')))
 		);
 	}
 
@@ -102,14 +110,16 @@ class Entity extends Node implements ModelInterface
 
 	public function getCanonicalPathAttribute()
 	{
+		if ($this->template->type()->isVisible()) {
+			return null;
+		}
+
 		if (array_key_exists('canonical_path', $this->attributes)) {
 			$path = $this->attributes['canonical_path'];
 		} elseif ($this->paths->count()) {
 			$path = $this->paths->where('canonical_id', null)->pluck('path')->first();
-		} elseif ($this->template->type()->isVisible()) {
-			$path = "/{$this->id}/{$this->slug}";
 		} else {
-			$path = null;
+			$path = "/{$this->id}/{$this->slug}";
 		}
 
 		return $path;

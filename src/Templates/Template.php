@@ -66,9 +66,9 @@ class Template extends Node implements ModelInterface, Sortable
 		return $this->hasMany(Field::class);
 	}
 
-	public function entity()
+	public function entities()
 	{
-		return $this->belongsTo(Entity::class);
+		return $this->hasMany(Entity::class);
 	}
 
 	public function type()

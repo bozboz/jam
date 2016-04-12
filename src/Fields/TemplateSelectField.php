@@ -11,7 +11,12 @@ class TemplateSelectField extends FieldGroup
 {
     public function __construct($name)
     {
-        parent::__construct($name, [
+        parent::__construct($name, $this->getFields());
+    }
+
+    protected function getFields()
+    {
+        return [
             new SelectField('options_array[type]', [
                 'label' => 'Type',
                 'options' => app('EntityMapper')->getAll()->map(function($type) {
@@ -24,7 +29,7 @@ class TemplateSelectField extends FieldGroup
                 'options' => ['' => '- All -']+Template::lists('name', 'id')->toArray(),
                 'class' => 'js-entity-template-select form-control select2'
             ]),
-        ]);
+        ];
     }
 
     public function getJavascript()
@@ -50,6 +55,8 @@ class TemplateSelectField extends FieldGroup
                 function updateTemplateSelect(options) {
                     var t = $('.js-entity-template-select');
 
+                    var selected = t.val();
+
                     t.children(':not(:first)').remove();
 
                     for(var i in options || {}) {
@@ -57,6 +64,8 @@ class TemplateSelectField extends FieldGroup
                             $('<option>').val(i).html(options[i])
                         );
                     }
+
+                    t.val(selected);
                 }
             });
 JAVASCRIPT;

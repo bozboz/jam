@@ -7,6 +7,11 @@ use Bozboz\Jam\Entities\Entity;
 
 class LinksDisabled implements Contract
 {
+    public function isVisible()
+    {
+        return false;
+    }
+
     public function updatePaths (Entity $instance)
     {
         // do nothing

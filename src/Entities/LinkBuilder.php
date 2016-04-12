@@ -8,6 +8,11 @@ use Bozboz\Jam\Entities\EntityPath;
 
 class LinkBuilder implements Contract
 {
+	public function isVisible()
+	{
+		return true;
+	}
+
 	/**
 	 * If the slug has changed then softdelete current path for self and all
 	 * descendants and insert new path for self and all descendants
