@@ -3,7 +3,9 @@
 namespace Bozboz\Jam\Fields;
 
 use Bozboz\Admin\Fields\BelongsToField;
+use Bozboz\Admin\Fields\CheckboxField;
 use Bozboz\Admin\Fields\FieldGroup;
+use Bozboz\Admin\Fields\HiddenField;
 use Bozboz\Admin\Fields\SelectField;
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\EntityDecorator;
@@ -16,6 +18,15 @@ class BelongsToEntity extends Field
 {
     public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
     {
+        if (property_exists($this->options_array, 'entity')) {
+
+            if (property_exists($this->options_array, 'make_parent')) {
+                $instance->parent_id = $this->options_array->entity;
+            }
+
+            return new HiddenField($this->getInputName(), $this->options_array->entity);
+        }
+
         return new BelongsToField($decorator, $this->getValue($value), [
                 'name' => $this->getInputName(),
                 'label' => $this->getInputLabel()
@@ -34,19 +45,30 @@ class BelongsToEntity extends Field
         );
     }
 
+    public function getInputName()
+    {
+        if (property_exists($this->options_array, 'make_parent')) {
+            return 'parent_id';
+        } else {
+            return parent::getInputName();
+        }
+    }
+
     public function getOptionFields()
     {
-        return [new TemplateSelectField('Entity')];
+        return [
+            new CheckboxField([
+                'label' => 'Make related entity the parent',
+                'name' => 'options_array[make_parent]'
+            ]),
+            new EntitySelectField('Entity')
+        ];
     }
 
     public function injectValue(Entity $entity, Value $value)
     {
         parent::injectValue($entity, $value);
         $relation = $this->getValue($value)->first();
-        if ($relation) {
-            $repository = app(\Bozboz\Jam\Repositories\Contracts\EntityRepository::class);
-            // $repository->loadCurrentValues($relation);
-        }
         $entity->setAttribute($value->key, $relation);
     }
 
