@@ -234,7 +234,7 @@ class EntityController extends ModelAdminController
 	 */
 	protected function getSuccessResponse($instance)
 	{
-		return \Redirect::action($this->getActionName('index'), ['type' => $instance->template->type_alias]);
+		return \Redirect::action($this->getActionName('show'), ['type' => $instance->template->type_alias]);
 	}
 
 	protected function getListingUrl($instance)
