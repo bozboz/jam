@@ -110,7 +110,7 @@ class Entity extends Node implements ModelInterface
 
 	public function getCanonicalPathAttribute()
 	{
-		if ($this->template->type()->isVisible()) {
+		if ( ! $this->template->type()->isVisible()) {
 			return null;
 		}
 
