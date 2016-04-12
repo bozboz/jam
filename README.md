@@ -40,6 +40,7 @@ A template is made up of a list of fields. Jam comes with the following field ty
 - `date` Datepicker.
 - `date-time` Datepicker with time options.
 - `toggle` Checkbox.
+- `parent-entity` Allows you to select an entity to be the parent of the entity being created.
 - `entity-list-field` Allows creation of multiple child entities. Useful repeated content structures like slider slides. See [Setting up an Entity List Field](#setting-up-an-entity-list-field)
 - `entity-list-foreign` This is required the `entity-list-field` type to work. It's what stores the parent entity of the entities in the list. Clicking to add one will automatically save the field so you don't have to worry about what values it needs. See [Setting up an Entity List Field](#setting-up-an-entity-list-field)
 - `belongs-to-type` This field allows you to link a type of entity to a template. When you add the field to a template it will give you dropdowns to select the type, and optionally template, that you want to link to the template you're adding the field to. This allows you to access all of the entities of the selected type from the view.
@@ -62,3 +63,9 @@ TODO
 The first thing you need to do when using the entity list field is set up the entity type and templates for the list. 
 
 For example, if you wanted to create an entity list field for a set of calls to action then you'd add a type called something like "Call To Action" and give that a template. Once you've added the required fields to the template you must add an entity-list-foreign field to it. Then on the template that you want your new calls to action to display on you add an entity-list-field and select the call to action type in the field options. Now when you go to edit an entity with this template there will be a listing of call to action entities in the form. 
+
+---
+
+# Parent Entity Fields
+
+When setting up this field type you have the option of selecting a type, a template and an entity. Selecting all 3 will make the field hidden in the create/edit form and all entities created will have the selected parent. Selecting only a type or template will give the user the option of selecting the parent entity from entities from the selected type/templates.
