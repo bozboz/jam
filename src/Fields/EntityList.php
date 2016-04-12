@@ -19,8 +19,9 @@ class EntityList extends Field
 
     public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
     {
+        $this->newListQuery($instance);
         $this->parentEntity = $instance;
-        return new EntityListField($instance, $this, $this->newListQuery()->with('template', 'template.fields', 'currentRevision')->get(), [
+        return new EntityListField($instance, $this, $this->newListQuery($instance)->with('template', 'template.fields', 'currentRevision')->get(), [
             'name' => $this->getInputName(),
             'label' => $this->getInputLabel()
         ]);
@@ -53,20 +54,15 @@ class EntityList extends Field
         return $value;
     }
 
-    protected function newListQuery()
+    protected function newListQuery($entity)
     {
-        return app('EntityMapper')->get($this->getOption('type'))
-            ->getEntity()
-            ->select('entities.*')
-            ->ofType($this->getOption('type'))
-            ->whereBelongsToEntity('list_parent', $this->parentEntity->id)
-            ->defaultOrder();
+        return $entity->childrenOfType($this->getOption('type'));
     }
 
     public function getValue(Value $value)
     {
         $repository = app()->make(\Bozboz\Jam\Repositories\Contracts\EntityRepository::class);
-        return $repository->loadCurrentValues($this->newListQuery()->active()->get());
+        return $repository->loadCurrentValues($this->newListQuery($value->entity)->active()->get());
     }
 }
 

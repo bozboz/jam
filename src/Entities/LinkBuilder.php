@@ -49,14 +49,17 @@ class LinkBuilder implements Contract
 	 */
 	public function addPaths(Entity $instance)
 	{
-		$path = $this->calculatePathForInstance($instance);
-		EntityPath::onlyTrashed()->where('entity_id', '<>', $instance->id)->wherePath($path)->forceDelete();
-		$instance->paths()->withTrashed()->firstOrCreate(['path' => $path])->restore();
+		$this->calculatePathsForInstance($instance)->each(function($path) use ($instance) {
+			EntityPath::onlyTrashed()->where('entity_id', '<>', $instance->id)->wherePath($path)->forceDelete();
+			$instance->paths()->withTrashed()->firstOrCreate(['path' => $path])->restore();
+		});
 	}
 
-	protected function calculatePathForInstance(Entity $instance)
+	protected function calculatePathsForInstance(Entity $instance)
 	{
-		return str_pad(trim($instance->getAncestors()->pluck('slug')->push($instance->slug)->implode('/'), '/'), 1, '/');
+		return collect(
+			str_pad(trim($instance->getAncestors()->pluck('slug')->push($instance->slug)->implode('/'), '/'), 1, '/')
+		);
 	}
 
 	/**

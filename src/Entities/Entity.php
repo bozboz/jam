@@ -101,6 +101,11 @@ class Entity extends Node implements ModelInterface
 		return $this->hasMany(EntityPath::class);
 	}
 
+	public function childrenOfType($type)
+	{
+		return $this->children()->ofType($type);
+	}
+
 	public function scopeWithCanonicalPath($query)
 	{
 		$query->with(['paths' => function($query) {

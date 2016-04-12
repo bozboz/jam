@@ -84,6 +84,7 @@ class EntityDecorator extends ModelAdminDecorator
 			$instance->exists && $instance->template->type()->isVisible() ? new TextField('slug', ['label' => 'Slug *']) : null,
 			new HiddenField('template_id'),
 			new HiddenField('user_id', Auth::id()),
+			new HiddenField('parent_id'),
 			new PublishField('status', $instance),
 		]));
 

@@ -10,59 +10,35 @@ use Redirect;
 
 class EntityListController extends EntityController
 {
-	public function createForEntityListField($type, $parentEntity)
-	{
-		$template = Template::with('fields')->whereAlias($type)->first();
-		$instance = $this->decorator->newEntityOfType($template);
+    public function createForEntityListField($type, $parentEntity)
+    {
+        $template = Template::with('fields')->whereAlias($type)->first();
+        $instance = $this->decorator->newEntityOfType($template);
 
-		if ( ! $this->canCreate($instance)) App::abort(403);
+        if ( ! $this->canCreate($instance)) App::abort(403);
 
-		$parent = $this->decorator->findInstance($parentEntity);
+        $parent = $this->decorator->findInstance($parentEntity);
 
-		$foreignKey = $this->foreignKey($template);
+        $instance->parent_id = $parent->id;
 
-		if (!$foreignKey) {
-			throw new \LogicException("Attempting to use entity list field with no entity-list-foreign field in template.");
-		}
+        return $this->renderFormFor($instance, $this->createView, 'POST', 'store');
+    }
 
-		$instance->setAttribute($foreignKey, $parent->id);
+    protected function getEntityController()
+    {
+        return EntityController::class;
+    }
 
-		return $this->renderFormFor($instance, $this->createView, 'POST', 'store');
-	}
+    /**
+     * The generic response after a successful store/update action.
+     */
+    protected function getSuccessResponse($instance)
+    {
+        return \Redirect::action('\\' . $this->getEntityController() . '@edit', [$instance->parent_id]);
+    }
 
-	/**
-	 * Ensure that the entity has a foreign key field
-	 */
-	private function foreignKey($template)
-	{
-		return $template->fields->where('name', 'list_parent')->pluck('name')->first();
-	}
-
-	protected function getEntityController()
-	{
-		return EntityController::class;
-	}
-
-	private function getParentId($instance)
-	{
-		$revision = $instance->latestRevision();
-		if ($revision) {
-			$instance->loadAdminValues($revision);
-			$foreignKey = $this->foreignKey($instance->template);
-			return $instance->getAttribute($foreignKey);
-		}
-	}
-
-	/**
-	 * The generic response after a successful store/update action.
-	 */
-	protected function getSuccessResponse($instance)
-	{
-		return \Redirect::action('\\' . $this->getEntityController() . '@edit', [$this->getParentId($instance)]);
-	}
-
-	protected function getListingUrl($instance)
-	{
-		return action('\\' . $this->getEntityController() . '@edit', [$this->getParentId($instance)]);
-	}
+    protected function getListingUrl($instance)
+    {
+        return action('\\' . $this->getEntityController() . '@edit', [$instance->parent_id]);
+    }
 }

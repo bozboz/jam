@@ -13,7 +13,8 @@ class ParentEntity extends Field
     public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
     {
         if (property_exists($this->options_array, 'entity')) {
-            return new HiddenField($this->getInputName(), $this->options_array->entity);
+            $instance->parent_id = $this->options_array->entity;
+            return;
         }
 
         return new BelongsToField($decorator, $this->getValue($value), [
