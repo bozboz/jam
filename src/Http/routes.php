@@ -8,7 +8,7 @@
 
 Route::group(array('middleware' => 'web', 'namespace' => 'Bozboz\Jam\Http\Controllers\Admin', 'prefix' => 'admin'), function() {
 
-	Route::resource('entities', 'EntityController', ['except' => ['create']]);
+	Route::resource('entities', 'EntityController', ['except' => ['index', 'create']]);
 	Route::get('entities/{type}/create', 'EntityController@createOfType');
 	Route::post('entities/{type}/publish', 'EntityController@publish');
 	Route::post('entities/{type}/unpublish', 'EntityController@unpublish');

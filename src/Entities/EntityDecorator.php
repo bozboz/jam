@@ -155,7 +155,7 @@ class EntityDecorator extends ModelAdminDecorator
 	protected function modifyListingQuery(Builder $query)
 	{
 		$query->with(['paths', 'currentRevision.user', 'template'])->whereHas('template', function($query) {
-			$query->whereTypeAlias(Input::get('type'));
+			$query->whereTypeAlias($this->type->alias);
 		});
 
 		$query->ordered();
