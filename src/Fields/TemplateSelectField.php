@@ -41,16 +41,17 @@ class TemplateSelectField extends FieldGroup
                 'templates' => $templates
             ];
         })->toArray();
-        $types = json_encode(array_combine(array_keys($types), array_column($types, 'templates')));
+        $templates = json_encode(array_combine(array_keys($types), array_column($types, 'templates')));
         return <<<JAVASCRIPT
             jQuery(function($) {
-                var types = {$types};
+                var templates = {$templates};
+                $('.js-entity-template-select').data('templates', templates);
                 $('.js-entity-type-select').change(function() {
                     if ($(this).val()) {
-                        updateTemplateSelect(types[$(this).val()]);
+                        updateTemplateSelect(templates[$(this).val()]);
                     }
                 });
-                updateTemplateSelect(types[$('.js-entity-type-select').val()]);
+                updateTemplateSelect(templates[$('.js-entity-type-select').val()]);
 
                 function updateTemplateSelect(options) {
                     var t = $('.js-entity-template-select');

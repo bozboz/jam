@@ -30,6 +30,13 @@ class BelongsToManyEntities extends BelongsToEntity
         );
     }
 
+    public function getOptionFields()
+    {
+        return [
+            new TemplateSelectField('Type')
+        ];
+    }
+
     public function injectValue(Entity $entity, Value $value)
     {
         parent::injectValue($entity, $value);

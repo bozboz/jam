@@ -24,7 +24,7 @@ class EntitySelectField extends TemplateSelectField
     public function getJavascript()
     {
         $templates = Template::with('entities')->get()->map(function($template) {
-            $entities = $template->entities->pluck('name', 'id');
+            $entities = $template->entities->sortBy('name')->pluck('name', 'id');
             return [
                 'id' => $template->id,
                 'entities' => $entities
@@ -34,6 +34,16 @@ class EntitySelectField extends TemplateSelectField
         return parent::getJavascript() . <<<JAVASCRIPT
             jQuery(function($) {
                 var entities = {$entities};
+                $('.js-entity-type-select').change(function() {
+                    if ($(this).val()) {
+                        var templates = $('.js-entity-template-select').data('templates')[$(this).val()];
+                        var options = {};
+                        for(var i in templates) {
+                            $.extend(options, entities[i]);
+                        }
+                        updateEntitySelect(options);
+                    }
+                });
                 $('.js-entity-template-select').change(function() {
                     if ($(this).val()) {
                         updateEntitySelect(entities[$(this).val()]);
@@ -41,7 +51,6 @@ class EntitySelectField extends TemplateSelectField
                 });
                 setTimeout(function() {
                     updateEntitySelect(entities[$('.js-entity-template-select').val()]);
-console.log($('.js-entity-template-select').val()); // do not commit
                 }, 20);
                 function updateEntitySelect(options) {
                     var t = $('.js-entity-select');
