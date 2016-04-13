@@ -32,21 +32,45 @@ Once you've got some types you need to give them some templates. A template dict
 
 A template is made up of a list of fields. Jam comes with the following field types:
 
-- `text` Standard singe line text input. The value will be put through Markdown upon front end retrieval to allow for some basic formatting.
-- `textarea` Exactly the same as `text` but multiline.
-- `htmleditor` Summernote WYSIWYG field.
-- `image` Single media library field.
-- `gallery` Multiselect media library field.
-- `date` Datepicker.
-- `date-time` Datepicker with time options.
-- `toggle` Checkbox.
-- `parent-entity` Allows you to select an entity to be the parent of the entity being created.
-- `entity-list-field` Allows creation of multiple child entities. Useful repeated content structures like slider slides. See [Setting up an Entity List Field](#setting-up-an-entity-list-field)
-- `entity-list-foreign` This is required the `entity-list-field` type to work. It's what stores the parent entity of the entities in the list. Clicking to add one will automatically save the field so you don't have to worry about what values it needs. See [Setting up an Entity List Field](#setting-up-an-entity-list-field)
-- `belongs-to-type` This field allows you to link a type of entity to a template. When you add the field to a template it will give you dropdowns to select the type, and optionally template, that you want to link to the template you're adding the field to. This allows you to access all of the entities of the selected type from the view.
-- `belongs-to-entity` Allows you to link one entity to another. When adding the field to a template you will be given the option to limit the available entities to a specific type or template.
-- `belongs-to-many-entities` Same as `belongs-to-entity` but allows you to pick many entities rather than just one.
-- `hidden` Allows you to add a hidden field to the create/edit form of entities that will save the value entered when the field is created. 
+- `text` 
+
+    Standard singe line text input. The value will be put through Markdown upon front end retrieval to allow for some basic formatting.
+- `textarea` 
+
+    Exactly the same as `text` but multiline.
+- `image` 
+
+    Single media library field.
+- `gallery` 
+
+    Multiselect media library field.
+- `date`
+
+- `date-time`
+
+- `toggle` 
+
+    Checkbox for toggling a boolean value.
+- `entity-list-field` 
+
+    Allows creation of multiple child entities. Useful repeated content structures like slider slides, call out boxes, etc.
+    In order to use this field type you must first set up another entity type that this field can link to. It would be best to make 
+- `belongs-to-type` 
+
+    This field allows you to link a type of entity to a template. When you add the field to a template it will give you dropdowns to select the type, and optionally template, that you want to link to the template you're adding the field to. This allows you to access all of the entities of the selected type from the view.
+- `belongs-to-entity` 
+
+    Allows you to link one entity to another. 
+    
+    en in the create/edit form and all entities created will have the selected parent. Selecting only a type or template will give the user the option of selecting the parent entity from entities from the selected type/templates.
+    
+    You may also select whether or not entities with this field become nested under the related entity as child pages. 
+- `belongs-to-many-entities` 
+
+    Provides the entity form with an option to select from many entities to relate to. As with `belongs-to-entity` the options in the dropdown will be limited to the type and template selected when adding the field to the template.
+- `hidden` 
+
+    Allows you to add a hidden field to the create/edit form of entities that will save the value entered when the field is created. 
 
 ## Entities
 
