@@ -110,8 +110,9 @@ class JamServiceProvider extends ServiceProvider
             'date-time'                => \Bozboz\Jam\Fields\DateTime::class,
             'toggle'                   => \Bozboz\Jam\Fields\Toggle::class,
             'entity-list'              => \Bozboz\Jam\Fields\EntityList::class,
-            'belongs-to-entity'        => \Bozboz\Jam\Fields\BelongsToEntity::class,
-            'belongs-to-many-entities' => \Bozboz\Jam\Fields\BelongsToManyEntities::class,
+            'belongs-to'               => \Bozboz\Jam\Fields\BelongsTo::class,
+            'belongs-to-many'          => \Bozboz\Jam\Fields\BelongsToMany::class,
+            'inverse-belongs-to-many'  => \Bozboz\Jam\Fields\InverseBelongsToMany::class,
             'hidden'                   => \Bozboz\Jam\Fields\Hidden::class,
         ]);
     }

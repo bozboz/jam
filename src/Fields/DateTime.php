@@ -9,6 +9,11 @@ use Bozboz\Jam\Entities\Value;
 
 class DateTime extends Field
 {
+    public static function getDescriptiveName()
+    {
+        return 'Date & Time';
+    }
+
 	public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
 	{
 	    return new DateTimeField([

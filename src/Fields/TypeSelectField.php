@@ -9,7 +9,7 @@ class TypeSelectField extends SelectField
 {
     public function __construct($name)
     {
-        parent::__construct('options_array['.e(strtolower($name)).'_type]', [
+        parent::__construct('options_array['.e(strtolower($name)).']', [
             'label' => $name,
             'options' => app('EntityMapper')->getAll()->map(function($type) {
                 return $type->name;

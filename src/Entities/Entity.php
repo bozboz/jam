@@ -205,7 +205,7 @@ class Entity extends Node implements ModelInterface
 		$query->joinValueByKey($key, $alias)->where("{$alias}.value", $value);
 	}
 
-	public function scopeWhereBelongsToEntity($query, $relation, $related)
+	public function scopeWhereBelongsTo($query, $relation, $related)
 	{
 		$alias = 'belongs_to_value_'.uniqid();
 		$query->joinValueByKey($relation, $alias);
