@@ -25,7 +25,7 @@ class FieldDecorator extends ModelAdminDecorator
 	{
 		return [
 			'Name' => $this->getLabel($instance),
-			'Type' => $instance->type_alias,
+			'Type' => $instance->getDescriptiveName(),
 			'Validation' => $instance->validation
 		];
 	}
