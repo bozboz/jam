@@ -16,24 +16,22 @@ Entity types are the top level of the jam schema. They can essentially be though
 
 When you register a type you can give it a report, link builder, menu builder and entity.
 
--   `report`
-
+-   `report`  
     Admin report class for listing. Use NestedReport to enable nested sorting.  
     Default `Bozboz\Admin\Reports\Report`
--   `link_builder` 
-
+    
+-   `link_builder`  
     Simple class for creating paths and urls to entities.  
     Default `Bozboz\Jam\Entities\LinksDisabled`
--   `menu_builder` 
-
+    
+-   `menu_builder`  
     Handles where to put the type in the admin menu.  
     Default `Bozboz\Jam\Types\Menu\Content`
-    -   `Hidden` don't display in menu
-    -   `Content` display in content dropdown
-    -   `Standalone` display as a top level menu item
--   `entity` 
+    -   `Bozboz\Jam\Types\Menu\Hidden` don't display in menu
+    -   `Bozboz\Jam\Types\Menu\Content` display in content dropdown
+    -   `Bozboz\Jam\Types\Menu\Standalone` display as a top level menu item
     
-    Actual entity class to be used.  
+-   `entity`  
     Default `Bozboz\Jam\Entities\Entity`
 
 ## Templates
@@ -46,27 +44,26 @@ When adding a template you must give it a `name` and `view` but the `listing vie
 
 A template is made up of a list of fields. Jam comes with the following field types:
 
-- `text` 
-
+- `Text`  
     Standard singe line text input. The value will be put through Markdown upon front end retrieval to allow for some basic formatting.
-- `textarea` 
-
+    
+- `Textarea`  
     Exactly the same as `text` but multiline.
-- `image` 
-
+    
+- `Image`  
     Single media library field.
-- `gallery` 
-
+    
+- `Gallery`  
     Multiselect media library field.
-- `date`
+    
+- `Date`
 
-- `date-time`
+- `Date & Time`
 
-- `toggle` 
-
+- `Toggle`  
     Checkbox for toggling a boolean value.
-- `entity-list-field` 
-
+    
+- `Entity List`  
     Allows creation of multiple child entities. Useful repeated content structures like slider slides, call out boxes, etc.  
     In order to use this field type you must first set up another entity type that this field can link to using the `Bozboz\Jam\Types\EntityList` type.  
     e.g.
@@ -78,22 +75,21 @@ A template is made up of a list of fields. Jam comes with the following field ty
         'callout-boxes' => new \Bozboz\Jam\Types\EntityList('Callout Boxes'),
     ]);
     ```
-
-- `belongs-to-type` 
-
-    This field allows you to link a type of entity to a template. When you add the field to a template it will give you dropdowns to select the type, and optionally template, that you want to link to the template you're adding the field to. This allows you to access all of the entities of the selected type from the view.
-- `belongs-to-entity` 
-
+    
+- `Belongs To`  
     Allows you to link one entity to another. 
     
     en in the create/edit form and all entities created will have the selected parent. Selecting only a type or template will give the user the option of selecting the parent entity from entities from the selected type/templates.
     
     You may also select whether or not entities with this field become nested under the related entity as child pages. 
-- `belongs-to-many-entities` 
+    
+- `Belongs To Many`  
+    Provides the entity form with an option to select from many entities to relate to. As with `Belongs To` the options in the dropdown will be limited to the type and template selected when adding the field to the template.
 
-    Provides the entity form with an option to select from many entities to relate to. As with `belongs-to-entity` the options in the dropdown will be limited to the type and template selected when adding the field to the template.
-- `hidden` 
-
+- `Inverse Belongs To Many (read-only)`  
+    The reverse of the relationship defined in a `Belongs To Many` field, providing a read-only view to the related entities.
+    
+- `Hidden`  
     Allows you to add a hidden field to the create/edit form of entities that will save the value entered when the field is created. 
 
 ## Entities
