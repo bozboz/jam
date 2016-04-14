@@ -110,7 +110,6 @@ class JamServiceProvider extends ServiceProvider
             'date-time'                => \Bozboz\Jam\Fields\DateTime::class,
             'toggle'                   => \Bozboz\Jam\Fields\Toggle::class,
             'entity-list'              => \Bozboz\Jam\Fields\EntityList::class,
-            'belongs-to-type'          => \Bozboz\Jam\Fields\BelongsToType::class,
             'belongs-to-entity'        => \Bozboz\Jam\Fields\BelongsToEntity::class,
             'belongs-to-many-entities' => \Bozboz\Jam\Fields\BelongsToManyEntities::class,
             'hidden'                   => \Bozboz\Jam\Fields\Hidden::class,
