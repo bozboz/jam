@@ -5,6 +5,7 @@ namespace Bozboz\Jam\Fields;
 use Bozboz\Admin\Fields\Field as AdminField;
 use Bozboz\Admin\Fields\FieldGroup;
 use Bozboz\Admin\Fields\HiddenField;
+use Bozboz\Admin\Reports\Actions\EditAction;
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\EntityDecorator;
 use Bozboz\Jam\Entities\Revision;
@@ -24,7 +25,7 @@ class InverseBelongsToMany extends BelongsTo
     {
         return new FieldGroup($this->getInputLabel(), [
             new HiddenField($this->getInputName(), $this->getOption('type')),
-            new RelatedField($this->getValue($value)->get())
+            new RelatedField($this->getValue($value))
         ]);
     }
 
@@ -45,7 +46,7 @@ class InverseBelongsToMany extends BelongsTo
     {
         $this->entity = $entity;
         $value = parent::injectAdminValue($entity, $revision);
-        $entity->setAttribute($this->getInputName(), $this->getValue($value)->get());
+        $entity->setAttribute($this->getInputName(), $this->getValue($value));
     }
 
     public function getValue(Value $value)
@@ -75,7 +76,11 @@ class RelatedField extends AdminField
     public function getInput()
     {
         return $this->related->map(function($relation) {
-            return "<a href='{$relation->canonical_url}'>{$relation->name}</a>";
-        })->implode(' <br> ');
+            $action = (new EditAction(
+                '\\'.\Bozboz\Jam\Http\Controllers\Admin\EntityController::class.'@edit',
+                [app(\Bozboz\Jam\Http\Controllers\Admin\EntityController::class), 'canEdit']
+            ))->setInstance($relation);
+            return $relation->name . ' ' . view($action->getView(), $action->getViewData())->render();
+        })->implode('<br>');
     }
 }
