@@ -5,6 +5,7 @@ namespace Bozboz\Jam\Fields;
 use Bozboz\Admin\Fields\Field as AdminField;
 use Bozboz\Admin\Fields\FieldGroup;
 use Bozboz\Admin\Fields\HiddenField;
+use Bozboz\Admin\Fields\TextField;
 use Bozboz\Admin\Reports\Actions\EditAction;
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\EntityDecorator;
@@ -32,7 +33,11 @@ class InverseBelongsToMany extends BelongsTo
     public function getOptionFields()
     {
         return [
-            new TypeSelectField('Type')
+            new TypeSelectField('Type'),
+            new TextField([
+                'name' => 'options_array[per_page]',
+                'label' => 'Per Page'
+            ])
         ];
     }
 
@@ -62,7 +67,7 @@ class InverseBelongsToMany extends BelongsTo
             ->ofType($this->getOption('type'))
             ->whereIn('entities.id', collect($results)->pluck('id'))
             ->active()->ordered()
-            ->get();
+            ->paginate($this->getOption('per_page') ?: config('admin.listing_items_per_page'));
     }
 }
 
@@ -81,6 +86,6 @@ class RelatedField extends AdminField
                 [app(\Bozboz\Jam\Http\Controllers\Admin\EntityController::class), 'canEdit']
             ))->setInstance($relation);
             return $relation->name . ' ' . view($action->getView(), $action->getViewData())->render();
-        })->implode('<br>');
+        })->push($this->related->render())->implode('<br>');
     }
 }
