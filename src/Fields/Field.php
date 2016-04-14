@@ -45,6 +45,11 @@ class Field extends Model implements FieldInterface, Sortable
         return false;
     }
 
+    public static function getDescriptiveName()
+    {
+        return preg_replace('/([A-Z]*)([A-Z])/', '$1 $2', class_basename(static::class));
+    }
+
     public function scopeModifySortingQuery($query, $instance)
     {
         $query->where('template_id', $instance->template_id);
