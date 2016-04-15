@@ -44,11 +44,12 @@ class FieldDecorator extends ModelAdminDecorator
 	public function getFields($instance)
 	{
 		return array_merge([
-			new SelectField('type_alias', ['options' => $this->getTypeOptions()]),
+			// new SelectField('type_alias', ['options' => $this->getTypeOptions()]),
+			new TextField('type_alias', ['disabled' => 'disabled']),
 			new TextField('name'),
 			new TextField('validation'),
 			new HiddenField('template_id'),
-			// new HiddenField('type_alias'),
+			new HiddenField('type_alias'),
 		], $instance->getOptionFields());
 	}
 
