@@ -15,9 +15,11 @@ class CreateEntityTemplatesTable extends Migration
         Schema::create('entity_templates', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+            $table->string('type_alias')->index();
             $table->string('alias');
             $table->string('view')->nullable();
-            $table->unsignedInteger('type_id');
+            $table->string('listing_fields')->nullable();
+            $table->string('listing_view')->nullable();
 
             $table->unsignedInteger('parent_id')->nullable();
             $table->unsignedInteger('_lft');
@@ -26,9 +28,6 @@ class CreateEntityTemplatesTable extends Migration
             $table->timestamps();
 
             $table->index([ '_lft', '_rgt', 'parent_id' ]);
-
-            $table->foreign('type_id')
-                  ->references('id')->on('entity_types');
         });
     }
 
