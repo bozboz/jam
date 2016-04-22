@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Redirect;
 
 class EntityTemplateController extends ModelAdminController
 {
+	protected $useActions = true;
+
 	private $type;
 
 	public function __construct(TemplateDecorator $decorator, Type $type)

@@ -25,6 +25,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class EntityController extends ModelAdminController
 {
+	protected $useActions = true;
+
 	protected $repository;
 	protected $type;
 

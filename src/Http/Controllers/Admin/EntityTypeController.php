@@ -4,13 +4,14 @@ namespace Bozboz\Jam\Http\Controllers\Admin;
 
 use Bozboz\Admin\Http\Controllers\ModelAdminController;
 use Bozboz\Admin\Permissions\RestrictAllPermissionsTrait;
-use Bozboz\Admin\Reports\Actions\CreateAction;
+use Bozboz\Admin\Reports\Report;
 use Bozboz\Jam\Types\TypeDecorator;
 use Bozboz\Jam\Types\TypeTemplatesAction;
-use Illuminate\Support\Facades\Input;
 
 class EntityTypeController extends ModelAdminController
 {
+	protected $useActions = true;
+
 	use RestrictAllPermissionsTrait;
 
 	public function __construct(TypeDecorator $decorator)
@@ -26,6 +27,11 @@ class EntityTypeController extends ModelAdminController
 	protected function getReportActions()
 	{
 		return [];
+	}
+
+	protected function getListingReport()
+	{
+		return new Report($this->decorator);
 	}
 
 	/**

@@ -15,6 +15,8 @@ class EntityTemplateFieldController extends ModelAdminController
 {
 	private $template;
 
+	protected $useActions = true;
+
 	public function __construct(FieldDecorator $decorator, Template $template)
 	{
 		parent::__construct($decorator);
@@ -38,7 +40,10 @@ class EntityTemplateFieldController extends ModelAdminController
 	{
 		$options = Field::getMapper()->getAll()->map(function($type, $alias) {
 			return new DropdownItem(
-				[$this->getActionName('createForTemplate'), 'template_id' => Input::get('template_id'), 'type' => $alias],
+				[$this->getActionName('createForTemplate'), [
+					'template_id' => Input::get('template_id'),
+					'type' => $alias
+				]],
 				[$this, 'canCreate'],
 				['label' => $type::getDescriptiveName()]
 			);
