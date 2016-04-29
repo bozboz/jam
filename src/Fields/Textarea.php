@@ -6,8 +6,9 @@ use Bozboz\Admin\Fields\TextareaField;
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\EntityDecorator;
 use Bozboz\Jam\Entities\Value;
+use Netcarver\Textile\Parser;
 
-class Textarea extends Text
+class Textarea extends Field
 {
 	public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
 	{
@@ -19,6 +20,8 @@ class Textarea extends Text
 
     public function getValue(Value $value)
     {
-        return nl2br(parent::getValue($value));
+        $parser = new Parser;
+        return $parser->textileThis($value->value);
+        // return $parser->setBlockTags(false)->parse($value->value);
     }
 }

@@ -7,7 +7,7 @@ class EntityList extends Type
     protected $attributes = [
         'menu_title' => null,
         'name' => null,
-        'report' => \Bozboz\Admin\Reports\Report::class,
+        'report' => null,
         'link_builder' => \Bozboz\Jam\Entities\LinksDisabled::class,
         'menu_builder' => \Bozboz\Jam\Types\Menu\Hidden::class,
         'entity' => \Bozboz\Jam\Entities\SortableEntity::class

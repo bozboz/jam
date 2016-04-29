@@ -22,6 +22,7 @@ class Text extends Field
     public function getValue(Value $value)
     {
         $parser = new Parser;
-        return $parser->setBlockTags(false)->parse($value->value);
+        return preg_replace('/<p>(.*)<\/p>/', '$1', $parser->textileThis($value->value));
+        // return $parser->setBlockTags(false)->parse($value->value);
     }
 }
