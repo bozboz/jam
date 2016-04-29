@@ -20,8 +20,6 @@ class Textarea extends Field
 
     public function getValue(Value $value)
     {
-        $parser = new Parser;
-        return $parser->textileThis($value->value);
-        // return $parser->setBlockTags(false)->parse($value->value);
+        return nl2br($value->value);
     }
 }
