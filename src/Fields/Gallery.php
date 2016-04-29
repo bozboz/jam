@@ -40,7 +40,7 @@ class Gallery extends Field
 	{
 		$valueObj = parent::saveValue($revision, $value);
 
-		$data = array_filter(is_array($data) ? $data : []);
+		$data = array_filter(is_array($value) ? $value : []);
 		$this->getValue($valueObj)->sync($data);
 	}
 

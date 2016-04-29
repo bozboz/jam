@@ -32,12 +32,6 @@ class TemplateDecorator extends ModelAdminDecorator
 		return $instance->name;
 	}
 
-	public function getHeading($plural = false)
-	{
-		return ''//(Input::has('type_id') ? Type::find(Input::get('type_id'))->name . ' ' : '')
-		       . parent::getHeading($plural);
-	}
-
 	public function getFields($instance)
 	{
 		return [
