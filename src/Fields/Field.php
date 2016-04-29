@@ -101,7 +101,7 @@ class Field extends Model implements FieldInterface, Sortable
 
     public function injectValue(Entity $entity, Value $value)
     {
-        $this->setAttribute($value->key, $this->getValue($value));
+        $entity->setAttribute($value->key, $this->getValue($value));
         return $value;
     }
 
