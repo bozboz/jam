@@ -275,12 +275,6 @@ class Entity extends Node implements ModelInterface
 		return array_key_exists($key, $this->values) ? $this->values[$key] : new Value(compact('key'));
 	}
 
-	public function setValue(Value $valueObj, $value)
-	{
-		// $this->values[$valueObj->key] = $valueObj;
-		$this->setAttribute($valueObj->key, $value);
-	}
-
 	public function template()
 	{
 		return $this->belongsTo(Template::class);

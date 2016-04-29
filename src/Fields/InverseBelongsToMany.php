@@ -44,7 +44,7 @@ class InverseBelongsToMany extends BelongsTo
     public function injectValue(Entity $entity, Value $value)
     {
         $this->entity = $entity;
-        $entity->setValue($value, $this->getValue($value));
+        $entity->setAttribute($value->key, $this->getValue($value));
     }
 
     public function injectAdminValue(Entity $entity, Revision $revision)

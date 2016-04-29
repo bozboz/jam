@@ -40,8 +40,8 @@ class EntityList extends Field
     public function injectValue(Entity $entity, Value $value)
     {
         $repository = app()->make(\Bozboz\Jam\Repositories\Contracts\EntityRepository::class);
-        $entity->setValue(
-            $value,
+        $entity->setAttribute(
+            $value->key,
             $repository->loadCurrentValues($this->newListQuery($entity)->active()->get())
         );
         return $value;
@@ -50,7 +50,7 @@ class EntityList extends Field
     public function injectAdminValue(Entity $entity, Revision $revision)
     {
         $value = $revision->fieldValues->where('key', $this->name)->first() ?: new Value(['key' => $this->name]);
-        $entity->setValue($value, $value);
+        $entity->setAttribute($value->key, $value);
         return $value;
     }
 
