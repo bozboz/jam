@@ -21,7 +21,6 @@ class Gallery extends Field
 
 	public function injectValue(Entity $entity, Value $value)
 	{
-		parent::injectValue($entity, $value);
 		$entity->setAttribute($value->key, $this->getValue($value)->get());
 	}
 
@@ -44,8 +43,13 @@ class Gallery extends Field
 		$this->getValue($valueObj)->sync($data);
 	}
 
+	/**
+	 * @todo come up with a better solution for this
+	 */
 	public function getValue(Value $value)
 	{
-		return Media::forModel($value);
+		$relationValue = new Value();
+		$relationValue->id = $value->id;
+		return Media::forModel($relationValue);
 	}
 }
