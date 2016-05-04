@@ -16,8 +16,8 @@ class CreateEntityFieldValuesTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('revision_id');
             $table->string('key');
-            $table->unsignedInteger('field_id')->after('id');
-            $table->string('type_alias')->after('field_id');
+            $table->unsignedInteger('field_id');
+            $table->string('type_alias');
             $table->text('value')->nullable();
             $table->unsignedInteger('foreign_key')->nullable()->index();
             $table->timestamps();
