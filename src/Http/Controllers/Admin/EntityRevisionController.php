@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Redirect;
 
 class EntityRevisionController extends ModelAdminController
 {
+	protected $useActions = true;
+
 	public function __construct(RevisionDecorator $decorator)
 	{
 		parent::__construct($decorator);
@@ -30,9 +32,7 @@ class EntityRevisionController extends ModelAdminController
 		$report->setReportActions($this->getReportActions());
 		$report->setRowActions($this->getRowActions());
 
-		return $report->render(
-			$this->getReportParams()
-		);
+		return $report->render();
 	}
 
 	public function revert($id)
