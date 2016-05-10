@@ -3,51 +3,45 @@
 namespace Bozboz\Jam\Entities;
 
 use Bozboz\Admin\Reports\Actions\DropdownAction;
-use Bozboz\Admin\Reports\Actions\DropdownItem;
-use Bozboz\Admin\Reports\Actions\DropdownUnlinkedItem;
-use Bozboz\Admin\Reports\Actions\LinkAction;
-use Bozboz\Admin\Reports\ChecksPermissions;
+use Bozboz\Admin\Reports\Actions\Presenters\Dropdown;
 use Bozboz\Jam\Entities\Revision;
 use Carbon\Carbon;
 
 class PublishAction extends DropdownAction
 {
-	protected $defaults = [
-		'warn' => null,
-		'btnClass' => 'btn-default btn-sm',
-		'dropdownClass' => '',
-		'label' => null,
-		'icon' => null,
-		'compactSingleActionToLink' => false
-	];
-
-	public function getAttributes()
+	public function __construct($items)
 	{
-		$attributes = $this->attributes;
+		parent::__construct($items, null);
+	}
+
+	public function output()
+	{
 		$currentRevision = $this->instance->currentRevision;
 		$status = $currentRevision ? $currentRevision->status : false;
 
 		switch ($status) {
 
 			case Revision::PUBLISHED:
-				$attributes['label'] = 'Published';
-				$attributes['icon'] = 'fa-check';
-				$attributes['btnClass'] = 'btn-success btn-sm';
+				$label = 'Published';
+				$icon = 'fa-check';
+				$this->attributes['class'] = 'btn-success btn-sm';
 			break;
 
 			case Revision::SCHEDULED:
-				$attributes['label'] = 'Scheduled';
-				$attributes['icon'] = 'fa-clock-o';
-				$attributes['btnClass'] = 'btn-warning btn-sm';
+				$label = 'Scheduled';
+				$icon = 'fa-clock-o';
+				$this->attributes['class'] = 'btn-warning btn-sm';
 			break;
 
 			default:
-				$attributes['label'] = 'Hidden';
-				$attributes['icon'] = 'fa-times';
+				$label = 'Hidden';
+				$icon = 'fa-times';
 			break;
 
 		}
 
-		return $attributes;
+		$presenter = new Dropdown($this->validItems, $label, $icon, $this->attributes);
+
+		return $presenter->render();
 	}
 }

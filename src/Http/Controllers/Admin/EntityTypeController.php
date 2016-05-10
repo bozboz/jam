@@ -4,6 +4,10 @@ namespace Bozboz\Jam\Http\Controllers\Admin;
 
 use Bozboz\Admin\Http\Controllers\ModelAdminController;
 use Bozboz\Admin\Permissions\RestrictAllPermissionsTrait;
+use Bozboz\Admin\Reports\Actions\Action;
+use Bozboz\Admin\Reports\Actions\Permissions\IsValid;
+use Bozboz\Admin\Reports\Actions\Presenters\Link;
+use Bozboz\Admin\Reports\Actions\Presenters\Urls\Custom;
 use Bozboz\Admin\Reports\Report;
 use Bozboz\Jam\Types\TypeDecorator;
 use Bozboz\Jam\Types\TypeTemplatesAction;
@@ -41,23 +45,24 @@ class EntityTypeController extends ModelAdminController
 	 */
 	protected function getRowActions()
 	{
+		$controller = app(EntityTemplateController::class);
+
 		return [
-			new TypeTemplatesAction(
-				'\\'.EntityTemplateController::class.'@index',
-				[$this, 'canEdit'],
-				[
-					'class' => 'btn-primary',
-					'label' => 'See All',
-				]
+			$this->actions->custom(
+				new Link(new Custom(function($instance) use ($controller) {
+					return action($controller->getActionName('index'), [
+						'type' => $instance->alias
+					]);
+				}), 'See All', 'fa fa-file-o', ['class' => 'btn-primary']),
+				new IsValid([$this, 'canEdit'])
 			),
-			new TypeTemplatesAction(
-				'\\'.EntityTemplateController::class.'@createForType',
-				[app(EntityTemplateController::class), 'canCreate'],
-				[
-					'class' => 'btn-success',
-					'icon' => 'fa fa-plus',
-					'label' => 'New Template'
-				]
+			$this->actions->custom(
+				new Link(new Custom(function($instance) use ($controller) {
+					return action($controller->getActionName('createForType'), [
+						'type' => $instance->alias
+					]);
+				}), 'New Template', 'fa fa-plus', ['class' => 'btn-success']),
+				new IsValid([$controller, 'canCreate'])
 			)
 		];
 	}

@@ -3,9 +3,10 @@
 namespace Bozboz\Jam\Http\Controllers\Admin;
 
 use Bozboz\Admin\Http\Controllers\ModelAdminController;
-use Bozboz\Admin\Reports\Actions\CreateAction;
+use Bozboz\Admin\Reports\Actions\Permissions\IsValid;
+use Bozboz\Admin\Reports\Actions\Presenters\Link;
+use Bozboz\Admin\Reports\Actions\Presenters\Urls\Custom;
 use Bozboz\Jam\Templates\TemplateDecorator;
-use Bozboz\Jam\Templates\TemplateFieldsAction;
 use Bozboz\Jam\Templates\TemplateReport;
 use Bozboz\Jam\Types\Type;
 use Illuminate\Support\Facades\Input;
@@ -34,9 +35,15 @@ class EntityTemplateController extends ModelAdminController
 	public function getRowActions()
 	{
 		return array_merge([
-			new TemplateFieldsAction(
-				'\\'.EntityTemplateFieldController::class.'@index',
-				[$this, 'canEdit']
+			$this->actions->custom(
+				new Link(new Custom(function($instance) {
+					return action('\\'.EntityTemplateFieldController::class.'@index', [
+						'template_id' => $instance->id
+					]);
+				}), 'Fields', 'fa fa-list-ul', [
+					'class' => 'btn-default'
+				]),
+				new IsValid([$this, 'canEdit'])
 			)
 		], parent::getRowActions());
 	}
@@ -49,9 +56,10 @@ class EntityTemplateController extends ModelAdminController
 	protected function getReportActions()
 	{
 		return [
-			'create' => new CreateAction(
+			$this->actions->create(
 				[$this->getActionName('createForType'), Input::get('type')],
-				[$this, 'canCreate']
+				[$this, 'canCreate'],
+				'New Template'
 			)
 		];
 	}

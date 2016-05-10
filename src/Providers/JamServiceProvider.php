@@ -3,9 +3,10 @@
 namespace Bozboz\Jam\Providers;
 
 use Bozboz\Jam\Entities\Entity;
+use Bozboz\Jam\Entities\PublishAction;
 use Bozboz\Jam\Fields\Field;
-use Bozboz\Jam\Types\Type;
 use Bozboz\Jam\Mapper;
+use Bozboz\Jam\Types\Type;
 use Illuminate\Support\ServiceProvider;
 
 class JamServiceProvider extends ServiceProvider
@@ -53,6 +54,8 @@ class JamServiceProvider extends ServiceProvider
 
         $this->registerEntityTypes();
         $this->registerFieldTypes();
+
+        $this->registerActions();
 
         $this->buildAdminMenu();
 
@@ -115,5 +118,14 @@ class JamServiceProvider extends ServiceProvider
             'inverse-belongs-to-many'  => \Bozboz\Jam\Fields\InverseBelongsToMany::class,
             'hidden'                   => \Bozboz\Jam\Fields\Hidden::class,
         ]);
+    }
+
+    protected function registerActions()
+    {
+        $actions = $this->app['admin.actions'];
+
+        $actions->register('publish', function($items) {
+            return new PublishAction($items);
+        });
     }
 }
