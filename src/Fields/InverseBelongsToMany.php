@@ -6,11 +6,11 @@ use Bozboz\Admin\Fields\Field as AdminField;
 use Bozboz\Admin\Fields\FieldGroup;
 use Bozboz\Admin\Fields\HiddenField;
 use Bozboz\Admin\Fields\TextField;
-use Bozboz\Admin\Reports\Actions\EditAction;
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\EntityDecorator;
 use Bozboz\Jam\Entities\Revision;
 use Bozboz\Jam\Entities\Value;
+use Bozboz\Jam\Http\Controllers\Admin\EntityController;
 use Illuminate\Support\Facades\DB;
 
 class InverseBelongsToMany extends BelongsTo
@@ -80,12 +80,15 @@ class RelatedField extends AdminField
 
     public function getInput()
     {
-        return $this->related->map(function($relation) {
-            $action = (new EditAction(
-                '\\'.\Bozboz\Jam\Http\Controllers\Admin\EntityController::class.'@edit',
-                [app(\Bozboz\Jam\Http\Controllers\Admin\EntityController::class), 'canEdit']
-            ))->setInstance($relation);
-            return $relation->name . ' ' . view($action->getView(), $action->getViewData())->render();
+        $controller = app(EntityController::class);
+        $actions = app('admin.actions');
+
+        return $this->related->map(function($relation) use ($controller, $actions) {
+            $action = $actions->edit(
+                $controller->getActionName('edit'),
+                [$controller, 'canEdit']
+            )->setInstance($relation);
+            return $relation->name . ' ' . $action->render()->render();
         })->push($this->related->render())->implode('<br>');
     }
 }
