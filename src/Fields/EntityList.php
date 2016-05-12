@@ -9,6 +9,7 @@ use Bozboz\Admin\Fields\TextField;
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\EntityDecorator;
 use Bozboz\Jam\Entities\Revision;
+use Bozboz\Jam\Entities\SortableEntity;
 use Bozboz\Jam\Entities\Value;
 use Bozboz\Jam\Templates\Template;
 use Bozboz\Jam\Types\Type;
@@ -82,7 +83,7 @@ class EntityListField extends AdminField
             'entities' => $this->entityList,
             'field' => $this->field,
             'parentEntity' => $this->parentEntity,
-            'model' => Entity::class,
+            'model' => SortableEntity::class,
         ])->render();
     }
 
