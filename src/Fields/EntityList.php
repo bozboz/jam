@@ -56,7 +56,7 @@ class EntityList extends Field
 
     protected function newListQuery($entity)
     {
-        return $entity->childrenOfType($this->getOption('type'));
+        return $entity->childrenOfType($this->getOption('type'))->defaultOrder();
     }
 }
 
