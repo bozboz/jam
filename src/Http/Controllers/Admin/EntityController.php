@@ -90,15 +90,17 @@ class EntityController extends ModelAdminController
 		return array_merge([
 			$this->actions->publish([
 				$this->actions->custom(
-					new Link($this->getActionName('publish'), 'Publish'),
+					new Form($this->getActionName('publish'), 'Publish'),
 					new IsValid([$this, 'canPublish'])
 				),
 				$this->actions->custom(
-					new Link($this->getActionName('unpublish'), 'Hide'),
+					new Form($this->getActionName('unpublish'), 'Hide'),
 					new IsValid([$this, 'canHide'])
 				),
 				$this->actions->custom(
-					new Form($this->getActionName('schedule'), 'Schedule'),
+					new Form($this->getActionName('schedule'), 'Schedule', null, [], [
+						'class' => 'js-datepicker-popup',
+					]),
 					new IsValid([$this, 'canSchedule'])
 				)
 			]),
