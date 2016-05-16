@@ -18,29 +18,31 @@ class PublishAction extends DropdownAction
 	{
 		$currentRevision = $this->instance->currentRevision;
 		$status = $currentRevision ? $currentRevision->status : false;
+		$attributes = $this->attributes;
 
 		switch ($status) {
 
 			case Revision::PUBLISHED:
 				$label = 'Published';
 				$icon = 'fa-check';
-				$this->attributes['class'] = 'btn-success btn-sm';
+				$attributes['class'] = 'btn-success btn-sm';
 			break;
 
 			case Revision::SCHEDULED:
 				$label = 'Scheduled';
 				$icon = 'fa-clock-o';
-				$this->attributes['class'] = 'btn-warning btn-sm';
+				$attributes['class'] = 'btn-warning btn-sm';
 			break;
 
 			default:
 				$label = 'Hidden';
 				$icon = 'fa-times';
+				$attributes['class'] = 'btn-default btn-sm';
 			break;
 
 		}
 
-		$presenter = new Dropdown($this->validItems, $label, $icon, $this->attributes);
+		$presenter = new Dropdown($this->validItems, $label, $icon, $attributes);
 
 		return $presenter->render();
 	}
