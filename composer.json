@@ -4,6 +4,10 @@
         {
             "name": "Jim Hollington",
             "email": "jim@bozboz.co.uk"
+        },
+        {
+            "name": "Sam King",
+            "email": "sam@bozboz.co.uk"
         }
     ],
     "autoload": {
