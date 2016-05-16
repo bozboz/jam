@@ -3,24 +3,21 @@
 namespace Bozboz\Jam\Http\Controllers\Admin;
 
 use Bozboz\Admin\Http\Controllers\ModelAdminController;
-use Bozboz\Admin\Reports\Actions\CreateDropdownAction;
-use Bozboz\Admin\Reports\Actions\DropdownDatePopupItem;
-use Bozboz\Admin\Reports\Actions\DropdownFormItem;
-use Bozboz\Admin\Reports\Actions\DropdownItem;
-use Bozboz\Jam\Repositories\Contracts\EntityRepository;
+use Bozboz\Admin\Reports\Actions\Permissions\IsValid;
+use Bozboz\Admin\Reports\Actions\Presenters\Form;
+use Bozboz\Admin\Reports\Actions\Presenters\Link;
 use Bozboz\Jam\Entities\EntityDecorator;
-use Bozboz\Jam\Entities\EntityHistoryAction;
-use Bozboz\Jam\Entities\PublishAction;
 use Bozboz\Jam\Entities\Revision;
+use Bozboz\Jam\Repositories\Contracts\EntityRepository;
 use Bozboz\Jam\Templates\Template;
 use Bozboz\Permissions\RuleStack;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class EntityController extends ModelAdminController
@@ -66,15 +63,18 @@ class EntityController extends ModelAdminController
 	protected function getReportActions()
 	{
 		$options = Template::whereTypeAlias($this->type->alias)->orderBy('name')->get()->map(function($template) {
-				return new DropdownItem(
-					[$this->getActionName('createOfType'), $template->alias],
-					[$this, 'canCreate'],
-					['label' => $template->name]
-				);
-			});
+			return $this->actions->custom(
+				new Link([$this->getActionName('createOfType'), [$template->alias]], $template->name),
+				new IsValid([$this, 'canCreate'])
+			);
+		});
 
 		return [
-			'create' => new CreateDropdownAction($options->all())
+			$this->actions->dropdown($options->all(), 'New', 'fa fa-plus', [
+				'class' => 'btn-success'
+			], [
+				'class' => 'pull-right'
+			])
 		];
 	}
 
@@ -85,43 +85,32 @@ class EntityController extends ModelAdminController
 	 */
 	protected function getRowActions()
 	{
-		return [
-			'publish' => new PublishAction([
-				new DropdownFormItem(
-					$this->getActionName('publish'),
-					[$this, 'canPublish'],
-					[
-						'label' => 'Publish',
-						'method' => 'PUBLISH',
-					]
+		$entityRevisionController = app(EntityRevisionController::class);
+
+		return array_merge([
+			$this->actions->publish([
+				$this->actions->custom(
+					new Form($this->getActionName('publish'), 'Publish'),
+					new IsValid([$this, 'canPublish'])
 				),
-				new DropdownFormItem(
-					$this->getActionName('unpublish'),
-					[$this, 'canHide'],
-					[
-						'label' => 'Hide',
-						'method' => 'HIDE',
-					]
+				$this->actions->custom(
+					new Form($this->getActionName('unpublish'), 'Hide'),
+					new IsValid([$this, 'canHide'])
 				),
-				new DropdownDatePopupItem(
-					$this->getActionName('schedule'),
-					[$this, 'canSchedule'],
-					[
-						'label' => 'Schedule',
-						'method' => 'SCHEDULE',
-					]
+				$this->actions->custom(
+					new Form($this->getActionName('schedule'), 'Schedule', null, [], [
+						'class' => 'js-datepicker-popup',
+					]),
+					new IsValid([$this, 'canSchedule'])
 				)
 			]),
-			'history' => new EntityHistoryAction(
-				'\\'.$this->getEntityRevisionController().'@indexForEntity',
-				[app()->make($this->getEntityRevisionController()), 'canView']
+			$this->actions->custom(
+				new Link($entityRevisionController->getActionName('indexForEntity'), 'History', 'fa fa-history', [
+					'class' => 'btn-default'
+				]),
+				new IsValid([$entityRevisionController, 'canView'])
 			)
-		] + parent::getRowActions();
-	}
-
-	public function getEntityRevisionController()
-	{
-		return EntityRevisionController::class;
+		], parent::getRowActions());
 	}
 
 	public function createOfType($type)

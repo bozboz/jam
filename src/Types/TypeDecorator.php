@@ -4,12 +4,14 @@ namespace Bozboz\Jam\Types;
 
 use Bozboz\Admin\Base\ModelAdminDecorator;
 use Bozboz\Admin\Fields\CheckboxField;
-use Bozboz\Admin\Fields\MediaBrowser;
 use Bozboz\Admin\Fields\TextField;
+use Bozboz\Admin\Reports\Actions\Action;
+use Bozboz\Admin\Reports\Actions\Permissions\IsValid;
+use Bozboz\Admin\Reports\Actions\Presenters\Link;
+use Bozboz\Admin\Reports\Actions\Presenters\Urls\Url;
 use Bozboz\Jam\Http\Controllers\Admin\EntityTemplateController;
 use Bozboz\Jam\Http\Controllers\Admin\EntityTemplateFieldController;
 use Bozboz\Jam\Mapper;
-use Bozboz\Jam\Templates\TemplateFieldsAction;
 use Bozboz\Jam\Types\Type;
 
 class TypeDecorator extends ModelAdminDecorator
@@ -24,16 +26,15 @@ class TypeDecorator extends ModelAdminDecorator
 		return [
 			'Name' => $this->getLabel($instance),
 			'Templates' => $instance->templates()->orderBy('name')->get()->map(function($template) {
-				$action = new TemplateFieldsAction(
-					'\\'.EntityTemplateFieldController::class.'@index',
-					[app(EntityTemplateController::class), 'canEdit'],
-					[
-						'class' => 'btn-info',
-						'label' => $template->name,
-					]
+				$templateFieldsUrl = new Url(action('\\'.EntityTemplateFieldController::class.'@index', [
+					'template_id' => $template->id
+				]));
+				$action = new Action(
+					new Link($templateFieldsUrl, $template->name, 'fa fa-list-ul', ['class' => 'btn-info']),
+					new IsValid([app(EntityTemplateController::class), 'canEdit'])
 				);
 				$action->setInstance($template);
-				return view($action->getView(), $action->getViewData())->render();
+				return $action->render()->render();
 			})->implode(' ')
 		];
 	}

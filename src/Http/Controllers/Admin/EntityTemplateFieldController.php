@@ -3,8 +3,8 @@
 namespace Bozboz\Jam\Http\Controllers\Admin;
 
 use Bozboz\Admin\Http\Controllers\ModelAdminController;
-use Bozboz\Admin\Reports\Actions\CreateDropdownAction;
-use Bozboz\Admin\Reports\Actions\DropdownItem;
+use Bozboz\Admin\Reports\Actions\Permissions\IsValid;
+use Bozboz\Admin\Reports\Actions\Presenters\Link;
 use Bozboz\Jam\Fields\Field;
 use Bozboz\Jam\Fields\FieldDecorator;
 use Bozboz\Jam\Templates\Template;
@@ -39,18 +39,21 @@ class EntityTemplateFieldController extends ModelAdminController
 	protected function getReportActions()
 	{
 		$options = Field::getMapper()->getAll()->map(function($type, $alias) {
-			return new DropdownItem(
-				[$this->getActionName('createForTemplate'), [
+			return $this->actions->custom(
+				new Link([$this->getActionName('createForTemplate'), [
 					'template_id' => Input::get('template_id'),
 					'type' => $alias
-				]],
-				[$this, 'canCreate'],
-				['label' => $type::getDescriptiveName()]
+				]], $type::getDescriptiveName()),
+				new IsValid([$this, 'canCreate'])
 			);
 		});
 
 		return [
-			'create' => new CreateDropdownAction($options)
+			$this->actions->dropdown($options, 'Create', 'fa fa-plus', [
+				'class' => 'btn-success'
+			], [
+				'class' => 'pull-right'
+			])
 		];
 	}
 

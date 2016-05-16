@@ -32,6 +32,6 @@ Route::group(array('middleware' => 'web', 'namespace' => 'Bozboz\Jam\Http\Contro
 	Route::get('entity-templates/{type}/create', 'EntityTemplateController@createForType');
 
 	Route::resource('entity-template-fields', 'EntityTemplateFieldController', ['except' => ['create']]);
-	Route::get('entity-templates-fields/{templateId}/{type}/create', 'EntityTemplateFieldController@createForTemplate');
+	Route::get('entity-template-fields/{templateId}/{type}/create', 'EntityTemplateFieldController@createForTemplate');
 
 });

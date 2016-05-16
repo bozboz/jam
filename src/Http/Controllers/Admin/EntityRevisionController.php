@@ -3,23 +3,24 @@
 namespace Bozboz\Jam\Http\Controllers\Admin;
 
 use Bozboz\Admin\Http\Controllers\ModelAdminController;
-use Bozboz\Admin\Reports\Actions\FormAction;
-use Bozboz\Admin\Reports\Actions\LinkAction;
+use Bozboz\Admin\Reports\Actions\Permissions\IsValid;
+use Bozboz\Admin\Reports\Actions\Presenters\Form;
+use Bozboz\Admin\Reports\Actions\Presenters\Link;
+use Bozboz\Admin\Reports\Actions\Presenters\Urls\Custom as CustomUrl;
 use Bozboz\Jam\Entities\Entity;
-use Bozboz\Jam\Entities\EntityAtRevisionAction;
 use Bozboz\Jam\Entities\Revision;
 use Bozboz\Jam\Entities\RevisionDecorator;
 use Bozboz\Jam\Entities\RevisionReport;
-use Bozboz\Jam\Http\Controllers\Admin\EntityController;
-use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
 
 class EntityRevisionController extends ModelAdminController
 {
 	protected $useActions = true;
 
-	public function __construct(RevisionDecorator $decorator)
+	public function __construct(RevisionDecorator $decorator, EntityController $entityController)
 	{
+		$this->entityController = $entityController;
+
 		parent::__construct($decorator);
 	}
 
@@ -29,7 +30,19 @@ class EntityRevisionController extends ModelAdminController
 
 		$report = new RevisionReport($this->decorator, $id);
 
-		$report->setReportActions($this->getReportActions());
+		$listingUrl = [$this->entityController->getActionName('show'), [
+			'type' => Entity::find($id)->template->type_alias
+		]];
+
+		$report->setReportActions([
+			$this->actions->custom(
+				new Link($listingUrl, 'Back to Listing', 'fa fa-list-alt', [
+					'class' => 'btn-default pull-right',
+				]),
+				new IsValid([$this->entityController, 'canView'])
+			)
+		]);
+
 		$report->setRowActions($this->getRowActions());
 
 		return $report->render();
@@ -56,49 +69,26 @@ class EntityRevisionController extends ModelAdminController
 		return $response;
 	}
 
-	protected function getReportActions()
-	{
-		if (Input::has('entity_id')) {
-			return [
-				new LinkAction(
-					['\\'.$this->getEntityController().'@index', 'type' => Entity::find(Input::get('entity_id'))->template->type_alias],
-					[app()->make($this->getEntityController()), 'canView'],
-					[
-						'label' => 'Back to listing',
-						'icon' => 'fa fa-list-alt',
-						'class' => 'btn-default pull-right',
-					]
-				)
-			];
-		} else {
-			return [];
-		}
-	}
-
 	protected function getRowActions()
 	{
 		return [
-			new EntityAtRevisionAction(
-				'\\'.$this->getEntityController().'@edit',
-				[app()->make($this->getEntityController()), 'canEdit']
+			$this->actions->custom(
+				new Link(new CustomUrl(function($instance) {
+					return action($this->entityController->getActionName('edit'), [
+						'entity_id' => $instance->entity->id,
+						'revision_id' => $instance->id
+					]);
+				}), 'View', 'fa fa-eye', ['class' => 'btn-info']),
+				new IsValid([$this->entityController, 'canEdit'])
 			),
-			new FormAction(
-				$this->getActionName('revert'),
-				[app()->make($this->getEntityController()), 'canEdit'],
-				[
-					'label' => 'Revert',
-					'icon' => 'fa fa-undo',
+			$this->actions->custom(
+				new Form($this->getActionName('revert'), 'Revert', 'fa fa-undo', [
 					'class' => 'btn-warning',
-					'method' => 'REVERT',
 					'warn' => 'Are you sure you wish to revert to this revision? This action cannot be undone.'
-				]
+				]),
+				new IsValid([$this->entityController, 'canEdit'])
 			),
 		];
-	}
-
-	protected function getEntityController()
-	{
-		return EntityController::class;
 	}
 
 	public function getSuccessResponse($instance)
