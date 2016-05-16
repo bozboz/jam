@@ -7,7 +7,6 @@ use Bozboz\Admin\Reports\Actions\Permissions\IsValid;
 use Bozboz\Admin\Reports\Actions\Presenters\Form;
 use Bozboz\Admin\Reports\Actions\Presenters\Link;
 use Bozboz\Jam\Entities\EntityDecorator;
-use Bozboz\Jam\Entities\PublishAction;
 use Bozboz\Jam\Entities\Revision;
 use Bozboz\Jam\Repositories\Contracts\EntityRepository;
 use Bozboz\Jam\Templates\Template;

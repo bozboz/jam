@@ -11,7 +11,6 @@ use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\Revision;
 use Bozboz\Jam\Entities\RevisionDecorator;
 use Bozboz\Jam\Entities\RevisionReport;
-use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
 
 class EntityRevisionController extends ModelAdminController
