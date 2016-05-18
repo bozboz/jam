@@ -18,11 +18,4 @@ class Text extends Field
             'label' => $this->getInputLabel()
         ]);
     }
-
-    public function getValue(Value $value)
-    {
-        $parser = new Parser;
-        return preg_replace('/<p>(.*)<\/p>/', '$1', $parser->textileThis($value->value));
-        // return $parser->setBlockTags(false)->parse($value->value);
-    }
 }
