@@ -16,7 +16,17 @@ class BelongsToMany extends BelongsTo
                 'name' => $this->getInputName(),
                 'label' => $this->getInputLabel()
             ],
-            [$this, 'filterAdminFieldQuery']
+            function ($query) {
+                if (property_exists($this->options_array, 'template')) {
+                    $query->whereHas('template', function($query) {
+                        $query->whereId($this->options_array->template);
+                    });
+                } elseif (property_exists($this->options_array, 'type')) {
+                    $query->whereHas('template', function($query) {
+                        $query->whereTypeAlias($this->options_array->type);
+                    });
+                }
+            }
         );
     }
 
