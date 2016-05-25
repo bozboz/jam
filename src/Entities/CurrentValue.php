@@ -22,9 +22,10 @@ class CurrentValue extends Value
         return array_combine(explode(',', $this->option_keys), explode(',', $this->option_values));
     }
 
-    public function scopeSelectFields($query, $fields)
+    public function scopeSelectFields($query, array $fields)
     {
-        if ($fields[0] !== '*') {
+        $first = reset($fields);
+        if ($first !== '*') {
             $query->whereIn('entity_values.key', $fields);
         }
     }
