@@ -26,7 +26,7 @@ class InverseBelongsToMany extends BelongsTo
     {
         return new FieldGroup($this->getInputLabel(), [
             new HiddenField($this->getInputName(), $this->getOption('type')),
-            new RelatedField($this->getValue($value))
+            new RelatedField($this->getInputName().'_inverse_relation', $this->getValue($value))
         ]);
     }
 
@@ -73,9 +73,9 @@ class InverseBelongsToMany extends BelongsTo
 
 class RelatedField extends AdminField
 {
-    public function __construct($related)
+    public function __construct($name, $related)
     {
-        parent::__construct('', ['related' => $related]);
+        parent::__construct(['related' => $related, 'label' => '']);
     }
 
     public function getInput()
