@@ -20,12 +20,14 @@ class BelongsTo extends Field
     {
         if (property_exists($this->options_array, 'entity')) {
 
-            if (property_exists($this->options_array, 'make_parent') && !$instance->parent_id) {
-                $instance->parent_id = $this->options_array->entity;
+            if (property_exists($this->options_array, 'make_parent')) {
+                if (!$instance->parent_id) {
+                    $instance->parent_id = $this->options_array->entity;
+                }
                 return new HiddenField($this->getInputName());
-            } else {
-                return new HiddenField($this->getInputName(), $this->options_array->entity);
             }
+
+            return new HiddenField($this->getInputName(), $this->options_array->entity);
         }
 
         return new BelongsToField($decorator, $this->getValue($value), [
