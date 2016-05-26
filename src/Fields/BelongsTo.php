@@ -20,7 +20,7 @@ class BelongsTo extends Field
     {
         if (property_exists($this->options_array, 'entity')) {
 
-            if (property_exists($this->options_array, 'make_parent')) {
+            if (property_exists($this->options_array, 'make_parent') && !$instnace->parent_id) {
                 $instance->parent_id = $this->options_array->entity;
             }
 
