@@ -4,6 +4,7 @@ namespace Bozboz\Jam\Entities;
 
 use Bozboz\Admin\Base\Sorting\NestedSortableTrait;
 use Bozboz\Admin\Base\Sorting\Sortable;
+use DB;
 
 class SortableEntity extends Entity implements Sortable
 {
@@ -23,7 +24,9 @@ class SortableEntity extends Entity implements Sortable
 
     public function sort($before, $after, $parent)
     {
+        DB::beginTransaction();
         $this->traitSort($before, $after, $parent);
-        static::$linkBuilder->updatePaths($this);
+        static::updatePaths($this);
+        DB::commit();
     }
 }
