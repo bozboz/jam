@@ -134,7 +134,7 @@ class EntityRepository implements EntityRepositoryInterface
             return $entities;
         }
 
-        $values = CurrentValue::selectFields($fields)->forRevisions($revisionIds)->get();
+        $values = CurrentValue::selectFields($fields)->forRevisions($revisionIds)->has('templateField')->get();
 
         $values->map(function($value) use ($entityCollection) {
             $entity = $entityCollection->where('revision_id', $value->revision_id)->first();

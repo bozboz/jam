@@ -22,6 +22,11 @@ class Value extends Model
 		return $this->belongsTo(Revision::class);
 	}
 
+	public function templateField()
+	{
+		return $this->belongsTo(Field::class, 'field_id');
+	}
+
 	public function getForeignKey()
 	{
 		return 'value_id';
