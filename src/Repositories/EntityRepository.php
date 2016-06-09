@@ -23,7 +23,7 @@ class EntityRepository implements EntityRepositoryInterface
 
     public function newQuery($typeAlias)
     {
-        $this->query = (new $this->mapper->get($typeAlias))->getEntity()->newQuery();
+        $this->query = $this->mapper->get($typeAlias)->getEntity()->newQuery();
     }
 
     public function find($id)
@@ -41,7 +41,9 @@ class EntityRepository implements EntityRepositoryInterface
 
     public function forType($typeAlias)
     {
-        $entities = (new $this->mapper->get($typeAlias))->all();
+        return $this->mapper->get($typeAlias)->getEntity()->whereHas('template', function($query) use ($typeAlias) {
+            $query->where('type_alias', $typeAlias);
+        })->get();
     }
 
     public function getForPath($path)
