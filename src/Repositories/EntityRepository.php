@@ -43,7 +43,7 @@ class EntityRepository implements EntityRepositoryInterface
     {
         return $this->mapper->get($typeAlias)->getEntity()->whereHas('template', function($query) use ($typeAlias) {
             $query->where('type_alias', $typeAlias);
-        })->get();
+        });
     }
 
     public function getForPath($path)
