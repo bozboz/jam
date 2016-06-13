@@ -6,6 +6,7 @@ use Bozboz\Admin\Base\ModelAdminDecorator;
 use Bozboz\Admin\Fields\HiddenField;
 use Bozboz\Admin\Fields\TextField;
 use Bozboz\Admin\Fields\URLField;
+use Bozboz\Admin\Reports\Filters\ArrayListingFilter;
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\Fields\PublishField;
 use Bozboz\Jam\Entities\Revision;
@@ -119,6 +120,25 @@ class EntityDecorator extends ModelAdminDecorator
 		}
 
 		return $fields;
+	}
+
+	public function getListingFilters()
+	{
+		$options = Template::whereTypeAlias($this->type->alias)
+			->orderBy('name')->get()
+			->pluck('name', 'id');
+
+		if ($options->count() > 1) {
+			return [
+				new ArrayListingFilter(
+					'template', $options->prepend('- All -', ''), function($query) {
+						$query->whereTemplateId(Input::get('template'));
+					}
+				),
+			];
+		} else {
+			return [];
+		}
 	}
 
 	/**

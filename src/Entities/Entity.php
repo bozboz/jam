@@ -77,7 +77,7 @@ class Entity extends Node implements ModelInterface
 
 	public function isSortable()
 	{
-		return true;
+		return false;
 	}
 
 	public function getValidator()

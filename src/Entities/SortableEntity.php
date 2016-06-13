@@ -29,4 +29,9 @@ class SortableEntity extends Entity implements Sortable
         static::updatePaths($this);
         DB::commit();
     }
+
+    public function isSortable()
+    {
+        return true;
+    }
 }
