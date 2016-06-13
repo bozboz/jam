@@ -64,7 +64,7 @@ class EntityController extends ModelAdminController
 	{
 		$options = Template::whereTypeAlias($this->type->alias)->orderBy('name')->get()->map(function($template) {
 			return $this->actions->custom(
-				new Link([$this->getActionName('createOfType'), [$template->alias]], $template->name),
+				new Link([$this->getActionName('createOfType'), [$template->type_alias, $template->alias]], $template->name),
 				new IsValid([$this, 'canCreate'])
 			);
 		});
@@ -113,9 +113,9 @@ class EntityController extends ModelAdminController
 		], parent::getRowActions());
 	}
 
-	public function createOfType($type)
+	public function createOfType($type, $template)
 	{
-		$template = Template::whereAlias($type)->first();
+		$template = Template::whereTypeAlias($type)->whereAlias($template)->first();
 		$instance = $this->decorator->newEntityOfType($template);
 
 		if ( ! $this->canCreate($instance)) App::abort(403);

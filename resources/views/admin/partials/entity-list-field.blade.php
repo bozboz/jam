@@ -12,7 +12,7 @@
             <ul class="dropdown-menu" role="menu">
                 @foreach($templates as $template)
                 <li>
-                    <a class="" type="submit" href="{{ route('admin.entity-list.create-for-list', [$template->alias, $parentEntity->id]) }}">
+                    <a class="" type="submit" href="{{ route('admin.entity-list.create-for-list', [$template->type_alias, $template->alias, $parentEntity->id]) }}">
                         {{ $template->name }}
                     </a>
                 </li>
@@ -20,7 +20,7 @@
             </ul>
         </div>
     @else
-        <a class="btn btn-sm btn-primary" type="submit" href="{{ route('admin.entity-list.create-for-list', [$templates->first()->alias, $parentEntity->id]) }}">
+        <a class="btn btn-sm btn-primary" type="submit" href="{{ route('admin.entity-list.create-for-list', [$templates->first()->type_alias, $templates->first()->alias, $parentEntity->id]) }}">
             <i class="fa fa-plus"></i>
             New
         </a>

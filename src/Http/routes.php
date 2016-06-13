@@ -9,9 +9,12 @@
 Route::group(array('middleware' => 'web', 'namespace' => 'Bozboz\Jam\Http\Controllers\Admin', 'prefix' => 'admin'), function() {
 
 	Route::resource('entities', 'EntityController', ['except' => ['index', 'create']]);
-	Route::group(['prefix' => 'entities/{type}'], function()
+	Route::group(['prefix' => 'entities/{type}/{template}'], function()
 	{
 		Route::get('create', 'EntityController@createOfType');
+	});
+	Route::group(['prefix' => 'entities/{id}'], function()
+	{
 		Route::post('publish', 'EntityController@publish');
 		Route::post('unpublish', 'EntityController@unpublish');
 		Route::post('schedule', 'EntityController@schedule');
@@ -21,7 +24,7 @@ Route::group(array('middleware' => 'web', 'namespace' => 'Bozboz\Jam\Http\Contro
 	Route::post('entities/{id}/revisions/revert', 'EntityRevisionController@revert');
 
 	Route::resource('entity-list', 'EntityListController', ['except' => ['create']]);
-	Route::get('entity-list/{type}/{parent_id}/create', [
+	Route::get('entity-list/{type}/{template}/{parent_id}/create', [
 		'uses' => 'EntityListController@createForEntityListField',
 		'as' => 'admin.entity-list.create-for-list'
 	]);
