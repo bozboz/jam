@@ -207,7 +207,7 @@ class Entity extends Node implements ModelInterface
 			if ($typeAlias) {
 				$query->whereTypeAlias($typeAlias);
 			}
-			$query->whereAlias($templateAlias);
+			$query->whereIn('alias', (array)$templateAlias);
 		});
 	}
 
