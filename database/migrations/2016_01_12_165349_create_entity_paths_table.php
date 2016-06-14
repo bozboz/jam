@@ -21,7 +21,7 @@ class CreateEntityPathsTable extends Migration
             $table->timestamps();
 
             $table->foreign('entity_id')->references('id')->on('entities')->onDelete('cascade');
-            $table->foreign('canonical_id')->references('id')->on('entities')->onDelete('cascade');
+            $table->foreign('canonical_id')->references('id')->on('entity_paths')->onDelete('cascade');
         });
     }
 

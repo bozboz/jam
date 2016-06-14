@@ -201,6 +201,16 @@ class Entity extends Node implements ModelInterface
 		});
 	}
 
+	public function scopeOfTemplate($query, $templateAlias, $typeAlias = null)
+	{
+		$query->whereHas('template', function($query) use ($templateAlias, $typeAlias) {
+			if ($typeAlias) {
+				$query->whereTypeAlias($typeAlias);
+			}
+			$query->whereAlias($templateAlias);
+		});
+	}
+
 	public function scopeJoinValueByKey($query, $key, $alias = 'entity_values')
 	{
 		$query->join("entity_values as {$alias}", 'entities.revision_id', '=', "{$alias}.revision_id");
