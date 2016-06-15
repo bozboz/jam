@@ -10,9 +10,9 @@ use Redirect;
 
 class EntityListController extends EntityController
 {
-    public function createForEntityListField($type, $parentEntity)
+    public function createForEntityListField($typeAlias, $templateAlias, $parentEntity)
     {
-        $template = Template::with('fields')->whereAlias($type)->first();
+        $template = Template::with('fields')->whereTypeAlias($typeAlias)->whereAlias($templateAlias)->first();
         $instance = $this->decorator->newEntityOfType($template);
 
         if ( ! $this->canCreate($instance)) App::abort(403);
