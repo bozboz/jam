@@ -7,6 +7,7 @@ use Bozboz\Jam\Entities\PublishAction;
 use Bozboz\Jam\Fields\Field;
 use Bozboz\Jam\Mapper;
 use Bozboz\Jam\Types\Type;
+use Bozboz\Permissions\RuleStack;
 use Illuminate\Support\ServiceProvider;
 
 class JamServiceProvider extends ServiceProvider
@@ -76,7 +77,9 @@ class JamServiceProvider extends ServiceProvider
                 }
             });
 
-            if ($menu->gate('manage_entities')) {
+            $stack = new RuleStack();
+            $stack->add('manage_entities');
+            if ($stack->isAllowed() && $menu->gate('manage_entities')) {
                 $menu['Jam'] = [
                     'Types' => $url->route('admin.entity-types.index'),
                 ];
