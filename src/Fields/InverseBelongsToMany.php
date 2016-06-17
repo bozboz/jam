@@ -82,13 +82,16 @@ class RelatedField extends AdminField
     {
         $controller = app(EntityController::class);
         $actions = app('admin.actions');
-
-        return $this->related->map(function($relation) use ($controller, $actions) {
-            $action = $actions->edit(
-                $controller->getActionName('edit'),
-                [$controller, 'canEdit']
-            )->setInstance($relation);
-            return $relation->name . ' ' . $action->render()->render();
-        })->push($this->related->render())->implode('<br>');
+        try {
+            return $this->related->map(function($relation) use ($controller, $actions) {
+                $action = $actions->edit(
+                    '\\'.get_class($controller).'@edit',
+                    [$controller, 'canEdit']
+                )->setInstance($relation);
+                return $relation->name . ' ' . $action->render();
+            })->push($this->related->render())->implode('<br>');
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 }
