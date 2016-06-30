@@ -116,7 +116,7 @@ class Entity extends Node implements ModelInterface
 
 	public function scopeWithCanonicalPath($query)
 	{
-		$query->with(['paths' => function($query) {
+		$query->with(['template', 'paths' => function($query) {
 			$query->whereNull('canonical_id');
 		}]);
 	}
