@@ -30,7 +30,7 @@ class BelongsTo extends Field
             return new HiddenField($this->getInputName(), $this->options_array->entity);
         }
 
-        return new BelongsToField($decorator, $this->getValue($value), [
+        return new BelongsToField($decorator, $this->relation($value), [
                 'name' => $this->getInputName(),
                 'label' => $this->getInputLabel()
             ],
@@ -68,14 +68,12 @@ class BelongsTo extends Field
         ];
     }
 
-    public function injectValue(Entity $entity, Value $value)
+    public function getValue(Value $value)
     {
-        parent::injectValue($entity, $value);
-        $relation = $this->getValue($value)->first();
-        $entity->setAttribute($value->key, $relation);
+        return $value->{$value->key};
     }
 
-    public function getValue(Value $value)
+    public function relation(Value $value)
     {
         return $value->belongsTo(Entity::class, 'foreign_key');
     }
