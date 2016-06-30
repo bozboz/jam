@@ -317,4 +317,22 @@ class Entity extends Node implements ModelInterface
 
 		return $model;
 	}
+
+	public function scopeWithFields($builder, $fields = ['*'])
+	{
+		$builder->with(['currentValues' => function($query) use ($fields) {
+			$query
+				->selectFields($fields)
+				->with('dynamicRelation');
+		}]);
+	}
+
+	public function injectValues()
+	{
+		$this->currentValues->each(function($value) {
+			$value->injectValue($this);
+		});
+
+		return $this;
+	}
 }
