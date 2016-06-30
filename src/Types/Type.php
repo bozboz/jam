@@ -36,15 +36,14 @@ class Type extends Fluent implements \Bozboz\Admin\Base\ModelInterface
         return $this->getObj('entity', $attributes);
     }
 
-    public function getLinkBuilder()
+    protected function getLinkBuilder()
     {
         return $this->getObj('link_builder');
     }
 
     public function updatePaths($entity)
     {
-        $linkBuilder = $this->getLinkBuilder();
-        $linkBuilder->updatePaths($entity);
+        $this->getLinkBuilder()->updatePaths($entity);
     }
 
     public function isVisible()
@@ -67,6 +66,8 @@ class Type extends Fluent implements \Bozboz\Admin\Base\ModelInterface
         $class = $this->get($type);
         if (is_callable($class)) {
             return call_user_func($class);
+        } elseif (is_null($arg)) {
+            return app($class);
         } elseif ($class) {
             return new $class($arg);
         }

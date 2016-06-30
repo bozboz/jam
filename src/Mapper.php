@@ -26,7 +26,7 @@ class Mapper
 	{
 		$mapping = $this->mapping[$type_alias];
 		if (is_string($mapping)) {
-			$mapping = new $mapping;
+			$mapping = app($mapping);
 		} else {
 			$mapping = $mapping;
 		}
