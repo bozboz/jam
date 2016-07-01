@@ -2,6 +2,7 @@
 
 namespace Bozboz\Jam\Entities;
 
+use Bozboz\Jam\Entities\DynamicRelation;
 use Bozboz\Jam\Fields\Field;
 use Illuminate\Support\Facades\DB;
 
@@ -9,12 +10,14 @@ class CurrentValue extends Value
 {
     public function injectValue(Entity $entity)
     {
-        $field = (new Field())->newInstance([
-            'id' => $this->field_id,
-            'type_alias' => $this->type_alias,
-        ], false);
+        $field = Field::getMapper()->get($this->type_alias);
         $field->options_array = array_merge($this->options_array ?: [], $this->getOptions());
         $field->injectValue($entity, $this);
+    }
+
+    public function relation()
+    {
+        return Field::getMapper()->get($this->type_alias)->relation($this);
     }
 
     public function getOptions()
@@ -51,5 +54,10 @@ class CurrentValue extends Value
             ->groupBy('entity_values.id');
 
         return $builder;
+    }
+
+    public function dynamicRelation()
+    {
+        return new DynamicRelation;
     }
 }

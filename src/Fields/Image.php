@@ -13,21 +13,20 @@ class Image extends Field
 {
 	public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
 	{
-		return new MediaBrowser($this->getValue($value), [
+		return new MediaBrowser($this->relation($value), [
 			'name' => $this->getInputName(),
 			'label' => $this->getInputLabel()
 		]);
 	}
 
-	public function injectValue(Entity $entity, Value $value)
+	public function relation(Value $value)
 	{
-		$value = parent::injectValue($entity, $value);
-		$entity->setAttribute($value->key, $this->getValue($value)->first());
+		return Media::forModel($value, 'foreign_key');
 	}
 
 	public function getvalue(Value $value)
 	{
-		return Media::forModel($value, 'foreign_key');
+		return $value->{$value->key};
 	}
 
     protected function usesForeignKey()

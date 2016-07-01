@@ -5,14 +5,15 @@ namespace Bozboz\Jam\Fields;
 use Bozboz\Admin\Base\Model;
 use Bozboz\Admin\Base\Sorting\Sortable;
 use Bozboz\Admin\Base\Sorting\SortableTrait;
-use Bozboz\Jam\Fields\Contracts\Field as FieldInterface;
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\EntityDecorator;
 use Bozboz\Jam\Entities\Revision;
 use Bozboz\Jam\Entities\Value;
-use Bozboz\Jam\Mapper;
+use Bozboz\Jam\Fields\Contracts\Field as FieldInterface;
 use Bozboz\Jam\Fields\Options\Option;
+use Bozboz\Jam\Mapper;
 use Bozboz\Jam\Templates\Template;
+use Illuminate\Database\Eloquent\Collection;
 
 class Field extends Model implements FieldInterface, Sortable
 {
@@ -201,5 +202,10 @@ class Field extends Model implements FieldInterface, Sortable
         $model->setConnection($connection ?: $this->connection);
 
         return $model;
+    }
+
+    public function relation(Value $value)
+    {
+        return null;
     }
 }

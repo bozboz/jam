@@ -54,7 +54,7 @@ class EntityRepository implements EntityRepositoryInterface
             return false;
         }
 
-        $entity = $path->entity()->active()->first();
+        $entity = $path->entity()->withFields(['*'])->active()->first();
 
         if (!$entity) {
             return false;
@@ -82,13 +82,13 @@ class EntityRepository implements EntityRepositoryInterface
     public function hydrate(Entity $entity)
     {
         $entity->setAttribute('breadcrumbs', $this->breadcrumbs($entity));
-        $entity->setAttribute('child_pages', $this->childPages($entity));
-        $this->loadCurrentValues($entity);
+
+        $entity->injectValues();
 
         return $entity;
     }
 
-    public function breadcrumbs(Entity $entity)
+    protected function breadcrumbs(Entity $entity)
     {
         return $entity->ancestors()->with('template')->active()->get()->push($entity)->map(function($crumb) {
             return (object) [
@@ -96,54 +96,6 @@ class EntityRepository implements EntityRepositoryInterface
                 'label' => $crumb->name
             ];
         });
-    }
-
-    public function childPages(Entity $entity, $fields = [])
-    {
-        $children = $entity->children()->with(['template', 'currentRevision', 'paths' => function($query) {
-            $query->whereNull('canonical_id');
-        }])->active()->ordered()->get();
-        return $this->loadCurrentListingValues($children);
-    }
-
-    public function loadCurrentListingValues($entities)
-    {
-        if ($entities) {
-            $listingFields = array_filter(array_unique(explode(',', $entities->map(function($entity) {
-                return $entity->template->listing_fields;
-            })->implode(','))));
-
-            if ($listingFields) {
-                return $this->loadCurrentValues($entities, $listingFields);
-            } else {
-                return $entities;
-            }
-        }
-    }
-
-    public function loadCurrentValues($entities, $fields = ['*'])
-    {
-        if ($entities instanceof Entity) {
-            $entityCollection = collect([$entities]);
-        } else {
-            $entityCollection = $entities;
-        }
-        $revisionIds = $entityCollection->map(function($entity) {
-            return $entity->revision_id;
-        });
-
-        if (!count($revisionIds)) {
-            return $entities;
-        }
-
-        $values = CurrentValue::selectFields($fields)->forRevisions($revisionIds)->has('templateField')->get();
-
-        $values->map(function($value) use ($entityCollection) {
-            $entity = $entityCollection->where('revision_id', $value->revision_id)->first();
-            $value->injectValue($entity);
-        });
-
-        return $entities;
     }
 
     public function newRevision(Entity $entity, $input)

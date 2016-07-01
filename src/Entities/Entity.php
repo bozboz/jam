@@ -116,7 +116,7 @@ class Entity extends Node implements ModelInterface
 
 	public function scopeWithCanonicalPath($query)
 	{
-		$query->with(['paths' => function($query) {
+		$query->with(['template', 'paths' => function($query) {
 			$query->whereNull('canonical_id');
 		}]);
 	}
@@ -316,5 +316,23 @@ class Entity extends Node implements ModelInterface
 		$model->exists = $exists;
 
 		return $model;
+	}
+
+	public function scopeWithFields($builder, $fields = ['*'])
+	{
+		$builder->with(['currentValues' => function($query) use ($fields) {
+			$query
+				->selectFields($fields)
+				->with('dynamicRelation');
+		}]);
+	}
+
+	public function injectValues()
+	{
+		$this->currentValues->each(function($value) {
+			$value->injectValue($this);
+		});
+
+		return $this;
 	}
 }

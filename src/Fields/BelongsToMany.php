@@ -12,7 +12,7 @@ class BelongsToMany extends BelongsTo
 {
     public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
     {
-        return new BelongsToManyField($decorator, $this->getValue($value), [
+        return new BelongsToManyField($decorator, $this->relation($value), [
                 'name' => $this->getInputName(),
                 'label' => $this->getInputLabel()
             ],
@@ -37,24 +37,20 @@ class BelongsToMany extends BelongsTo
         ];
     }
 
-    public function injectValue(Entity $entity, Value $value)
-    {
-        parent::injectValue($entity, $value);
-        $repository = app(\Bozboz\Jam\Repositories\Contracts\EntityRepository::class);
-        $relations = $repository->loadCurrentListingValues($this->getValue($value)->ordered()->active()->get());
-        $entity->setAttribute($value->key, $relations);
-    }
-
     public function injectAdminValue(Entity $entity, Revision $revision)
     {
         $value = parent::injectAdminValue($entity, $revision);
-        $entity->setAttribute($this->getInputName(), $this->getValue($value)->getRelatedIds()->all());
+        $entity->setAttribute($this->getInputName(), $this->relation($value)->getRelatedIds()->all());
     }
 
     public function getValue(Value $value)
     {
-        $class = app('EntityMapper')->get($this->getOption('type'))->getEntity();
-        return $value->belongsToMany(get_class($class), 'entity_entity');
+        return $value->{$value->key};
+    }
+
+    public function relation(Value $value)
+    {
+        return $value->belongsToMany(Entity::class, 'entity_entity');
     }
 
     public function saveValue(Revision $revision, $value)
