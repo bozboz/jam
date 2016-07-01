@@ -320,6 +320,9 @@ class Entity extends Node implements ModelInterface
 
 	public function scopeWithFields($builder, $fields = ['*'])
 	{
+		if ( ! is_array($fields)) {
+			$fields = array_slice(func_get_args(), 1);
+		}
 		$builder->with(['currentValues' => function($query) use ($fields) {
 			$query
 				->selectFields($fields)
