@@ -13,6 +13,7 @@ use Bozboz\Jam\Templates\Template;
 use Bozboz\Permissions\RuleStack;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
@@ -42,7 +43,16 @@ class EntityController extends ModelAdminController
 			throw new NotFoundHttpException;
 		}
 
-		return parent::index();
+		if ( ! $this->canShow($type)) App::abort(403);
+
+		$report = $this->getListingReport();
+
+		$report->injectValues(Input::all());
+
+		$report->setReportActions($this->getReportActions());
+		$report->setRowActions($this->getRowActions());
+
+		return $report->render();
 	}
 
 	/**
@@ -239,5 +249,25 @@ class EntityController extends ModelAdminController
 	public function canSchedule($instance)
 	{
 		return $instance->canSchedule() && RuleStack::with('schedule_entity')->isAllowed();
+	}
+
+	protected function createPermissions($stack, $instance)
+	{
+		$stack->add('create_entity_type', $instance ? $instance->template->type_alias : null);
+	}
+
+	protected function editPermissions($stack, $instance)
+	{
+		$stack->add('edit_entity_type', $instance ? $instance->template->type_alias : null);
+	}
+
+	protected function deletePermissions($stack, $instance)
+	{
+		$stack->add('delete_entity_type', $instance ? $instance->template->type_alias : null);
+	}
+
+	protected function canShow($type)
+	{
+		return RuleStack::with('view_anything')->then('view_entity_type', $type)->isAllowed();
 	}
 }

@@ -3,6 +3,7 @@
 namespace Bozboz\Jam\Http\Controllers\Admin;
 
 use Bozboz\Admin\Http\Controllers\ModelAdminController;
+use Bozboz\Admin\Permissions\RestrictAllPermissionsTrait;
 use Bozboz\Admin\Reports\Actions\Permissions\IsValid;
 use Bozboz\Admin\Reports\Actions\Presenters\Link;
 use Bozboz\Jam\Fields\Field;
@@ -13,6 +14,8 @@ use Illuminate\Support\Facades\Redirect;
 
 class EntityTemplateFieldController extends ModelAdminController
 {
+	use RestrictAllPermissionsTrait;
+
 	private $template;
 
 	protected $useActions = true;
@@ -21,6 +24,11 @@ class EntityTemplateFieldController extends ModelAdminController
 	{
 		parent::__construct($decorator);
 		$this->template = $template;
+	}
+
+	public function getRestrictRule()
+	{
+		return 'manage_entities';
 	}
 
 	public function index()

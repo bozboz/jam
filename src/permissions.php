@@ -8,9 +8,9 @@ $permissions->define([
 
 	'manage_entities' => 'Bozboz\Permissions\Rules\Rule',
 
-	'view_entity_type' => 'Bozboz\Permissions\Rules\ModelRule',
-	'create_entity_type' => 'Bozboz\Permissions\Rules\ModelRule',
-	'delete_entity_type' => 'Bozboz\Permissions\Rules\ModelRule',
-	'edit_entity_type' => 'Bozboz\Permissions\Rules\ModelRule',
+	'view_entity_type' => 'Bozboz\Permissions\Rules\Rule',
+	'create_entity_type' => 'Bozboz\Permissions\Rules\Rule',
+	'delete_entity_type' => 'Bozboz\Permissions\Rules\Rule',
+	'edit_entity_type' => 'Bozboz\Permissions\Rules\Rule',
 
 ]);

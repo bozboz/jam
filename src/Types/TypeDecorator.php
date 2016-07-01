@@ -31,10 +31,10 @@ class TypeDecorator extends ModelAdminDecorator
 				]));
 				$action = new Action(
 					new Link($templateFieldsUrl, $template->name, 'fa fa-list-ul', ['class' => 'btn-info']),
-					new IsValid([app(EntityTemplateController::class), 'canEdit'])
+					new IsValid([app(EntityTemplateController::class), 'canView'])
 				);
 				$action->setInstance($template);
-				return $action->render()->render();
+				return (string)$action->render();
 			})->implode(' ')
 		];
 	}
