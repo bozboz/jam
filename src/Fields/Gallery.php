@@ -21,7 +21,7 @@ class Gallery extends Field
 
 	public function injectValue(Entity $entity, Value $value)
 	{
-		$entity->setAttribute($value->key, $this->getValue($value)->get());
+		$entity->setAttribute($value->key, $this->getValue($value));
 	}
 
 	public function injectAdminValue(Entity $entity, Revision $revision)
@@ -43,13 +43,16 @@ class Gallery extends Field
 		$this->getValue($valueObj)->sync($data);
 	}
 
+	public function relation(Value $value)
+	{
+		return Media::forModel($value);
+	}
+
 	/**
 	 * @todo come up with a better solution for this
 	 */
 	public function getValue(Value $value)
 	{
-		$relationValue = new Value();
-		$relationValue->id = $value->id;
-		return Media::forModel($relationValue);
+		return $value->{$value->key};
 	}
 }

@@ -24,7 +24,7 @@ class Image extends Field
 		return Media::forModel($value, 'foreign_key');
 	}
 
-	public function getvalue(Value $value)
+	public function getValue(Value $value)
 	{
 		return $value->{$value->key};
 	}
