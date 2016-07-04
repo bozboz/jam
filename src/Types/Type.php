@@ -13,7 +13,8 @@ class Type extends Fluent implements \Bozboz\Admin\Base\ModelInterface
         'report' => \Bozboz\Admin\Reports\Report::class,
         'link_builder' => \Bozboz\Jam\Entities\LinksDisabled::class,
         'menu_builder' => \Bozboz\Jam\Types\Menu\Content::class,
-        'entity' => \Bozboz\Jam\Entities\Entity::class
+        'entity' => \Bozboz\Jam\Entities\Entity::class,
+        'search_handler' => \Bozboz\Jam\Entities\NotIndexed::class,
     ];
 
     public function entities()
@@ -39,6 +40,11 @@ class Type extends Fluent implements \Bozboz\Admin\Base\ModelInterface
     protected function getLinkBuilder()
     {
         return $this->getObj('link_builder');
+    }
+
+    public function getSearchHandler()
+    {
+        return $this->getObj('search_handler');
     }
 
     public function updatePaths($entity)

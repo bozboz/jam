@@ -39,12 +39,6 @@ class Entity extends Node implements ModelInterface
 
 	protected $values = [];
 
-	static public function boot()
-	{
-		parent::boot();
-		static::saved([__CLASS__, 'updatePaths']);
-	}
-
 	public static function setMapper(Mapper $mapper)
 	{
 		static::$mapper = $mapper;
@@ -53,13 +47,6 @@ class Entity extends Node implements ModelInterface
 	public static function getMapper()
 	{
 		return static::$mapper;
-	}
-
-	public static function updatePaths($entity)
-	{
-		if ($entity->template) {
-			$entity->getMapper()->get($entity->template->type_alias)->updatePaths($entity);
-		}
 	}
 
 	public function scopeOrdered($query)

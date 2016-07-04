@@ -43,7 +43,9 @@ class EntityList extends Field
         $repository = app()->make(\Bozboz\Jam\Repositories\Contracts\EntityRepository::class);
         $entity->setAttribute(
             $value->key,
-            $repository->loadCurrentValues($this->newListQuery($entity)->active()->get())
+            $this->newListQuery($entity)->active()->withFields()->get()->map(function($entity) {
+                $entity->injectValues();
+            })
         );
         return $value;
     }

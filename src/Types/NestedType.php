@@ -10,6 +10,7 @@ class NestedType extends Type
         'report' => \Bozboz\Admin\Reports\NestedReport::class,
         'link_builder' => null,
         'menu_builder' => \Bozboz\Jam\Types\Menu\Content::class,
-        'entity' => \Bozboz\Jam\Entities\Entity::class
+        'entity' => \Bozboz\Jam\Entities\Entity::class,
+        'search_handler' => \Bozboz\Jam\Entities\NotIndexed::class,
     ];
 }

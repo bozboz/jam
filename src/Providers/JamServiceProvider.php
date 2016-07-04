@@ -3,6 +3,10 @@
 namespace Bozboz\Jam\Providers;
 
 use Bozboz\Jam\Entities\Entity;
+use Bozboz\Jam\Entities\Events\EntityDeleted;
+use Bozboz\Jam\Entities\Events\EntitySaved;
+use Bozboz\Jam\Entities\Listeners\UpdatePaths;
+use Bozboz\Jam\Entities\Listeners\UpdateSearchIndex;
 use Bozboz\Jam\Entities\PublishAction;
 use Bozboz\Jam\Fields\Field;
 use Bozboz\Jam\Mapper;
@@ -11,6 +15,9 @@ use Illuminate\Support\ServiceProvider;
 
 class JamServiceProvider extends ServiceProvider
 {
+    protected $listen = [
+    ];
+
     public function register()
     {
         $this->app->bind(
@@ -62,6 +69,27 @@ class JamServiceProvider extends ServiceProvider
         if (! $this->app->routesAreCached()) {
             require "{$packageRoot}src/Http/routes.php";
         }
+
+        Entity::saved(function($entity) {
+            $this->app['events']->fire(new EntitySaved($entity));
+        });
+        Entity::deleted(function($entity) {
+            $this->app['events']->fire(new EntityDeleted($entity));
+        });
+
+        $this->app['events']->listen(EntitySaved::class, [$this, 'updatePaths']);
+        $this->app['events']->listen(EntitySaved::class, [$this, 'updateSearchIndex']);
+        $this->app['events']->listen(EntityDeleted::class, [$this, 'updateSearchIndex']);
+    }
+
+    public function updatePaths($event)
+    {
+        $this->app[UpdatePaths::class]->handle($event);
+    }
+
+    public function updateSearchIndex($event)
+    {
+        $this->app[UpdateSearchIndex::class]->handle($event);
     }
 
     protected function buildAdminMenu()

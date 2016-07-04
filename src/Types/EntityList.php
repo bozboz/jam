@@ -10,7 +10,8 @@ class EntityList extends Type
         'report' => null,
         'link_builder' => \Bozboz\Jam\Entities\LinksDisabled::class,
         'menu_builder' => \Bozboz\Jam\Types\Menu\Hidden::class,
-        'entity' => \Bozboz\Jam\Entities\SortableEntity::class
+        'entity' => \Bozboz\Jam\Entities\SortableEntity::class,
+        'search_handler' => \Bozboz\Jam\Entities\NotIndexed::class,
     ];
 
     public function __construct($nameOrAttributes)
