@@ -13,7 +13,7 @@ class Gallery extends Field
 {
 	public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
 	{
-		return new MediaBrowser($this->getValue($value), [
+		return new MediaBrowser($this->relation($value), [
 			'name' => $this->getInputName(),
 			'label' => $this->getInputLabel()
 		]);
@@ -27,7 +27,7 @@ class Gallery extends Field
 	public function injectAdminValue(Entity $entity, Revision $revision)
 	{
 		$value = parent::injectAdminValue($entity, $revision);
-		$entity->setAttribute($this->getInputName(), $this->getValue($value)->getRelatedIds()->all());
+		$entity->setAttribute($this->getInputName(), $this->relation($value)->getRelatedIds()->all());
 	}
 
 	public function getInputName()
