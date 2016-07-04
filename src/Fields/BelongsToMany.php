@@ -56,7 +56,7 @@ class BelongsToMany extends BelongsTo
     public function saveValue(Revision $revision, $value)
     {
         $valueObj = parent::saveValue($revision, json_encode($value));
-        $this->getValue($valueObj)->sync($value ?: []);
+        $this->relation($valueObj)->sync($value ?: []);
 
         return $valueObj;
     }
