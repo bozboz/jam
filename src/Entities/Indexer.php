@@ -21,11 +21,24 @@ class Indexer implements Indexable
         $indexableEntity = new IndexableEntity;
         $indexableEntity->make($entity);
 
+        $indexableEntity->preview_data = $this->getPreviewData($indexableEntity);
+        $indexableEntity->searchable_data = $this->getSearchableData($indexableEntity);
+
         if ($entity->exists) {
             $this->upsertIndex($indexableEntity);
         } else {
             $this->deleteIndex($indexableEntity);
         }
+    }
+
+    protected function getPreviewData($indexableEntity)
+    {
+        return [];
+    }
+
+    protected function getSearchableData($indexableEntity)
+    {
+        return '';
     }
 
     protected function upsertIndex($entity)

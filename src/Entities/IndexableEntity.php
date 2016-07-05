@@ -17,10 +17,20 @@ class IndexableEntity extends Entity implements Searchable
 
     public function getSearchableBody()
     {
-        $exclude = $this->getDates();
-        $exclude[] = $this->getKeyName();
-
-        return array_except($this->toArray(), $exclude);
+        return [
+            'name' => $this->name,
+            'path' => $this->canonical_path,
+            'preview_data' => $this->preview_data,
+            'searchable_data' => $this->searchable_data,
+            'breadcrumbs' => $this->getAncestors()->map(function($entity) {
+                return [
+                    'path' => $entity->canonical_path,
+                    'name' => $entity->name,
+                ];
+            }),
+            'searchable_id' => $this->searchable_id,
+            'searchable_type' => $this->searchable_type,
+        ];
     }
 
     public function getSearchableType()
