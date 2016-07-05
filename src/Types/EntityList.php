@@ -14,13 +14,10 @@ class EntityList extends Type
         'search_handler' => \Bozboz\Jam\Entities\NotIndexed::class,
     ];
 
-    public function __construct($nameOrAttributes)
+    public function __construct($name)
     {
-        if (!is_array($nameOrAttributes)) {
-            $nameOrAttributes = [
-                'name' => $nameOrAttributes
-            ];
-        }
-        parent::__construct($nameOrAttributes);
+        parent::__construct([
+            'name' => $name
+        ]);
     }
 }
