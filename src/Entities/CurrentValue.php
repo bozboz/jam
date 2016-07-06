@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 
 class CurrentValue extends Value
 {
+    protected $morphClass = 'Bozboz\Jam\Entities\Value';
+
     public function injectValue(Entity $entity)
     {
         $field = Field::getMapper()->get($this->type_alias);
