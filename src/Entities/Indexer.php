@@ -24,7 +24,7 @@ class Indexer implements Indexable
         $indexableEntity->preview_data = $this->getPreviewData($indexableEntity);
         $indexableEntity->searchable_data = $this->getSearchableData($indexableEntity);
 
-        if ($entity->exists) {
+        if ($indexableEntity->shouldIndex()) {
             $this->upsertIndex($indexableEntity);
         } else {
             $this->deleteIndex($indexableEntity);
@@ -43,11 +43,7 @@ class Indexer implements Indexable
 
     protected function upsertIndex($entity)
     {
-        if ($entity->shouldIndex()) {
-            $this->search->upsertToIndex($entity);
-        } else {
-            $this->deleteIndex($entity);
-        }
+        $this->search->upsertToIndex($entity);
     }
 
     protected function deleteIndex($entity)
