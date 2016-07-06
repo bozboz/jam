@@ -26,7 +26,7 @@ class SortableEntity extends Entity implements Sortable
     {
         DB::beginTransaction();
         $this->traitSort($before, $after, $parent);
-        static::updatePaths($this);
+        $this->template->type()->updatePaths($this);
         DB::commit();
     }
 
