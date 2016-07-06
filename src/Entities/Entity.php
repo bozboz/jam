@@ -49,6 +49,11 @@ class Entity extends Node implements ModelInterface
 		return static::$mapper;
 	}
 
+	public function sortBy()
+	{
+		return 'name';
+	}
+
 	public function scopeOrdered($query)
 	{
 		$query->orderBy('name');
