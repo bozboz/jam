@@ -11,6 +11,7 @@ class IndexableEntity extends Entity implements Searchable
     {
         $entity->load('currentRevision')->injectValues();
         $this->attributes = $entity->toArray();
+        $this->canonical_path = $entity->canonical_path;
         $this->searchable_id = $entity->id;
         $this->searchable_type = get_class($entity);
     }
@@ -45,6 +46,13 @@ class IndexableEntity extends Entity implements Searchable
 
     public function shouldIndex()
     {
-        return $this->current_revision && new Carbon($this->current_revision['published_at']) < new Carbon;
+        return $this->current_revision
+            && new Carbon($this->current_revision['published_at']) < new Carbon
+            && array_key_exists('canonical_path', $this->attributes);
+    }
+
+    public function getCanonicalPathAttribute()
+    {
+        return array_key_exists('canonical_path', $this->attributes) ? $this->attributes['canonical_path'] : null;
     }
 }
