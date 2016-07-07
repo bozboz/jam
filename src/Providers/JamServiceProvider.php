@@ -73,7 +73,7 @@ class JamServiceProvider extends ServiceProvider
         Entity::saved(function($entity) {
             $this->app['events']->fire(new EntitySaved($entity));
         });
-        Entity::deleted(function($entity) {
+        Entity::deleting(function($entity) {
             $this->app['events']->fire(new EntityDeleted($entity));
         });
 
