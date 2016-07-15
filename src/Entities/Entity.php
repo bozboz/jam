@@ -205,6 +205,7 @@ class Entity extends Node implements ModelInterface
 
 	public function scopeJoinValueByKey($query, $key, $alias = 'entity_values')
 	{
+		$query->select('entities.*');
 		$query->join("entity_values as {$alias}", 'entities.revision_id', '=', "{$alias}.revision_id");
 		$query->where("{$alias}.key", $key);
 	}
