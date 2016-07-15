@@ -79,14 +79,14 @@ class EntityRevisionController extends ModelAdminController
 						'revision_id' => $instance->id
 					]);
 				}), 'View', 'fa fa-eye', ['class' => 'btn-info']),
-				new IsValid([$this->entityController, 'canEdit'])
+				new IsValid([$this, 'canEdit'])
 			),
 			$this->actions->custom(
 				new Form($this->getActionName('revert'), 'Revert', 'fa fa-undo', [
-					'class' => 'btn-warning',
+					'class' => 'btn-sm btn-warning',
 					'warn' => 'Are you sure you wish to revert to this revision? This action cannot be undone.'
 				]),
-				new IsValid([$this->entityController, 'canEdit'])
+				new IsValid([$this, 'canEdit'])
 			),
 		];
 	}
@@ -94,5 +94,10 @@ class EntityRevisionController extends ModelAdminController
 	public function getSuccessResponse($instance)
 	{
 		return Redirect::action($this->getActionName('indexForEntity'), ['entity_id' => $instance->entity->id]);
+	}
+
+	protected function editPermissions($stack, $instance)
+	{
+		$stack->add('edit_entity_type', $instance ? $instance->entity->template->type_alias : null);
 	}
 }

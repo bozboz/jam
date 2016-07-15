@@ -7,6 +7,7 @@ use Bozboz\Admin\Fields\TextField;
 use Bozboz\Admin\Reports\Filters\ArrayListingFilter;
 use Bozboz\Jam\Entities\Entity;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Input;
 
 class RevisionDecorator extends ModelAdminDecorator
@@ -28,6 +29,13 @@ class RevisionDecorator extends ModelAdminDecorator
 			'Date' => $instance->created_at->format('d M Y H:i'),
 			'Scheduled For' => $instance->published_at > new Carbon ? $instance->published_at->format('d M Y H:i') : null
 		];
+	}
+
+	public function modifyListingQuery(Builder $query)
+	{
+		parent::modifyListingQuery($query);
+
+		$query->with('entity.template', 'user');
 	}
 
 	public function getLabel($instance)
