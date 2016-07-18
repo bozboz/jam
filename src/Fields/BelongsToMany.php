@@ -57,9 +57,7 @@ class BelongsToMany extends BelongsTo
     {
         $valueObj = parent::saveValue($revision, json_encode($value));
 
-        if ($this->getValue($valueObj)) {
-            $this->getValue($valueObj)->sync($value ?: []);
-        }
+        $this->relation($valueObj)->sync($value ?: []);
 
         return $valueObj;
     }
