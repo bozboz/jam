@@ -2,9 +2,12 @@
 
 namespace Bozboz\Jam\Entities;
 
+use Bozboz\Admin\Exceptions\ValidationException;
 use Bozboz\Jam\Entities\Contracts\LinkBuilder as Contract;
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\EntityPath;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\MessageBag;
 
 class LinkBuilder implements Contract
 {
@@ -49,10 +52,16 @@ class LinkBuilder implements Contract
 	 */
 	public function addPaths(Entity $instance)
 	{
-		$this->calculatePathsForInstance($instance)->each(function($path) use ($instance) {
-			EntityPath::onlyTrashed()->where('entity_id', '<>', $instance->id)->wherePath($path)->forceDelete();
-			$instance->paths()->withTrashed()->firstOrCreate(['path' => $path])->restore();
-		});
+		try {
+			$this->calculatePathsForInstance($instance)->each(function($path) use ($instance) {
+				EntityPath::onlyTrashed()->where('entity_id', '<>', $instance->id)->wherePath($path)->forceDelete();
+				$instance->paths()->withTrashed()->firstOrCreate(['path' => $path])->restore();
+			});
+		} catch (QueryException $e) {
+			throw new ValidationException(new MessageBag([
+				'slug' => 'There is already a page with this url'
+			]));
+		}
 	}
 
 	protected function calculatePathsForInstance(Entity $instance)
