@@ -6,6 +6,8 @@ use Bozboz\Admin\Base\DynamicSlugTrait;
 use Bozboz\Admin\Base\ModelInterface;
 use Bozboz\Admin\Base\SanitisesInputTrait;
 use Bozboz\Admin\Base\Sorting\NestedSortableTrait;
+use Bozboz\Jam\Entities\Events\EntityDeleted;
+use Bozboz\Jam\Entities\Events\EntitySaved;
 use Bozboz\Jam\Entities\LinkBuilder;
 use Bozboz\Jam\Entities\Value;
 use Bozboz\Jam\Field;
@@ -38,6 +40,18 @@ class Entity extends Node implements ModelInterface
 	protected $dates = ['deleted_at'];
 
 	protected $values = [];
+
+	static public function boot()
+	{
+		parent::boot();
+		static::saved(function($entity) {
+			static::$dispatcher->fire(new EntitySaved($entity));
+		});
+		static::deleting(function($entity) {
+			static::$dispatcher->fire(new EntityDeleted($entity));
+		});
+
+	}
 
 	public static function setMapper(Mapper $mapper)
 	{
