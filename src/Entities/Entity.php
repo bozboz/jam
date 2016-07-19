@@ -105,6 +105,11 @@ class Entity extends Node implements ModelInterface
 		return 'name';
 	}
 
+	protected function generateUniqueSlug($slug)
+	{
+		return $slug;
+	}
+
 	public function getForeignKey()
 	{
 		return 'entity_id';
