@@ -59,7 +59,7 @@ class LinkBuilder implements Contract
 			});
 		} catch (QueryException $e) {
 			throw new ValidationException(new MessageBag([
-				'slug' => 'There is already a page with this url'
+				'slug' => 'There is already a page with the url ' . url(str_replace_array('\?', $e->getBindings(), '?'))
 			]));
 		}
 	}
