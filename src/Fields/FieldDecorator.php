@@ -26,7 +26,10 @@ class FieldDecorator extends ModelAdminDecorator
 		return [
 			'Name' => $this->getLabel($instance),
 			'Type' => $instance->getDescriptiveName(),
-			'Validation' => $instance->validation
+			'Validation' => $instance->validation,
+			'Options' => $instance->options->pluck('value', 'key')->transform(function($value, $key) {
+				return "$key: $value";
+			})->implode(' / '),
 		];
 	}
 
