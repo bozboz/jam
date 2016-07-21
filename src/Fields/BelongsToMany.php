@@ -64,6 +64,6 @@ class BelongsToMany extends BelongsTo
 
     public function duplicateValue(Value $oldValue, Value $newValue)
     {
-        $this->getValue($newValue)->sync($this->getValue($oldValue)->pluck('entity_id')->toArray());
+        $this->relation($newValue)->sync($this->getValue($oldValue)->pluck('entity_id')->toArray());
     }
 }
