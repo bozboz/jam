@@ -136,19 +136,7 @@ class EntityController extends ModelAdminController
 	protected function save($modelInstance, $input)
 	{
 		parent::save($modelInstance, $input);
-		$revision = $this->repository->newRevision($modelInstance, $input);
-
-		$pastRevisionsQuery = Revision::whereEntityId($modelInstance->id);
-		if ($modelInstance->currentRevision) {
-			$pastRevisionsQuery->where('created_at', '<', $modelInstance->currentRevision->created_at);
-		}
-		Revision::whereIn(
-			'id',
-			$pastRevisionsQuery->orderBy('created_at', 'desc')
-				->withTrashed()
-				->skip(config('jam.revision_history_length'))->take(100)
-				->pluck('id')
-		)->forceDelete();
+		$this->repository->newRevision($modelInstance, $input);
 	}
 
 	public function publish($id)

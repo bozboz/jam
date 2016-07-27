@@ -26,6 +26,25 @@ class Revision extends Model
 	const PUBLISHED = 1;
 	const SCHEDULED = 2;
 
+	public static function boot()
+	{
+		parent::boot();
+
+		static::created(function($revision) {
+			$pastRevisionsQuery = static::whereEntityId($revision->entity->id);
+			if ($revision->entity->currentRevision) {
+				$pastRevisionsQuery->where('created_at', '<', $revision->entity->currentRevision->created_at);
+			}
+			static::whereIn(
+				'id',
+				$pastRevisionsQuery->orderBy('created_at', 'desc')
+					->withTrashed()
+					->skip(config('jam.revision_history_length'))->take(100)
+					->pluck('id')
+			)->forceDelete();
+		});
+	}
+
 	public function duplicate()
 	{
 		$newRevision = $this->replicate();
