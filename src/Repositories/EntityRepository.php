@@ -5,9 +5,11 @@ namespace Bozboz\Jam\Repositories;
 use Bozboz\Jam\Entities\CurrentValue;
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\EntityPath;
+use Bozboz\Jam\Entities\Events\EntitySaved;
 use Bozboz\Jam\Entities\Revision;
 use Bozboz\Jam\Repositories\Contracts\EntityRepository as EntityRepositoryInterface;
 use Carbon\Carbon;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Facades\DB;
 use Kalnoy\Nestedset\Collection;
 
@@ -15,10 +17,12 @@ class EntityRepository implements EntityRepositoryInterface
 {
     protected $mapper;
     protected $query;
+    private $event;
 
-    function __construct()
+    function __construct(Dispatcher $event)
     {
         $this->mapper = app()->make('EntityMapper');
+        $this->event = $event;
     }
 
     public function newQuery($typeAlias)
@@ -100,88 +104,38 @@ class EntityRepository implements EntityRepositoryInterface
 
     public function newRevision(Entity $entity, $input)
     {
-        if ($this->requiresNewRevision($entity, $input)) {
-            switch ($input['status']) {
-                case Revision::SCHEDULED:
-                    $publishedAt = $input['currentRevision']['published_at'];
-                break;
+        switch ($input['status']) {
+            case Revision::SCHEDULED:
+                $publishedAt = $input['currentRevision']['published_at'];
+            break;
 
-                case Revision::PUBLISHED:
-                    $publishedAt = !$input['currentRevision']['published_at'] || (new Carbon($input['currentRevision']['published_at']))->isFuture()
-                        ? $entity->freshTimestamp()
-                        : $input['currentRevision']['published_at'];
-                break;
+            case Revision::PUBLISHED:
+                $publishedAt = !$input['currentRevision']['published_at'] || (new Carbon($input['currentRevision']['published_at']))->isFuture()
+                    ? $entity->freshTimestamp()
+                    : $input['currentRevision']['published_at'];
+            break;
 
-                default:
-                    $publishedAt = null;
-            }
-            $revision = $entity->revisions()->create([
-                'published_at' => $publishedAt,
-                'user_id' => $input['user_id']
-            ]);
-
-            foreach ($entity->template->fields as $field) {
-                $field->saveValue($revision, $input[$field->getInputName()]);
-            }
-
-            if ($publishedAt) {
-                $entity->currentRevision()->associate($revision);
-            } else {
-                $entity->currentRevision()->dissociate();
-            }
-            $entity->save();
-
-            return $revision;
+            default:
+                $publishedAt = null;
         }
-    }
+        $revision = $entity->revisions()->create([
+            'published_at' => $publishedAt,
+            'user_id' => $input['user_id']
+        ]);
 
-    public function requiresNewRevision(Entity $entity, $input)
-    {
-        $latestRevision = $entity->latestRevision();
-
-        if ($latestRevision) {
-            $templateFields = $entity->template->fields->lists('name')->all();
-
-            $currentValues = array_merge(
-                array_fill_keys($templateFields, null),
-                $latestRevision->fieldValues()->lists('value', 'key')->all()
-            );
-            $currentValues['status'] = $entity->status;
-            $currentValues['published_at'] =  $latestRevision->getFormattedPublishedAtAttribute('Y-m-d H:i:s');
-
-            $input['published_at'] = $input['currentRevision']['published_at'];
+        foreach ($entity->template->fields as $field) {
+            $field->saveValue($revision, $input[$field->getInputName()]);
         }
-        return !$latestRevision || count($this->diffValues($currentValues, $input)) > 0;
-    }
 
-    protected function diffValues($array1, $array2)
-    {
-        foreach($array1 as $key => $value)
-        {
-            if(is_array($value))
-            {
-                if(!isset($array2[$key]))
-                {
-                    $difference[$key] = $value;
-                }
-                elseif(!is_array($array2[$key]))
-                {
-                    $difference[$key] = $value;
-                }
-                else
-                {
-                    $new_diff = $this->diffValues($value, $array2[$key]);
-                    if($new_diff != FALSE)
-                    {
-                        $difference[$key] = $new_diff;
-                    }
-                }
-            }
-            elseif(!isset($array2[$key]) || $array2[$key] != $value)
-            {
-                $difference[$key] = $value;
-            }
+        if ($publishedAt) {
+            $entity->currentRevision()->associate($revision);
+        } else {
+            $entity->currentRevision()->dissociate();
         }
-        return !isset($difference) ? 0 : $difference;
+        $entity->save();
+
+        $this->event->fire(new EntitySaved($entity));
+
+        return $revision;
     }
 }

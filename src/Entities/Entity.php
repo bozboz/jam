@@ -44,13 +44,10 @@ class Entity extends Node implements ModelInterface
 	static public function boot()
 	{
 		parent::boot();
-		static::saved(function($entity) {
-			static::$dispatcher->fire(new EntitySaved($entity));
-		});
+
 		static::deleting(function($entity) {
 			static::$dispatcher->fire(new EntityDeleted($entity));
 		});
-
 	}
 
 	public static function setMapper(Mapper $mapper)
