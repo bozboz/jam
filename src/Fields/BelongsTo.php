@@ -68,11 +68,6 @@ class BelongsTo extends Field
         ];
     }
 
-    public function getValue(Value $value)
-    {
-        return $value->{$value->key};
-    }
-
     public function relation(Value $value)
     {
         return $value->belongsTo(Entity::class, 'foreign_key');

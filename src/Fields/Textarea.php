@@ -36,13 +36,4 @@ class Textarea extends Field
             ])
         ];
     }
-
-    public function getValue(Value $value)
-    {
-        if ( $this->getOption('wysiwyg')) {
-            return $value->value;
-        } else {
-            return nl2br($value->value);
-        }
-    }
 }

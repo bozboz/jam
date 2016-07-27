@@ -43,11 +43,6 @@ class BelongsToMany extends BelongsTo
         $entity->setAttribute($this->getInputName(), $this->relation($value)->getRelatedIds()->all());
     }
 
-    public function getValue(Value $value)
-    {
-        return $value->{$value->key};
-    }
-
     public function relation(Value $value)
     {
         return $value->belongsToMany(Entity::class, 'entity_entity');

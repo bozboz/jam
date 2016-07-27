@@ -47,12 +47,4 @@ class Gallery extends Field
 	{
 		return Media::forModel($value);
 	}
-
-	/**
-	 * @todo come up with a better solution for this
-	 */
-	public function getValue(Value $value)
-	{
-		return $value->{$value->key};
-	}
 }

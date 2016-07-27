@@ -144,7 +144,12 @@ class Field extends Model implements FieldInterface, Sortable
 
     public function getValue(Value $value)
     {
-        return $value->value;
+        if ($value->relationLoaded($value->key)) {
+            return $value->getRelation($value->key);
+        } else {
+            $relation = $this->relation($value);
+            return $relation ? $relation->getResults() : $value->value;
+        }
     }
 
     public function duplicateValue(Value $oldValue, Value $newValue)
