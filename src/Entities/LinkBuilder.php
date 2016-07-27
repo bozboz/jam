@@ -25,26 +25,11 @@ class LinkBuilder implements Contract
 	 */
 	public function updatePaths (Entity $instance)
 	{
-		if ($this->requiresPath($instance)) {
-			$this->deletePaths($instance);
-			$this->addPaths($instance);
-			$instance->getDescendants()->map(function($instance) {
-				$this->addPaths($instance);
-			});
-		}
-	}
-
-	/**
-	 * Discern whether or not an entity needs to generate new paths
-	 *
-	 * @param  Entity $instance
-	 * @return boolean
-	 */
-	protected function requiresPath(Entity $instance)
-	{
-		return $instance->isDirty('slug')
-				||
-				$instance->isDirty('parent_id');
+		$this->deletePaths($instance);
+		$this->addPaths($instance);
+		$instance->getDescendants()->map(function($instance) {
+			$instance->template->type()->updatePaths($instance);
+		});
 	}
 
 	/**
@@ -53,15 +38,29 @@ class LinkBuilder implements Contract
 	public function addPaths(Entity $instance)
 	{
 		try {
-			$this->calculatePathsForInstance($instance)->each(function($path) use ($instance) {
-				EntityPath::onlyTrashed()->where('entity_id', '<>', $instance->id)->wherePath($path)->forceDelete();
-				$instance->paths()->withTrashed()->firstOrCreate(['path' => $path])->restore();
+			$paths = $this->calculatePathsForInstance($instance);
+
+			$canonicalPathString = $paths->shift();
+			$canonicalPath = $this->createOrRestorePath($canonicalPathString, $instance);
+			$canonicalId = $canonicalPath->id;
+
+			$paths->each(function($path) use ($instance, $canonicalId) {
+				$this->createOrRestorePath($path, $instance, $canonicalId);
 			});
 		} catch (QueryException $e) {
 			throw new ValidationException(new MessageBag([
 				'slug' => 'There is already a page with the url ' . url(str_replace_array('\?', $e->getBindings(), '?'))
 			]));
 		}
+	}
+
+	public function createOrRestorePath($pathString, $instance, $canonicalId = null)
+	{
+		EntityPath::onlyTrashed()->where('entity_id', '<>', $instance->id)->wherePath($pathString)->forceDelete();
+		$path = $instance->paths()->withTrashed()->firstOrCreate(['path' => $pathString, 'canonical_id' => $canonicalId]);
+		$path->restore();
+
+		return $path;
 	}
 
 	protected function calculatePathsForInstance(Entity $instance)

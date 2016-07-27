@@ -12,6 +12,7 @@ class EntityPath extends Model
 	protected $fillable = [
 		'entity_id',
 		'path',
+		'canonical_id',
 	];
 
 	public function entity()
