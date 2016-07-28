@@ -327,6 +327,26 @@ class Entity extends Node implements ModelInterface
 		return $model;
 	}
 
+	/**
+	 * Create a new model instance that is existing.
+	 *
+	 * @param  array  $attributes
+	 * @param  string|null  $connection
+	 * @return static
+	 */
+	public function newFromBuilder($attributes = [], $connection = null)
+	{
+		$template = Template::find($attributes->template_id);
+
+		$model = $this->newInstance(['type_alias' => $template->type_alias], true);
+
+		$model->setRawAttributes((array) $attributes, true);
+
+		$model->setConnection($connection ?: $this->connection);
+
+		return $model;
+	}
+
 	public function scopeWithFields($builder, $fields = ['*'])
 	{
 		if ( ! is_array($fields)) {
