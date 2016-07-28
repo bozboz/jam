@@ -336,11 +336,17 @@ class Entity extends Node implements ModelInterface
 	 */
 	public function newFromBuilder($attributes = [], $connection = null)
 	{
-		$template = Template::find($attributes->template_id);
+		$attributes = (array) $attributes;
 
-		$model = $this->newInstance(['type_alias' => $template->type_alias], true);
+        $newInstanceAttributes = [];
+		if (array_key_exists('type_alias', $attributes)) {
+			$template = Template::find($attributes['template_id']);
+			$newInstanceAttributes['type_alias'] = $template->type_alias;
+		}
 
-		$model->setRawAttributes((array) $attributes, true);
+		$model = $this->newInstance($newInstanceAttributes, true);
+
+		$model->setRawAttributes($attributes, true);
 
 		$model->setConnection($connection ?: $this->connection);
 
