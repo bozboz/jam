@@ -72,6 +72,8 @@ class JamServiceProvider extends ServiceProvider
 
         $this->app['events']->listen(EntitySaved::class, UpdatePaths::class);
         $this->app['events']->listen(EntitySaved::class, UpdateSearchIndex::class);
+
+        $this->app['events']->listen(EntityDeleted::class, UpdatePaths::class);
         $this->app['events']->listen(EntityDeleted::class, UpdateSearchIndex::class);
     }
 

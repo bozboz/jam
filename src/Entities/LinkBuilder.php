@@ -26,10 +26,13 @@ class LinkBuilder implements Contract
 	public function updatePaths (Entity $instance)
 	{
 		$this->deletePaths($instance);
-		$this->addPaths($instance);
-		$instance->getDescendants()->map(function($instance) {
-			$instance->template->type()->updatePaths($instance);
-		});
+
+		if ( ! $instance->trashed()) {
+			$this->addPaths($instance);
+			$instance->getDescendants()->map(function($instance) {
+				$instance->template->type()->updatePaths($instance);
+			});
+		}
 	}
 
 	/**
