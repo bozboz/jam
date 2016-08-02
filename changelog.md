@@ -4,3 +4,4 @@
 
 -   Don't make slugs unique
 -   Throw an exception when saving an entity with a non-unique path
+-   Soft delete paths for soft deleted entities
