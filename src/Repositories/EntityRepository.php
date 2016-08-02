@@ -43,10 +43,14 @@ class EntityRepository implements EntityRepositoryInterface
         return $entity;
     }
 
-    public function forType($typeAlias)
+    public function forType($typeAlias, $templateAlias = null)
     {
-        return $this->mapper->get($typeAlias)->getEntity()->whereHas('template', function($query) use ($typeAlias) {
+        return $this->mapper->get($typeAlias)->getEntity()->whereHas('template', function($query) use ($typeAlias, $templateAlias) {
             $query->where('type_alias', $typeAlias);
+
+            if ($templateAlias) {
+                $query->where('alias', $templateAlias);
+            }
         });
     }
 
