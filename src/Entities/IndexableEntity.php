@@ -9,7 +9,6 @@ class IndexableEntity extends Entity implements Searchable
 {
     public function make($entity)
     {
-        $entity = $entity->newQuery()->with('currentRevision')->withFields('*')->withCanonicalPath()->whereId($entity->id)->first();
         $entity->injectValues();
         $this->attributes = $entity->toArray();
         $this->attributes['canonical_path'] = $entity->canonical_path;

@@ -45,7 +45,7 @@ class Entity extends Node implements ModelInterface
 	{
 		parent::boot();
 
-		static::deleting(function($entity) {
+		static::deleted(function($entity) {
 			static::$dispatcher->fire(new EntityDeleted($entity));
 		});
 	}
