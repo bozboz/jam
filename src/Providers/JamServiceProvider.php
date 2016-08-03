@@ -21,6 +21,8 @@ class JamServiceProvider extends ServiceProvider
 
     public function register()
     {
+        $this->app->register('Sofa\Revisionable\Laravel\ServiceProvider');
+
         $this->app->bind(
             \Bozboz\Jam\Repositories\Contracts\EntityRepository::class,
             \Bozboz\Jam\Repositories\EntityRepository::class
