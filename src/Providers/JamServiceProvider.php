@@ -5,6 +5,7 @@ namespace Bozboz\Jam\Providers;
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\Events\EntityDeleted;
 use Bozboz\Jam\Entities\Events\EntitySaved;
+use Bozboz\Jam\Entities\Events\EntitySorted;
 use Bozboz\Jam\Entities\Listeners\UpdatePaths;
 use Bozboz\Jam\Entities\Listeners\UpdateSearchIndex;
 use Bozboz\Jam\Entities\PublishAction;
@@ -72,6 +73,10 @@ class JamServiceProvider extends ServiceProvider
 
         $this->app['events']->listen(EntitySaved::class, UpdatePaths::class);
         $this->app['events']->listen(EntitySaved::class, UpdateSearchIndex::class);
+
+        $this->app['events']->listen(EntitySorted::class, function($event) {
+            $this->app['Sofa\Revisionable\Listener']->onUpdated($event->entity);
+        });
 
         $this->app['events']->listen(EntityDeleted::class, UpdatePaths::class);
         $this->app['events']->listen(EntityDeleted::class, UpdateSearchIndex::class);

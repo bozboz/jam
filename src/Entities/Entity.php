@@ -18,12 +18,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Request;
 use Kalnoy\Nestedset\Node;
+use Sofa\Revisionable\Laravel\RevisionableTrait;
+use Sofa\Revisionable\Revisionable;
 
-class Entity extends Node implements ModelInterface
+class Entity extends Node implements ModelInterface, Revisionable
 {
 	use SanitisesInputTrait;
 	use SoftDeletes;
 	use DynamicSlugTrait;
+	use RevisionableTrait;
 
 	protected $table = 'entities';
 
@@ -33,6 +36,13 @@ class Entity extends Node implements ModelInterface
 		'name',
 		'slug',
 		'parent_id'
+	];
+
+	protected $revisionable = [
+		'parent_id',
+		'_lft',
+		'_rgt',
+		'slug',
 	];
 
 	protected static $mapper;
