@@ -19,9 +19,17 @@ class JamServiceProvider extends ServiceProvider
     protected $listen = [
     ];
 
+    protected $commands = [
+        'Bozboz\Jam\Console\Commands\AddOldUrl',
+        'Bozboz\Jam\Console\Commands\FixTree',
+        'Bozboz\Jam\Console\Commands\RecalculatePaths',
+    ];
+
     public function register()
     {
         $this->app->register('Sofa\Revisionable\Laravel\ServiceProvider');
+
+        $this->commands($this->commands);
 
         $this->app->bind(
             \Bozboz\Jam\Repositories\Contracts\EntityRepository::class,
