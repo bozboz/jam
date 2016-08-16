@@ -40,6 +40,11 @@ class Template extends Node implements ModelInterface, Sortable
 		return 'name';
 	}
 
+	protected function generateUniqueSlug($slug)
+	{
+		return $slug;
+	}
+
 	/**
 	 * Attribute to store the slug in slug.
 	 *
