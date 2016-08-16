@@ -40,7 +40,16 @@ class Gallery extends Field
 		$valueObj = parent::saveValue($revision, $value);
 
 		$data = array_filter(is_array($value) ? $value : []);
-		$this->relation($valueObj)->sync($data);
+
+		$syncData = [];
+
+		foreach($data as $i => $id) {
+			$syncData[$id] = [
+				'sorting' => $i,
+			];
+		}
+
+		$this->relation($valueObj)->sync($syncData);
 	}
 
 	public function relation(Value $value)
