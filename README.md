@@ -56,7 +56,7 @@ If you require nested sorting you should use the NestedType.
     Default `Bozboz\Jam\Types\Menu\Content`
 
 -   `search_handler`
-    Jam has some basic support for Elastic Search built in but is disabled by default. See (4. Search Indexing)[4-search-indexing].
+    Jam has some basic support for Elastic Search built in but is disabled by default. See [4. Search Indexing](#4-search-indexing).
 
 -   `entity` 
     There are a few different types of entity classes in Jam that dictate sorting options. The normal `Bozboz\Jam\Entities\Entity` isn't sortable and will be sorted by name. `Bozboz\Jam\Entities\SortableEntity` is manually sortable but alone will only allow sibling sorting. If nested sorting is required then it must be used in conjunction with the `Bozboz\Jam\Types\NestedType` type. Finally there's the `Bozboz\Jam\Entities\Post` entity that will sort the entities by date published.
@@ -187,7 +187,7 @@ $pages->transform(function($page) {
 
 ## 4. Search Indexing
 
-Jam supports indexing entities via elastic search but each type needs to be set up with a search handler, see [2.1. Types](2-1-types). If all you need to be indexed is the name of the entity then you can just use the base `Bozboz\Jam\Entities\Indexer` class. In the likely event that you need more than that each type will need a handler written for it. When setting up a search handler class for an entity type it should extend the bas Indexer class and override the `getPreviewData` and `getSearchableData` methods. 
+Jam supports indexing entities via elastic search but each type needs to be set up with a search handler, see [2.1. Types](#2-1-types). If all you need to be indexed is the name of the entity then you can just use the base `Bozboz\Jam\Entities\Indexer` class. In the likely event that you need more than that each type will need a handler written for it. When setting up a search handler class for an entity type it should extend the bas Indexer class and override the `getPreviewData` and `getSearchableData` methods. 
 
 The purpose of `getPreviewData` is to transform the entity in to a suitable format for your search results view and `getSearchableData` is for returning all the values you want to be searchable as one long string.
 
