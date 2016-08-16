@@ -26,7 +26,6 @@ class Template extends Node implements ModelInterface, Sortable
 		'name',
 		'view',
 		'listing_view',
-		'listing_fields',
 		'alias',
 		'type_alias',
 	];
@@ -34,7 +33,6 @@ class Template extends Node implements ModelInterface, Sortable
 	protected $nullable = [
 		'view',
 		'listing_view',
-		'listing_fields',
 	];
 
 	protected function getSlugSourceField()

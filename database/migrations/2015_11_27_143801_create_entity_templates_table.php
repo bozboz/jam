@@ -18,7 +18,6 @@ class CreateEntityTemplatesTable extends Migration
             $table->string('type_alias')->index();
             $table->string('alias');
             $table->string('view')->nullable();
-            $table->string('listing_fields')->nullable();
             $table->string('listing_view')->nullable();
 
             $table->unsignedInteger('parent_id')->nullable();
