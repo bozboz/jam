@@ -10,12 +10,12 @@
     - [2.4. Entities](#2-4-entities)
     - [2.5. Revisions](#2-5-revisions)
 - [3. Usage](#3-usage)
-    - [3.1. Catchall Route](3-1-catchall-route)
-    - [3.2. EntityRepository](3-2-entity-repository)
-    - [3.3. Listings & Other Data](3-3-listings-other-data)
-    - [3.4. Canonical Paths](3-4-canonical-paths)
-    - [3.5. Value Retrieval](3-5-value-retrieval)
-- [4. Search Indexing](4-search-indexing)
+    - [3.1. Catchall Route](#3-1-catchall-route)
+    - [3.2. EntityRepository](#3-2-entity-repository)
+    - [3.3. Listings & Other Data](#3-3-listings-other-data)
+    - [3.4. Canonical Paths](#3-4-canonical-paths)
+    - [3.5. Value Retrieval](#3-5-value-retrieval)
+- [4. Search Indexing](#4-search-indexing)
 
 ---
 
