@@ -183,6 +183,8 @@ $pages->transform(function($page) {
 });
 ```
 
+---
+
 ## 4. Search Indexing
 
 Jam supports indexing entities via elastic search but each type needs to be set up with a search handler, see [2.1. Types](2-1-types). If all you need to be indexed is the name of the entity then you can just use the base `Bozboz\Jam\Entities\Indexer` class. In the likely event that you need more than that each type will need a handler written for it. When setting up a search handler class for an entity type it should extend the bas Indexer class and override the `getPreviewData` and `getSearchableData` methods. 
