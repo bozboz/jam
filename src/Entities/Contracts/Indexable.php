@@ -2,7 +2,15 @@
 
 namespace Bozboz\Jam\Entities\Contracts;
 
-interface Indexable
+use Spatie\SearchIndex\Searchable;
+
+interface Indexable extends Searchable
 {
-    public function index($entity);
+    /**
+     * Flag for if current instance should be indexed (e.g. depending on the
+     * status of the model)
+     *
+     * @return boolean
+     */
+    public function shouldIndex();
 }

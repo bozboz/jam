@@ -2,10 +2,10 @@
 
 namespace Bozboz\Jam\Entities;
 
+use Bozboz\Jam\Entities\Contracts\Indexable;
 use Carbon\Carbon;
-use Spatie\SearchIndex\Searchable;
 
-class IndexableEntity extends Entity implements Searchable
+class IndexableEntity extends Entity implements Indexable
 {
     public function make($entity)
     {

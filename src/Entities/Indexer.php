@@ -2,12 +2,11 @@
 
 namespace Bozboz\Jam\Entities;
 
-use Bozboz\Jam\Entities\Contracts\Indexable;
 use Bozboz\Jam\Entities\IndexableEntity;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Illuminate\Contracts\Container\Container;
 
-class Indexer implements Indexable
+class Indexer
 {
     private $search;
 
