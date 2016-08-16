@@ -10,6 +10,8 @@ use Bozboz\Admin\Reports\Actions\Presenters\Urls\Custom;
 use Bozboz\Jam\Templates\TemplateDecorator;
 use Bozboz\Jam\Templates\TemplateReport;
 use Bozboz\Jam\Types\Type;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
 
@@ -40,6 +42,46 @@ class EntityTemplateController extends ModelAdminController
 		return parent::index();
 	}
 
+	public function duplicate($id)
+	{
+		$template = $this->decorator->findInstance($id);
+
+		$types = app('EntityMapper')->getAll()->filter(function($type) use ($template) {
+			return $type->alias !== $template->type_alias;
+		});
+
+		return view('jam::admin.duplicate-template')->with(compact('template', 'types'));
+	}
+
+	public function processDuplicate(Request $request, $id)
+	{
+		DB::beginTransaction();
+
+		$template = $this->decorator->findInstance($id)->load('fields.options');
+
+		collect($request->get('types'))->each(function($typeAlias) use ($template) {
+			$newTemplate = $template->replicate(['id', 'type_alias']);
+			$newTemplate->type_alias = $typeAlias;
+			$newTemplate->save();
+
+			$template->fields->each(function($field) use ($newTemplate) {
+				$newField = $field->replicate(['id']);
+				$newField->template()->associate($newTemplate);
+				$newField->save();
+
+				$field->options->each(function($option) use ($newField) {
+					$newOption = $option->replicate(['id']);
+					$newOption->field()->associate($newField);
+					$newOption->save();
+				});
+			});
+		});
+
+		DB::commit();
+
+		return $this->getSuccessResponse($template);
+	}
+
 	public function getRowActions()
 	{
 		return array_merge([
@@ -52,7 +94,13 @@ class EntityTemplateController extends ModelAdminController
 					'class' => 'btn-default'
 				]),
 				new IsValid([$this, 'canEdit'])
-			)
+			),
+			$this->actions->custom(
+				new Link($this->getActionName('duplicate'), 'Duplicate', 'fa fa-copy', [
+					'class' => 'btn-warning'
+				]),
+				new IsValid([$this, 'canEdit'])
+			),
 		], parent::getRowActions());
 	}
 

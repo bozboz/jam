@@ -32,6 +32,8 @@ Route::group(array('middleware' => 'web', 'namespace' => 'Bozboz\Jam\Http\Contro
 	Route::resource('entity-types', 'EntityTypeController');
 
 	Route::resource('entity-templates', 'EntityTemplateController', ['except' => ['create']]);
+	Route::get('entity-templates/{id}/duplicate', 'EntityTemplateController@duplicate');
+	Route::post('entity-templates/{id}/duplicate', 'EntityTemplateController@processDuplicate');
 	Route::get('entity-templates/{type}/create', 'EntityTemplateController@createForType');
 
 	Route::resource('entity-template-fields', 'EntityTemplateFieldController', ['except' => ['create']]);

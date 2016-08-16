@@ -2,6 +2,7 @@
 
 namespace Bozboz\Jam\Fields\Options;
 
+use Bozboz\Jam\Fields\Field;
 use Illuminate\Database\Eloquent\Model;
 
 class Option extends Model
@@ -13,4 +14,9 @@ class Option extends Model
 		'key',
 		'value',
 	];
+
+    public function field()
+    {
+        return $this->belongsTo(Field::class);
+    }
 }
