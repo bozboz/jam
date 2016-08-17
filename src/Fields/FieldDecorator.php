@@ -83,7 +83,7 @@ class FieldDecorator extends ModelAdminDecorator
 	protected function modifyListingQuery(Builder $query)
 	{
 		$query->whereTemplateId(Input::get('template_id'));
-		parent::modifyListingQuery($query);
+		$query->orderBy('sorting');
 	}
 
 	public function setAdminFieldClass($adminFieldClass)

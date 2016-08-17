@@ -7,6 +7,7 @@ use Bozboz\Admin\Fields\Field;
 use Bozboz\Admin\Fields\FieldGroup;
 use Bozboz\Admin\Fields\SelectField;
 use Bozboz\Jam\Entities\Revision;
+use Bozboz\Permissions\Facades\Gate;
 
 class PublishField extends SelectField
 {
@@ -71,10 +72,10 @@ JAVASCRIPT;
 
 	protected function getPublishingOptions()
 	{
-		return [
-			'' => 'Hidden',
-			Revision::PUBLISHED => 'Published',
-			Revision::SCHEDULED => 'Scheduled',
-		];
+		return array_filter([
+			'' => Gate::allows('hide_entity') ? 'Hidden' : null,
+			Revision::PUBLISHED => Gate::allows('publish_entity') ? 'Published' : null,
+			Revision::SCHEDULED => Gate::allows('schedule_entity') ? 'Scheduled' : null,
+		]);
 	}
 }
