@@ -13,6 +13,7 @@ use Bozboz\Jam\Entities\Revision;
 use Bozboz\Jam\Templates\Template;
 use Bozboz\Jam\Templates\TemplateDecorator;
 use Bozboz\Jam\Types\Type;
+use Bozboz\Permissions\Facades\Gate;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -80,13 +81,14 @@ class EntityDecorator extends ModelAdminDecorator
 
 	public function getFields($instance)
 	{
+		$canEditStatus = Gate::allows('hide_entity') || Gate::allows('publish_entity') || Gate::allows('schedule_entity');
 		$fields = new Collection(array_filter([
 			new TextField('name', ['label' => 'Name *']),
 			$instance->exists && $instance->template->type()->isVisible() ? new TextField('slug', ['label' => 'Slug *']) : null,
 			new HiddenField('template_id'),
 			new HiddenField('user_id', Auth::id()),
 			new HiddenField('parent_id'),
-			new PublishField('status', $instance),
+			$canEditStatus ? new PublishField('status', $instance) : null,
 		]));
 
 		return $fields->merge($this->getTemplateFields($instance))->all();

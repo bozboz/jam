@@ -2,22 +2,32 @@
 
 @section('main')
 
-    {{ Form::open() }}
+    {{ Form::model($template) }}
 
-        <fieldset>
-            <legend>Types to copy to:</legend>
-            <ul>
-            @foreach ($types as $type)
-                <li><label>
-                    {{ Form::checkbox("types[]", $type->alias) }}
-                    {{ $type->name }}
-                </label></li>
-            @endforeach
-            </ul>
-        </fieldset>
+        <div class="form-group">
+            {{ Form::label('name') }}
+            {{ Form::text('name', null, ['class' => 'form-control']) }}
+        </div>
+        <div class="form-group">
+            {{ Form::label('alias') }}
+            {{ Form::text('alias', null, ['class' => 'form-control']) }}
+        </div>
+        <div class="form-group">
+            <fieldset>
+                <legend>Types to copy to:</legend>
+                <ul>
+                @foreach ($types as $type)
+                    <li><label>
+                        {{ Form::checkbox("types[]", $type->alias) }}
+                        {{ $type->name }}
+                    </label></li>
+                @endforeach
+                </ul>
+            </fieldset>
+        </div>
 
-        <button type="submit" class="btn btn-success">
-            Submit
+        <button type="submit" class="btn btn-success pull-right">
+            Duplicate
         </button>
 
     {{ Form::close() }}

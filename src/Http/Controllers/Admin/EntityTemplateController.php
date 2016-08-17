@@ -46,9 +46,7 @@ class EntityTemplateController extends ModelAdminController
 	{
 		$template = $this->decorator->findInstance($id);
 
-		$types = app('EntityMapper')->getAll()->filter(function($type) use ($template) {
-			return $type->alias !== $template->type_alias;
-		});
+		$types = app('EntityMapper')->getAll();
 
 		return view('jam::admin.duplicate-template')->with(compact('template', 'types'));
 	}
@@ -59,8 +57,10 @@ class EntityTemplateController extends ModelAdminController
 
 		$template = $this->decorator->findInstance($id)->load('fields.options');
 
-		collect($request->get('types'))->each(function($typeAlias) use ($template) {
-			$newTemplate = $template->replicate(['id', 'type_alias']);
+		collect($request->get('types'))->each(function($typeAlias) use ($template, $request) {
+			$newTemplate = $template->replicate(['id', 'type_alias', 'name', 'alias']);
+			$newTemplate->name = $request->get('name');
+			$newTemplate->alias = $request->get('alias');
 			$newTemplate->type_alias = $typeAlias;
 			$newTemplate->save();
 
