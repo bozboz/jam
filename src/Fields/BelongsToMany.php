@@ -14,7 +14,9 @@ class BelongsToMany extends BelongsTo
     {
         return new BelongsToManyField($decorator, $this->relation($value), [
                 'name' => $this->getInputName(),
-                'label' => $this->getInputLabel()
+                'label' => $this->getInputLabel(),
+                'help_text_title' => $this->help_text_title,
+                'help_text' => $this->help_text,
             ],
             function ($query) {
                 if (property_exists($this->options_array, 'template')) {

@@ -18,6 +18,8 @@ class CreateEntityTemplateFieldsTable extends Migration
             $table->string('name');
             $table->string('type_alias');
             $table->text('validation')->nullable();
+            $table->text('help_text_title')->nullable();
+            $table->text('help_text')->nullable();
             $table->unsignedInteger('sorting');
             $table->timestamps();
 

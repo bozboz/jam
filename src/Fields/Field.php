@@ -26,7 +26,15 @@ class Field extends Model implements FieldInterface, Sortable
         'name',
         'validation',
         'template_id',
-        'type_alias'
+        'type_alias',
+        'help_text_title',
+        'help_text',
+    ];
+
+    protected $nullable = [
+        'validation',
+        'help_text_title',
+        'help_text',
     ];
 
     protected static $mapper;

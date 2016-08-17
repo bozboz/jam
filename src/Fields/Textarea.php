@@ -17,12 +17,16 @@ class Textarea extends Field
         if ($this->getOption('wysiwyg')) {
             return new HTMLEditorField([
                 'name' => $this->getInputName(),
-                'label' => $this->getInputLabel()
+                'label' => $this->getInputLabel(),
+                'help_text_title' => $this->help_text_title,
+                'help_text' => $this->help_text,
             ]);
         } else {
             return new TextareaField([
                 'name' => $this->getInputName(),
-                'label' => $this->getInputLabel()
+                'label' => $this->getInputLabel(),
+                'help_text_title' => $this->help_text_title,
+                'help_text' => $this->help_text,
             ]);
         }
 	}

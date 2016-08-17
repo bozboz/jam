@@ -18,7 +18,9 @@ class DateTime extends Field
 	{
 	    return new DateTimeField([
 			'name' => $this->getInputName(),
-			'label' => $this->getInputLabel()
+			'label' => $this->getInputLabel(),
+            'help_text_title' => $this->help_text_title,
+            'help_text' => $this->help_text,
 		]);
 	}
 }

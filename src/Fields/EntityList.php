@@ -22,7 +22,9 @@ class EntityList extends Field
     {
         return new EntityListField($instance, $this, $this->newListQuery($instance)->with('template', 'template.fields', 'currentRevision')->get(), [
             'name' => $this->getInputName(),
-            'label' => $this->getInputLabel()
+            'label' => $this->getInputLabel(),
+            'help_text_title' => $this->help_text_title,
+            'help_text' => $this->help_text,
         ]);
     }
 

@@ -7,6 +7,7 @@ use Bozboz\Admin\Fields\BelongsToField;
 use Bozboz\Admin\Fields\HiddenField;
 use Bozboz\Admin\Fields\SelectField;
 use Bozboz\Admin\Fields\TextField;
+use Bozboz\Admin\Fields\TextareaField;
 use Bozboz\Jam\Fields\TemplateField;
 use Bozboz\Jam\Templates\Template;
 use Illuminate\Database\Eloquent\Builder;
@@ -51,6 +52,8 @@ class FieldDecorator extends ModelAdminDecorator
 			new TextField('type_alias', ['disabled' => 'disabled']),
 			new TextField('name'),
 			new TextField('validation'),
+			new TextField('help_text_title'),
+			new TextareaField('help_text'),
 			new HiddenField('template_id'),
 			new HiddenField('type_alias'),
 		], $instance->getOptionFields());
