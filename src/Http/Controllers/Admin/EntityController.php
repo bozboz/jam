@@ -254,6 +254,11 @@ class EntityController extends ModelAdminController
 		$stack->add('delete_entity_type', $instance ? $instance->template->type_alias : null);
 	}
 
+	protected function viewPermissions($stack)
+	{
+		$stack->add('view_entity_type');
+	}
+
 	protected function canShow($type)
 	{
 		return RuleStack::with('view_anything')->then('view_entity_type', $type)->isAllowed();
