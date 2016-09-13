@@ -163,7 +163,7 @@ class Entity extends Node implements ModelInterface, Revisionable
 
 	public function getCanonicalTag()
 	{
-		if ($this->exists && $this->canonical_path != Request::path()) {
+		if ($this->exists && $this->canonical_path) {
 			return '<link rel="canonical" href="'.url($this->canonical_path).'" />';
 		}
 	}
