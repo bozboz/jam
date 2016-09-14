@@ -62,13 +62,11 @@ class EntityRepository implements EntityRepositoryInterface
             return false;
         }
 
-        $entity = $path->entity()->withFields(['*'])->active()->first();
+        $entity = $path->entity()->withFields(['*'])->withCanonicalPath()->active()->first();
 
         if (!$entity) {
             return false;
         }
-
-        $entity->setAttribute('canonical', $path->canonical_path);
 
         return $entity;
     }

@@ -11,6 +11,7 @@ use Bozboz\Jam\Entities\Listeners\UpdateSearchIndex;
 use Bozboz\Jam\Entities\PublishAction;
 use Bozboz\Jam\Fields\Field;
 use Bozboz\Jam\Mapper;
+use Bozboz\Jam\Templates\Template;
 use Bozboz\Jam\Types\Type;
 use Illuminate\Support\ServiceProvider;
 
@@ -98,8 +99,10 @@ class JamServiceProvider extends ServiceProvider
         {
             $url = $this->app['url'];
 
-            $entityTypes = $this->app['EntityMapper']->getAll()->each(function($type, $alias) use ($url, $menu) {
-                if ($menu->gate('view_entity_type', $type->alias) && $type->templates()->count()) {
+            $typesWithTemplates = Template::groupBy('type_alias')->pluck('type_alias')->toArray();
+
+            $entityTypes = $this->app['EntityMapper']->getAll()->each(function($type, $alias) use ($typesWithTemplates, $url, $menu) {
+                if ($menu->gate('view_entity_type', $type->alias) && in_array($type->alias, $typesWithTemplates)) {
                     $type->addToMenu($menu, $url);
                 }
             });
