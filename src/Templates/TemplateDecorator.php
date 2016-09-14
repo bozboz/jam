@@ -39,8 +39,8 @@ class TemplateDecorator extends ModelAdminDecorator
 		return [
 			new TextField('name'),
 			($instance->exists ? new TextField('alias') : null),
-			new SelectField('view', ['options' => $this->getViews()]),
-			new TextField('listing_view'),
+			new SelectField('view', ['options' => $this->getViews(), 'class' => 'select2 form-control']),
+			new SelectField('listing_view', ['options' => $this->getViews(), 'class' => 'select2 form-control']),
 			new TextField('listing_fields'),
 			new HiddenField('type_alias')
 		];
