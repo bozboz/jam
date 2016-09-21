@@ -22,6 +22,7 @@ class JamServiceProvider extends ServiceProvider
 
     protected $commands = [
         'Bozboz\Jam\Console\Commands\AddOldUrl',
+        'Bozboz\Jam\Console\Commands\CountErrors',
         'Bozboz\Jam\Console\Commands\FixTree',
         'Bozboz\Jam\Console\Commands\RecalculatePaths',
     ];
