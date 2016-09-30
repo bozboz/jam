@@ -46,8 +46,8 @@ class IndexableEntity extends Entity implements Indexable
 
     public function shouldIndex()
     {
-        return $this->current_revision
-            && new Carbon($this->current_revision['published_at']) < new Carbon
+        return $this->currentRevision
+            && new Carbon($this->currentRevision['published_at']) < new Carbon
             && array_key_exists('canonical_path', $this->attributes);
     }
 
