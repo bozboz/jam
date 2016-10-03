@@ -24,15 +24,7 @@ class InverseBelongsToMany extends BelongsTo
 
     public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
     {
-        return new FieldGroup($this->getInputLabel(), [
-            new HiddenField($this->getInputName(), $this->getOption('type')),
-            new RelatedField([
-                'name' => $this->getInputName().'_inverse_relation',
-                'label' => $this->getValue($value),
-                'help_text_title' => $this->help_text_title,
-                'help_text' => $this->help_text,
-            ])
-        ]);
+        return new HiddenField($this->getInputName(), $this->getOption('type'));
     }
 
     public function getOptionFields()
