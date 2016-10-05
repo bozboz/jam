@@ -149,6 +149,7 @@ class JamServiceProvider extends ServiceProvider
             'belongs-to-many'          => \Bozboz\Jam\Fields\BelongsToMany::class,
             'inverse-belongs-to-many'  => \Bozboz\Jam\Fields\InverseBelongsToMany::class,
             'hidden'                   => \Bozboz\Jam\Fields\Hidden::class,
+            'user'                     => \Bozboz\Jam\Fields\User::class,
         ]);
     }
 
