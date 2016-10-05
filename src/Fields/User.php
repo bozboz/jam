@@ -19,8 +19,13 @@ class User extends Field
             'label' => $this->getInputLabel(),
             'help_text_title' => $this->help_text_title,
             'help_text' => $this->help_text,
-            'value' => Auth::user()->id,
+            'value' => $this->getDefaultUser(),
         ]);
+    }
+
+    protected function getDefaultUser()
+    {
+        return Auth::user()->id;
     }
 
     protected function getUserOptions()
