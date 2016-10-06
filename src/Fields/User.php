@@ -39,6 +39,8 @@ class User extends Field
 
     public function getValue(Value $value)
     {
-        return Auth::user()->find($value->value);
+        if ($value->value) {
+            return Auth::getProvider()->retrieveById($value->value);
+        }
     }
 }
