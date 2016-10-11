@@ -11,7 +11,7 @@ class IndexableEntity extends Entity implements Indexable
     {
         $entity->injectValues();
         $this->attributes = $entity->toArray();
-        $this->attributes['canonical_path'] = $entity->canonical_path;
+        $this->attributes['canonical_path'] = "/$entity->canonical_path";
         $this->searchable_id = $entity->id;
         $this->searchable_type = get_class($entity);
     }
@@ -25,7 +25,7 @@ class IndexableEntity extends Entity implements Indexable
             'searchable_data' => $this->searchable_data,
             'breadcrumbs' => $this->getAncestors()->map(function($entity) {
                 return [
-                    'path' => $entity->canonical_path,
+                    'path' => "/$entity->canonical_path",
                     'name' => $entity->name,
                 ];
             }),
