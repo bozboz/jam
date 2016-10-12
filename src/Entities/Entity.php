@@ -83,10 +83,12 @@ class Entity extends Node implements ModelInterface, Revisionable
 	public function scopeOrderByPublishedAt($query)
 	{
 		$query->select('entities.*')
-			->leftJoin('entity_revisions as order_join', 'entities.revision_id', '=', 'order_join.id')
-			->orderByRaw('order_join.published_at is not null')
-			->orderBy('order_join.published_at', 'desc')
-			->orderBy('entities.created_at', 'desc');
+			->leftJoin('entity_revisions as current_revision_join', 'entities.revision_id', '=', 'current_revision_join.id')
+			->join('entity_revisions as latest_revision_join', function($join) {
+				$join->on('entities.id', '=', 'latest_revision_join.entity_id');
+			})
+			->groupBy('latest_revision_join.entity_id')
+			->orderByRaw('coalesce(current_revision_join.published_at, latest_revision_join.created_at) desc');
 	}
 
 	public function isSortable()
