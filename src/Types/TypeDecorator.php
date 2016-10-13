@@ -33,18 +33,23 @@ class TypeDecorator extends ModelAdminDecorator
 	protected function getTemplateLinks($templates)
 	{
 		return $templates->map(function($template) {
-			$templateUrl = new Url(action('\\'.EntityTemplateController::class.'@edit', $template->id));
-			$templateFieldsUrl = new Url(action('\\'.EntityTemplateFieldController::class.'@index', [
+			$editUrl = new Url(action('\\'.EntityTemplateController::class.'@edit', $template->id));
+			$fieldsUrl = new Url(action('\\'.EntityTemplateFieldController::class.'@index', [
 				'template_id' => $template->id
 			]));
+			$duplicateUrl = new Url(action('\\'.EntityTemplateController::class.'@duplicate', $template->id));
 
 			$options = [
 				new Action(
-					new Link($templateUrl, 'Edit', 'fa fa-pencil'),
+					new Link($editUrl, 'Edit', 'fa fa-pencil'),
 					new IsValid([app(EntityTemplateController::class), 'canView'])
 				),
 				new Action(
-					new Link($templateFieldsUrl, 'Fields', 'fa fa-list-ul'),
+					new Link($fieldsUrl, 'Fields', 'fa fa-list-ul'),
+					new IsValid([app(EntityTemplateController::class), 'canView'])
+				),
+				new Action(
+					new Link($duplicateUrl, 'Duplicate', 'fa fa-copy'),
 					new IsValid([app(EntityTemplateController::class), 'canView'])
 				),
 			];
