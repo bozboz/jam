@@ -138,4 +138,9 @@ class EntityTemplateController extends ModelAdminController
 	{
 		return action($this->getActionName('index'), ['type' => $instance->type_alias]);
 	}
+
+	public function canDestroy($instance)
+	{
+		return parent::canDestroy($instance) && $instance->entities()->withTrashed()->count() == 0;
+	}
 }

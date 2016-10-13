@@ -28,7 +28,9 @@ class TemplateDecorator extends ModelAdminDecorator
 			'Name' => $this->getLabel($instance),
 			'View' => $instance->view,
 			'Listing View' => $instance->listing_view,
-			'Entity Count' => $instance->entities->count() . ($instance->max_uses ?  '/' . $instance->max_uses : ''),
+			'Entity Count' => $instance->entities->count()
+				. ($instance->max_uses ?  '/' . $instance->max_uses : '')
+				. ($instance->entities()->withTrashed()->count() ? ' <small>(' . $instance->entities()->withTrashed()->count() . ' deleted)</small>' : ''),
 		];
 	}
 
