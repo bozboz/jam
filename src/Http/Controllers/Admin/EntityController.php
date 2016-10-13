@@ -93,9 +93,9 @@ class EntityController extends ModelAdminController
 
 		return [
 			$this->actions->dropdown($options->all(), 'New', 'fa fa-plus', [
-				'class' => 'btn-success'
+				'class' => 'btn-success',
 			], [
-				'class' => 'pull-right'
+				'class' => 'pull-right',
 			])
 		];
 	}
