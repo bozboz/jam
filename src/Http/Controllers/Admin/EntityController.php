@@ -73,9 +73,15 @@ class EntityController extends ModelAdminController
 	protected function getReportActions()
 	{
 		$options = Template::whereTypeAlias($this->type->alias)
-			->whereHas('entities', function($query) {
-				$query->selectRaw('COUNT(*) as count');
-				$query->havingRaw('COALESCE(count, 0) < entity_templates.max_uses');
+			->where(function($query) {
+				$query->whereHas('entities', function($query) {
+					$query->selectRaw('COUNT(*) as count');
+					$query->havingRaw('entity_templates.max_uses > count');
+					$query->orHavingRaw('entity_templates.max_uses IS NULL');
+				});
+				$query->orWhere(function($query) {
+					$query->doesntHave('entities');
+				});
 			})
 			->orderBy('name')
 			->get()->map(function($template) {

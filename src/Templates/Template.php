@@ -34,6 +34,7 @@ class Template extends Node implements ModelInterface, Sortable
 	protected $nullable = [
 		'view',
 		'listing_view',
+		'max_uses',
 	];
 
 	protected function getSlugSourceField()
