@@ -39,6 +39,11 @@ class TemplateDecorator extends ModelAdminDecorator
 		return $instance->name;
 	}
 
+	public function getHeading($plural = false)
+	{
+		return app('EntityMapper')->get(request()->get('type'))->name . ' ' . str_plural('Template', $plural ? 2 : 1);
+	}
+
 	public function getFields($instance)
 	{
 		return [

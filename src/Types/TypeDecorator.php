@@ -6,6 +6,7 @@ use Bozboz\Admin\Base\ModelAdminDecorator;
 use Bozboz\Admin\Fields\CheckboxField;
 use Bozboz\Admin\Fields\TextField;
 use Bozboz\Admin\Reports\Actions\Action;
+use Bozboz\Admin\Reports\Actions\DropdownAction;
 use Bozboz\Admin\Reports\Actions\Permissions\IsValid;
 use Bozboz\Admin\Reports\Actions\Presenters\Link;
 use Bozboz\Admin\Reports\Actions\Presenters\Urls\Url;
@@ -25,18 +26,35 @@ class TypeDecorator extends ModelAdminDecorator
 	{
 		return [
 			'Name' => $this->getLabel($instance),
-			'Templates' => $instance->templates()->orderBy('name')->get()->map(function($template) {
-				$templateFieldsUrl = new Url(action('\\'.EntityTemplateFieldController::class.'@index', [
-					'template_id' => $template->id
-				]));
-				$action = new Action(
-					new Link($templateFieldsUrl, $template->name, 'fa fa-list-ul', ['class' => 'btn-info']),
-					new IsValid([app(EntityTemplateController::class), 'canView'])
-				);
-				$action->setInstance($template);
-				return (string)$action->render();
-			})->implode(' ')
+			'Templates' => $this->getTemplateLinks($instance->templates()->orderBy('name')->get()),
 		];
+	}
+
+	protected function getTemplateLinks($templates)
+	{
+		return $templates->map(function($template) {
+			$templateUrl = new Url(action('\\'.EntityTemplateController::class.'@edit', $template->id));
+			$templateFieldsUrl = new Url(action('\\'.EntityTemplateFieldController::class.'@index', [
+				'template_id' => $template->id
+			]));
+
+			$options = [
+				new Action(
+					new Link($templateUrl, 'Edit'),
+					new IsValid([app(EntityTemplateController::class), 'canView'])
+				),
+				new Action(
+					new Link($templateFieldsUrl, 'Fields'),
+					new IsValid([app(EntityTemplateController::class), 'canView'])
+				),
+			];
+
+			$action = new DropdownAction(
+				$options, $template->name, 'fa fa-file-text', ['class' => 'btn-info']
+			);
+			$action->setInstance($template);
+			return (string)$action->render();
+		})->implode(' ');
 	}
 
 	public function getLabel($instance)

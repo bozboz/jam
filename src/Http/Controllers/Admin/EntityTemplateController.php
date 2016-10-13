@@ -5,6 +5,7 @@ namespace Bozboz\Jam\Http\Controllers\Admin;
 use Bozboz\Admin\Http\Controllers\ModelAdminController;
 use Bozboz\Admin\Permissions\RestrictAllPermissionsTrait;
 use Bozboz\Admin\Reports\Actions\Permissions\IsValid;
+use Bozboz\Admin\Reports\Actions\Permissions\Valid;
 use Bozboz\Admin\Reports\Actions\Presenters\Link;
 use Bozboz\Admin\Reports\Actions\Presenters\Urls\Custom;
 use Bozboz\Jam\Templates\TemplateDecorator;
@@ -115,8 +116,17 @@ class EntityTemplateController extends ModelAdminController
 			$this->actions->create(
 				[$this->getActionName('createForType'), Input::get('type')],
 				[$this, 'canCreate'],
-				'New Template'
-			)
+				'New Template',
+				['class' => 'btn-success pull-right space-left']
+			),
+			$this->actions->custom(
+				new Link(
+					'\Bozboz\Jam\Http\Controllers\Admin\EntityTypeController@index',
+					'Back to types', 'fa fa-list-ul',
+					['class' => 'btn btn-default pull-right']
+				),
+				new Valid
+			),
 		];
 	}
 
