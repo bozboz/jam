@@ -36,6 +36,7 @@ class Template extends Model
 
 	static public function boot()
 	{
+		parent::boot();
 		static::created(function($template) {
 			if ($template->type()->isVisible()) {
 				$template->fields()->create([
