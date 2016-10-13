@@ -41,12 +41,14 @@ class TemplateDecorator extends ModelAdminDecorator
 
 	public function getHeading($plural = false)
 	{
-		return app('EntityMapper')->get(request()->get('type'))->name . ' ' . str_plural('Template', $plural ? 2 : 1);
+		return (request()->get('type') ? app('EntityMapper')->get(request()->get('type'))->name . ' ' : '')
+			. str_plural('Template', $plural ? 2 : 1);
 	}
 
 	public function getFields($instance)
 	{
 		return [
+			new TextField('type_alias', ['disabled']),
 			new TextField('name'),
 			($instance->exists ? new TextField('alias') : null),
 			new SelectField('view', ['options' => $this->getViews(), 'class' => 'select2 form-control']),
