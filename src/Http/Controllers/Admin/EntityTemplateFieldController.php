@@ -5,6 +5,7 @@ namespace Bozboz\Jam\Http\Controllers\Admin;
 use Bozboz\Admin\Http\Controllers\ModelAdminController;
 use Bozboz\Admin\Permissions\RestrictAllPermissionsTrait;
 use Bozboz\Admin\Reports\Actions\Permissions\IsValid;
+use Bozboz\Admin\Reports\Actions\Permissions\Valid;
 use Bozboz\Admin\Reports\Actions\Presenters\Link;
 use Bozboz\Jam\Fields\Field;
 use Bozboz\Jam\Fields\FieldDecorator;
@@ -60,8 +61,23 @@ class EntityTemplateFieldController extends ModelAdminController
 			$this->actions->dropdown($options, 'Create', 'fa fa-plus', [
 				'class' => 'btn-success'
 			], [
-				'class' => 'pull-right'
-			])
+				'class' => 'pull-right space-left'
+			]),
+			$this->actions->custom(
+				new Link(
+					['\Bozboz\Jam\Http\Controllers\Admin\EntityTemplateController@index', [
+						'type' => $this->template->find(request()->get('template_id'))->type_alias
+					]],
+					'Back to templates', 'fa fa-list-ul', ['class' => 'btn-default pull-right space-left']
+				),
+				new Valid
+			),
+			$this->actions->custom(
+				new Link('\Bozboz\Jam\Http\Controllers\Admin\EntityTypeController@index',
+					'Back to types', 'fa fa-list-ul', ['class' => 'btn-default pull-right']
+				),
+				new Valid
+			),
 		];
 	}
 

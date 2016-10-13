@@ -40,11 +40,11 @@ class TypeDecorator extends ModelAdminDecorator
 
 			$options = [
 				new Action(
-					new Link($templateUrl, 'Edit'),
+					new Link($templateUrl, 'Edit', 'fa fa-pencil'),
 					new IsValid([app(EntityTemplateController::class), 'canView'])
 				),
 				new Action(
-					new Link($templateFieldsUrl, 'Fields'),
+					new Link($templateFieldsUrl, 'Fields', 'fa fa-list-ul'),
 					new IsValid([app(EntityTemplateController::class), 'canView'])
 				),
 			];
