@@ -26,6 +26,9 @@ class TemplateDecorator extends ModelAdminDecorator
 	{
 		return [
 			'Name' => $this->getLabel($instance),
+			'View' => $instance->view,
+			'Listing View' => $instance->listing_view,
+			'Max Uses' => $instance->max_uses,
 		];
 	}
 
@@ -41,6 +44,7 @@ class TemplateDecorator extends ModelAdminDecorator
 			($instance->exists ? new TextField('alias') : null),
 			new SelectField('view', ['options' => $this->getViews(), 'class' => 'select2 form-control']),
 			new SelectField('listing_view', ['options' => $this->getViews(), 'class' => 'select2 form-control']),
+			new TextField('max_uses'),
 			new HiddenField('type_alias')
 		];
 	}

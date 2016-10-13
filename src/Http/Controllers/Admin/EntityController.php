@@ -72,12 +72,18 @@ class EntityController extends ModelAdminController
 	 */
 	protected function getReportActions()
 	{
-		$options = Template::whereTypeAlias($this->type->alias)->orderBy('name')->get()->map(function($template) {
-			return $this->actions->custom(
-				new Link([$this->getActionName('createOfType'), [$template->type_alias, $template->alias]], $template->name),
-				new IsValid([$this, 'canCreate'])
-			);
-		});
+		$options = Template::whereTypeAlias($this->type->alias)
+			->whereHas('entities', function($query) {
+				$query->selectRaw('COUNT(*) as count');
+				$query->havingRaw('COALESCE(count, 0) < entity_templates.max_uses');
+			})
+			->orderBy('name')
+			->get()->map(function($template) {
+				return $this->actions->custom(
+					new Link([$this->getActionName('createOfType'), [$template->type_alias, $template->alias]], $template->name),
+					new IsValid([$this, 'canCreate'])
+				);
+			});
 
 		return [
 			$this->actions->dropdown($options->all(), 'New', 'fa fa-plus', [
