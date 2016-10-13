@@ -19,7 +19,7 @@
                 @endforeach
             </ul>
         </div>
-    @else
+    @elseif ($templates->count())
         <a class="btn btn-sm btn-primary" type="submit" href="{{ route('admin.entity-list.create-for-list', [$templates->first()->type_alias, $templates->first()->alias, $parentEntity->id]) }}">
             <i class="fa fa-plus"></i>
             New

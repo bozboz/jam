@@ -82,8 +82,22 @@ class EntityListField extends AdminField
 
     public function getInput()
     {
+        $templates = Template::whereTypeAlias($this->field->getOption('type'))
+            ->where(function($query) {
+                $query->whereHas('entities', function($query) {
+                    $query->selectRaw('COUNT(*) as count');
+                    $query->havingRaw('entity_templates.max_uses > count');
+                    $query->orHavingRaw('entity_templates.max_uses IS NULL');
+                });
+                $query->orWhere(function($query) {
+                    $query->doesntHave('entities');
+                });
+            })
+            ->orderBy('name')
+            ->get();
+
         return view('jam::admin.partials.entity-list-field', [
-            'templates' => Template::whereTypeAlias($this->field->getOption('type'))->get(),
+            'templates' => $templates,
             'entities' => $this->entityList,
             'field' => $this->field,
             'parentEntity' => $this->parentEntity,
