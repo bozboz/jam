@@ -101,7 +101,7 @@ class EntityDecorator extends ModelAdminDecorator
 	 * @param  Bozboz\Jam\Entity  $instance
 	 * @return array
 	 */
-	public function getTemplateFields($instance)
+	protected function getTemplateFields($instance)
 	{
 		$fields = [];
 

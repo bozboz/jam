@@ -3,21 +3,18 @@
 namespace Bozboz\Jam\Templates;
 
 use Bozboz\Admin\Base\DynamicSlugTrait;
+use Bozboz\Admin\Base\Model;
 use Bozboz\Admin\Base\ModelInterface;
 use Bozboz\Admin\Base\SanitisesInputTrait;
-use Bozboz\Admin\Base\Sorting\NestedSortableTrait;
-use Bozboz\Admin\Base\Sorting\Sortable;
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\Revision;
 use Bozboz\Jam\Entities\Value;
 use Bozboz\Jam\Fields\Field;
+use Bozboz\Jam\Fields\Text;
 use Bozboz\Jam\Types\Type;
-use Kalnoy\Nestedset\Node;
 
-class Template extends Node implements ModelInterface, Sortable
+class Template extends Model
 {
-	use SanitisesInputTrait;
-	use NestedSortableTrait;
 	use DynamicSlugTrait;
 
 	protected $table = 'entity_templates';
@@ -36,6 +33,23 @@ class Template extends Node implements ModelInterface, Sortable
 		'listing_view',
 		'max_uses',
 	];
+
+	static public function boot()
+	{
+		static::created(function($template) {
+			if ($template->type()->isVisible()) {
+				$template->fields()->create([
+					'type_alias' => 'text',
+					'name' => 'meta_title',
+					'validation' => 'required'
+				]);
+				$template->fields()->create([
+					'type_alias' => 'text',
+					'name' => 'meta_description',
+				]);
+			}
+		});
+	}
 
 	protected function getSlugSourceField()
 	{
@@ -59,7 +73,7 @@ class Template extends Node implements ModelInterface, Sortable
 
 	public function sortBy()
 	{
-		return '_lft';
+		return 'name';
 	}
 
 	public function getValidator()
