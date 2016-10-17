@@ -24,13 +24,15 @@ class TemplateDecorator extends ModelAdminDecorator
 
 	public function getColumns($instance)
 	{
+		$entityCount = $instance->entities->count();
+		$trashedCount = $instance->entities()->onlyTrashed()->count();
 		return [
 			'Name' => $this->getLabel($instance),
 			'View' => $instance->view,
 			'Listing View' => $instance->listing_view,
-			'Entity Count' => $instance->entities->count()
+			'Entity Count' => $entityCount
 				. ($instance->max_uses ?  '/' . $instance->max_uses : '')
-				. ($instance->entities()->withTrashed()->count() ? ' <small>(' . $instance->entities()->withTrashed()->count() . ' deleted)</small>' : ''),
+				. ($trashedCount ? ' <small>(' . $trashedCount . ' deleted)</small>' : ''),
 		];
 	}
 
@@ -74,6 +76,6 @@ class TemplateDecorator extends ModelAdminDecorator
 
 	protected function modifyListingQuery(Builder $query)
 	{
-		$query->whereTypeAlias(Input::get('type'))->orderBy($this->model->sortBy());
+		$query->whereTypeAlias(Input::get('type'))->with('entities')->orderBy($this->model->sortBy());
 	}
 }
