@@ -93,7 +93,7 @@ class Type implements \Bozboz\Admin\Base\ModelInterface
 
     public function __get($attribute)
     {
-        return $this->attributes[$attribute];
+        return array_key_exists($attribute, $this->attributes) ? $this->attributes[$attribute] : null;
     }
 
     public function getValidator()
