@@ -12,5 +12,6 @@ class NestedType extends Type
         'menu_builder' => \Bozboz\Jam\Types\Menu\Content::class,
         'entity' => \Bozboz\Jam\Entities\Entity::class,
         'search_handler' => \Bozboz\Jam\Entities\NotIndexed::class,
+        'decorator' => \Bozboz\Jam\Entities\EntityDecorator::class,
     ];
 }

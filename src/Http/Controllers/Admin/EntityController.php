@@ -37,6 +37,7 @@ class EntityController extends ModelAdminController
 	public function show($type)
 	{
 		$this->type = app('EntityMapper')->get($type);
+		$this->decorator = $this->type->getDecorator();
 		$this->decorator->setType($this->type);
 
 		if (!$this->type) {
@@ -100,6 +101,11 @@ class EntityController extends ModelAdminController
 		];
 	}
 
+	protected function getRevisionController()
+	{
+		return app(EntityRevisionController::class);
+	}
+
 	/**
 	 * Return an array of actions each row can perform
 	 *
@@ -107,7 +113,7 @@ class EntityController extends ModelAdminController
 	 */
 	protected function getRowActions()
 	{
-		$entityRevisionController = app(EntityRevisionController::class);
+		$entityRevisionController = $this->getRevisionController();
 
 		return array_merge([
 			$this->actions->publish([

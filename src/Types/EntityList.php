@@ -12,6 +12,7 @@ class EntityList extends Type
         'menu_builder' => \Bozboz\Jam\Types\Menu\Hidden::class,
         'entity' => \Bozboz\Jam\Entities\SortableEntity::class,
         'search_handler' => \Bozboz\Jam\Entities\NotIndexed::class,
+        'decorator' => \Bozboz\Jam\Entities\EntityDecorator::class,
     ];
 
     public function __construct($name)

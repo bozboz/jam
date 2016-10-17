@@ -30,9 +30,7 @@ class EntityRevisionController extends ModelAdminController
 
 		$report = new RevisionReport($this->decorator, $id);
 
-		$listingUrl = [$this->entityController->getActionName('show'), [
-			'type' => Entity::find($id)->template->type_alias
-		]];
+		$listingUrl = $this->getListingUrl(Entity::find($id));
 
 		$report->setReportActions([
 			$this->actions->custom(
@@ -42,10 +40,16 @@ class EntityRevisionController extends ModelAdminController
 				new IsValid([$this->entityController, 'canView'])
 			)
 		]);
-
 		$report->setRowActions($this->getRowActions());
 
 		return $report->render();
+	}
+
+	public function getListingUrl($entity)
+	{
+		return [$this->entityController->getActionName('show'), [
+			'type' => $entity->template->type_alias
+		]];
 	}
 
 	public function revert($id)

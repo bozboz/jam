@@ -54,14 +54,18 @@ class EntityDecorator extends ModelAdminDecorator
 			break;
 		}
 		$path = $instance->canonical_path;
-		return [
-			'Name' => $this->getLabel($instance)
-				. ( $path
-					? '&nbsp;&nbsp;<a href="/'.$path.'" target="_blank" title="Go to '.$this->getLabel($instance).'"><i class="fa fa-external-link"></i></a>'
-					: null
-			),
-			'Status' => $statusLabel,
-		];
+		$columns = collect($this->getCustomColumns($instance));
+		$columns->prepend(
+			$this->getLabel($instance) . ( $path
+				? '&nbsp;&nbsp;<a href="/'.$path.'" target="_blank" title="Go to '.$this->getLabel($instance).'"><i class="fa fa-external-link"></i></a>'
+				: null
+		), 'Name')->put('Status', $statusLabel);
+		return $columns->all();
+	}
+
+	protected function getCustomColumns($instance)
+	{
+		return [];
 	}
 
 	public function getHeading($plural = false)

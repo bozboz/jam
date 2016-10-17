@@ -3,9 +3,8 @@
 namespace Bozboz\Jam\Types;
 
 use Bozboz\Jam\Templates\Template;
-use Illuminate\Support\Fluent;
 
-class Type extends Fluent implements \Bozboz\Admin\Base\ModelInterface
+class Type implements \Bozboz\Admin\Base\ModelInterface
 {
     protected $attributes = [
         'menu_title' => null,
@@ -15,7 +14,15 @@ class Type extends Fluent implements \Bozboz\Admin\Base\ModelInterface
         'menu_builder' => \Bozboz\Jam\Types\Menu\Content::class,
         'entity' => \Bozboz\Jam\Entities\Entity::class,
         'search_handler' => \Bozboz\Jam\Entities\NotIndexed::class,
+        'decorator' => \Bozboz\Jam\Entities\EntityDecorator::class,
     ];
+
+    public function __construct($attributes = [])
+    {
+        foreach ($attributes as $key => $value) {
+            $this->attributes[$key] = $value;
+        }
+    }
 
     public function entities()
     {
@@ -47,6 +54,11 @@ class Type extends Fluent implements \Bozboz\Admin\Base\ModelInterface
         return $this->getObj('search_handler');
     }
 
+    public function getDecorator()
+    {
+        return $this->getObj('decorator');
+    }
+
     public function updatePaths($entity)
     {
         $this->getLinkBuilder()->updatePaths($entity);
@@ -69,7 +81,7 @@ class Type extends Fluent implements \Bozboz\Admin\Base\ModelInterface
 
     protected function getObj($type, $arg = null)
     {
-        $class = $this->get($type);
+        $class = $this->attributes[$type];
         if (is_callable($class)) {
             return call_user_func($class);
         } elseif (is_null($arg)) {
@@ -77,6 +89,11 @@ class Type extends Fluent implements \Bozboz\Admin\Base\ModelInterface
         } elseif ($class) {
             return new $class($arg);
         }
+    }
+
+    public function __get($attribute)
+    {
+        return $this->attributes[$attribute];
     }
 
     public function getValidator()
