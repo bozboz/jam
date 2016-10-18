@@ -136,19 +136,20 @@ class JamServiceProvider extends ServiceProvider
         $mapper = $this->app['FieldMapper'];
 
         $mapper->register([
-            'text'                     => \Bozboz\Jam\Fields\Text::class,
-            'textarea'                 => \Bozboz\Jam\Fields\Textarea::class,
-            'htmleditor'               => \Bozboz\Jam\Fields\HTMLEditor::class,
-            'image'                    => \Bozboz\Jam\Fields\Image::class,
-            'gallery'                  => \Bozboz\Jam\Fields\Gallery::class,
-            'date'                     => \Bozboz\Jam\Fields\Date::class,
-            'date-time'                => \Bozboz\Jam\Fields\DateTime::class,
-            'toggle'                   => \Bozboz\Jam\Fields\Toggle::class,
-            'entity-list'              => \Bozboz\Jam\Fields\EntityList::class,
             'belongs-to'               => \Bozboz\Jam\Fields\BelongsTo::class,
             'belongs-to-many'          => \Bozboz\Jam\Fields\BelongsToMany::class,
-            'inverse-belongs-to-many'  => \Bozboz\Jam\Fields\InverseBelongsToMany::class,
+            'date'                     => \Bozboz\Jam\Fields\Date::class,
+            'date-time'                => \Bozboz\Jam\Fields\DateTime::class,
+            'embed'                    => \Bozboz\Jam\Fields\Oembed::class,
+            'entity-list'              => \Bozboz\Jam\Fields\EntityList::class,
+            'gallery'                  => \Bozboz\Jam\Fields\Gallery::class,
             'hidden'                   => \Bozboz\Jam\Fields\Hidden::class,
+            'htmleditor'               => \Bozboz\Jam\Fields\HTMLEditor::class,
+            'image'                    => \Bozboz\Jam\Fields\Image::class,
+            'inverse-belongs-to-many'  => \Bozboz\Jam\Fields\InverseBelongsToMany::class,
+            'text'                     => \Bozboz\Jam\Fields\Text::class,
+            'textarea'                 => \Bozboz\Jam\Fields\Textarea::class,
+            'toggle'                   => \Bozboz\Jam\Fields\Toggle::class,
             'user'                     => \Bozboz\Jam\Fields\User::class,
         ]);
     }
