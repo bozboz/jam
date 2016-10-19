@@ -28,6 +28,7 @@ class TemplateDecorator extends ModelAdminDecorator
 		$trashedCount = $instance->entities()->onlyTrashed()->count();
 		return [
 			'Name' => $this->getLabel($instance),
+			'Alias' => $instance->alias,
 			'View' => $instance->view,
 			'Listing View' => $instance->listing_view,
 			'Entity Count' => $entityCount
