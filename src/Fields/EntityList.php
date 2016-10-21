@@ -12,7 +12,7 @@ use Bozboz\Jam\Entities\Revision;
 use Bozboz\Jam\Entities\SortableEntity;
 use Bozboz\Jam\Entities\Value;
 use Bozboz\Jam\Templates\Template;
-use Bozboz\Jam\Types\Type;
+use Bozboz\Jam\Types\EntityList as Type;
 
 class EntityList extends Field
 {
@@ -33,7 +33,7 @@ class EntityList extends Field
         return [
             new SelectField('options_array[type]', [
                 'label' => 'Type',
-                'options' => app('EntityMapper')->getAll()->map(function($type) {
+                'options' => app('EntityMapper')->getAll(Type::class)->map(function($type) {
                     return $type->name;
                 })->prepend('- Please Select -')
             ]),
@@ -45,9 +45,10 @@ class EntityList extends Field
         $repository = app()->make(\Bozboz\Jam\Repositories\Contracts\EntityRepository::class);
         $entity->setAttribute(
             $value->key,
-            $this->newListQuery($entity)->active()->withFields()->get()->each(function($entity) {
-                $entity->injectValues();
-            })
+            $this->newListQuery($entity)->active()->withFields()->with('template')
+                ->get()->each(function($entity) {
+                    $entity->injectValues();
+                })
         );
         return $value;
     }

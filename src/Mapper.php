@@ -35,13 +35,24 @@ class Mapper
 		return $mapping;
 	}
 
-	public function getAll()
+	public function getAll($filterClass = null)
 	{
 		return collect($this->mapping)->each(function($map, $alias) {
 			if (!is_string($map)) {
 				$map->alias = $alias;
 			}
 			return $map;
+		})->filter(function($item) use ($filterClass) {
+			if ( ! $filterClass) {
+				return true;
+			}
+
+			if (is_object($item)) {
+				$class = get_class($item);
+			} else {
+				$class = $item;
+			}
+			return $class === $filterClass;
 		})->sort();
 	}
 }
