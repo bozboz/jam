@@ -47,7 +47,7 @@ class BelongsToMany extends BelongsTo
 
     public function relation(Value $value)
     {
-        return $value->belongsToMany(Entity::class, 'entity_entity');
+        return $value->belongsToMany(Entity::class, 'entity_entity')->ordered();
     }
 
     public function saveValue(Revision $revision, $value)

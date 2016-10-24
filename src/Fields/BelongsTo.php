@@ -72,7 +72,7 @@ class BelongsTo extends Field
 
     public function relation(Value $value)
     {
-        return $value->belongsTo(Entity::class, 'foreign_key');
+        return $value->belongsTo(Entity::class, 'foreign_key')->ordered();
     }
 
     protected function usesForeignKey()
