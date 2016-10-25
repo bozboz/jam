@@ -6,19 +6,10 @@ use Kalnoy\Nestedset\Collection as NestedCollection;
 
 class Collection extends NestedCollection
 {
-    public function loadFields($fields)
+    public function loadFields()
     {
         if (count($this->items) > 0) {
-            if (is_string($fields)) {
-                $fields = func_get_args();
-            }
-
-            $query = $this->first()->newQuery()->with(['currentValues' => function($query) use ($fields) {
-                $query
-                    ->selectFields($fields)
-                    ->with('dynamicRelation');
-            }]);
-
+            $query = $this->first()->newQuery()->withFields(func_get_args());
             $this->items = $query->eagerLoadRelations($this->items);
         }
 
