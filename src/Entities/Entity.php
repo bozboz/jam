@@ -15,7 +15,6 @@ use Bozboz\Jam\Mapper;
 use Bozboz\Jam\Templates\Template;
 use Bozboz\Jam\Types\Type;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Request;
 use Kalnoy\Nestedset\Node;
 use Sofa\Revisionable\Laravel\RevisionableTrait;
@@ -339,6 +338,11 @@ class Entity extends Node implements ModelInterface, Revisionable
 
 		return $model;
 	}
+
+    public function newCollection(array $models = array())
+    {
+        return new Collection($models);
+    }
 
 	/**
 	 * Create a new model instance that is existing.
