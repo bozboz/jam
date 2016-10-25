@@ -18,16 +18,21 @@ class BelongsToMany extends BelongsTo
                 'help_text_title' => $this->help_text_title,
                 'help_text' => $this->help_text,
             ],
-            function ($query) {
+            function ($query) use ($value) {
                 if (property_exists($this->options_array, 'template')) {
                     $query->whereHas('template', function($query) {
                         $query->whereId($this->options_array->template);
                     });
                 } elseif (property_exists($this->options_array, 'type')) {
-                    $query->whereHas('template', function($query) {
-                        $query->whereTypeAlias($this->options_array->type);
-                    });
+                    $query->ofType($this->options_array->type);
                 }
+
+                $query->leftJoin('entity_entity', function($join) use ($value) {
+                    $join->on('entity_entity.entity_id', '=', 'entities.id');
+                });
+                $query->where('entity_entity.value_id', '=', $value->id);
+
+                $query->orderBy('entity_entity.sorting');
             }
         );
     }
@@ -47,14 +52,21 @@ class BelongsToMany extends BelongsTo
 
     public function relation(Value $value)
     {
-        return $value->belongsToMany(Entity::class, 'entity_entity')->ordered();
+        return $value->belongsToMany(Entity::class, 'entity_entity')->withPivot('sorting')->orderBy('sorting');
     }
 
     public function saveValue(Revision $revision, $value)
     {
         $valueObj = parent::saveValue($revision, json_encode($value));
 
-        $this->relation($valueObj)->sync($value ?: []);
+        $syncData = [];
+        foreach((array)$value as $i => $entityId) {
+            $syncData[$entityId] = [
+                'sorting' => $i
+            ];
+        }
+
+        $this->relation($valueObj)->sync($syncData);
 
         return $valueObj;
     }

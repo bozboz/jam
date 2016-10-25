@@ -309,6 +309,11 @@ class Entity extends Node implements ModelInterface, Revisionable
 		}
 	}
 
+	public function setValue($key, $value)
+	{
+		$this->values[$key] = $value;
+	}
+
 	public function getValue($key)
 	{
 		return array_key_exists($key, $this->values) ? $this->values[$key] : new Value(compact('key'));
