@@ -55,7 +55,7 @@ class EntityList extends Field
 
     public function injectAdminValue(Entity $entity, Revision $revision)
     {
-        $value = $revision->fieldValues->where('key', $this->name)->first() ?: new Value(['key' => $this->name]);
+        $value = parent::injectAdminValue($entity, $revision);
         $entity->setAttribute($value->key, $value);
         return $value;
     }

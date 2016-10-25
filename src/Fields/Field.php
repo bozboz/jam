@@ -118,6 +118,7 @@ class Field extends Model implements FieldInterface, Sortable
     {
         $value = $revision->fieldValues->where('key', $this->name)->first() ?: new Value(['key' => $this->name]);
         $entity->setAttribute($value->key, $value->value);
+        $entity->setValue($value->key, $value);
         return $value;
     }
 
