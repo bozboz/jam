@@ -29,8 +29,8 @@ class BelongsToMany extends BelongsTo
 
                 $query->leftJoin('entity_entity', function($join) use ($value) {
                     $join->on('entity_entity.entity_id', '=', 'entities.id');
+                    $join->where('entity_entity.value_id', '=', $value->id);
                 });
-                $query->where('entity_entity.value_id', '=', $value->id);
 
                 $query->orderBy('entity_entity.sorting');
             }
