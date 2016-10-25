@@ -2,7 +2,7 @@
 
 namespace Bozboz\Jam\Entities;
 
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
 class DynamicRelation extends Relation
@@ -54,7 +54,7 @@ class DynamicRelation extends Relation
     /**
      * Get results for each relationship for eager loading.
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Bozboz\Jam\Entities\Collection
      */
     public function getEager()
     {
@@ -67,11 +67,11 @@ class DynamicRelation extends Relation
      * For each relation, match the eagerly loaded results to their parents.
      *
      * @param  array   $models
-     * @param  \Illuminate\Database\Eloquent\Collection  $results
+     * @param  \Bozboz\Jam\Entities\Collection  $results
      * @param  string  $relation
      * @return array
      */
-    public function match(array $models, Collection $results, $relation)
+    public function match(array $models, EloquentCollection $results, $relation)
     {
         foreach($this->relations as $key => $relation) {
             $models = $relation->match($models, $results[$key], $key);
