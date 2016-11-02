@@ -13,7 +13,7 @@ class Collection extends NestedCollection
             $this->items = $query->eagerLoadRelations($this->items);
         }
 
-        return $this;
+        return $this->injectValues();
     }
 
     public function injectValues()
