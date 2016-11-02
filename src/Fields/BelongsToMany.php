@@ -61,10 +61,12 @@ class BelongsToMany extends BelongsTo
         $valueObj = parent::saveValue($revision, json_encode($value));
 
         $syncData = [];
-        foreach((array)$value as $i => $entityId) {
-            $syncData[$entityId] = [
-                'sorting' => $i
-            ];
+        if (is_array($value)) {
+            foreach($value as $i => $entityId) {
+                $syncData[$entityId] = [
+                    'sorting' => $i
+                ];
+            }
         }
 
         $this->relation($valueObj)->sync($syncData);
