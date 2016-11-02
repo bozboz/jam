@@ -68,9 +68,7 @@ class JamServiceProvider extends ServiceProvider
             "{$packageRoot}config/jam.php" => config_path('jam.php')
         ]);
 
-        $permissions = $this->app['permission.handler'];
-
-        require __DIR__ . '/../permissions.php';
+        $this->registerPermissions();
 
         $this->registerEntityTypes();
         $this->registerFieldTypes();
@@ -114,6 +112,28 @@ class JamServiceProvider extends ServiceProvider
                 ];
             }
         });
+    }
+
+    protected function registerPermissions()
+    {
+        $this->app['permission.handler']->define([
+
+            // Allows access to edit jam templates, clients should never be given this
+            'manage_entities' => 'Bozboz\Permissions\Rules\Rule',
+
+            'publish_entity' => 'Bozboz\Permissions\Rules\Rule',
+            'hide_entity' => 'Bozboz\Permissions\Rules\Rule',
+            'schedule_entity' => 'Bozboz\Permissions\Rules\Rule',
+
+            'view_entity_type' => 'Bozboz\Permissions\Rules\Rule',
+            'create_entity_type' => 'Bozboz\Permissions\Rules\Rule',
+            'delete_entity_type' => 'Bozboz\Permissions\Rules\Rule',
+            'edit_entity_type' => 'Bozboz\Permissions\Rules\Rule',
+
+            'view_entity_history' => 'Bozboz\Permissions\Rules\Rule',
+            'edit_entity_history' => 'Bozboz\Permissions\Rules\Rule',
+
+        ]);
     }
 
     protected function registerEntityTypes()
