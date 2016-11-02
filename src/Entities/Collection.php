@@ -15,4 +15,12 @@ class Collection extends NestedCollection
 
         return $this;
     }
+
+    public function injectValues()
+    {
+        foreach ($this->items as $item) {
+            $item->injectValues();
+        }
+        return $this;
+    }
 }
