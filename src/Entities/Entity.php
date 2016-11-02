@@ -17,15 +17,12 @@ use Bozboz\Jam\Types\Type;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Request;
 use Kalnoy\Nestedset\Node;
-use Sofa\Revisionable\Laravel\RevisionableTrait;
-use Sofa\Revisionable\Revisionable;
 
-class Entity extends Node implements ModelInterface, Revisionable
+class Entity extends Node implements ModelInterface
 {
 	use SanitisesInputTrait;
 	use SoftDeletes;
 	use DynamicSlugTrait;
-	use RevisionableTrait;
 
 	protected $table = 'entities';
 

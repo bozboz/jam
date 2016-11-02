@@ -29,8 +29,6 @@ class JamServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->app->register('Sofa\Revisionable\Laravel\ServiceProvider');
-
         $this->commands($this->commands);
 
         $this->app->bind(
@@ -83,10 +81,6 @@ class JamServiceProvider extends ServiceProvider
 
         $this->app['events']->listen(EntitySaved::class, UpdatePaths::class);
         $this->app['events']->listen(EntitySaved::class, UpdateSearchIndex::class);
-
-        $this->app['events']->listen(EntitySorted::class, function($event) {
-            $this->app['Sofa\Revisionable\Listener']->onUpdated($event->entity);
-        });
 
         $this->app['events']->listen(EntityDeleted::class, UpdatePaths::class);
         $this->app['events']->listen(EntityDeleted::class, UpdateSearchIndex::class);
