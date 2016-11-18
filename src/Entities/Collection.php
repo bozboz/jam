@@ -6,10 +6,13 @@ use Kalnoy\Nestedset\Collection as NestedCollection;
 
 class Collection extends NestedCollection
 {
-    public function loadFields()
+    public function loadFields($fields = ['*'])
     {
         if (count($this->items) > 0) {
-            $query = $this->first()->newQuery()->withFields(func_get_args());
+            if (is_string($fields)) {
+                $fields = func_get_args();
+            }
+            $query = $this->first()->newQuery()->withFields($fields);
             $this->items = $query->eagerLoadRelations($this->items);
         }
 
