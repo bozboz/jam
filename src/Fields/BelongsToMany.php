@@ -15,7 +15,8 @@ class BelongsToMany extends BelongsTo
 
     protected function getRelationTable()
     {
-        return (new $this->relationModel)->getTable();
+        $model = $this->getRelationModel();
+        return (new $model)->getTable();
     }
 
     protected function getRelationModel()
