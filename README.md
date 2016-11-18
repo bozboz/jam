@@ -162,7 +162,7 @@ Some pages will require more data than just the entity so you will need to creat
 
 ### 3.4. Canonical Paths
 
-Every entity with a link builder will have a canonical path which most of the time will be the path you'll want to use when linking to it from other pages/menus. When fetching a list of entities to link to you should use the `withCanonicalPath` scope in order to eager load the it and then use `$entity->canonical_path` to output it.
+Every entity with a link builder will have a canonical path which most of the time will be the path you'll want to use when linking to it from other pages/menus. When querying entities you should use the `withCanonicalPath` scope in order to eager load it or when working with a collection use the `loadCanonicalPath` method to lazy load it. Use `$entity->canonical_path` to output it.
 
 ### 3.5. Value Retrieval
 

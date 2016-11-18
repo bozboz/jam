@@ -26,4 +26,13 @@ class Collection extends NestedCollection
         }
         return $this;
     }
+
+    public function loadCanonicalPath()
+    {
+        $query = $this->first()->newQuery()->withCanonicalPath();
+
+        $query->eagerLoadRelations($this->items);
+
+        return $this;
+    }
 }
