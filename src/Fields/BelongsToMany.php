@@ -8,10 +8,25 @@ use Bozboz\Jam\Entities\EntityDecorator;
 use Bozboz\Jam\Entities\Revision;
 use Bozboz\Jam\Entities\Value;
 
-class BelongsToMany extends BelongsTo
+abstract class BelongsToMany extends BelongsTo
 {
-    protected $sortable = true;
-    protected $relationModel = Entity::class;
+    /**
+     * Get relation model
+     *
+     * @return string
+     */
+    abstract protected function getRelationModel();
+
+    /**
+     * Get pivot table config
+     *
+     * @return object [
+     *     'table' => '',
+     *     'foreign_key' => '',
+     *     'other_key' => '',
+     * ]
+     */
+    abstract protected function getPivot();
 
     protected function getRelationTable()
     {
@@ -19,67 +34,29 @@ class BelongsToMany extends BelongsTo
         return (new $model)->getTable();
     }
 
-    protected function getRelationModel()
-    {
-        return $this->relationModel;
-    }
-
-    protected function getPivotTable()
-    {
-        return $this->pivot;
-    }
-
-    protected function getPivot()
-    {
-        return (object)[
-            'table' => 'entity_entity',
-            'foreign_key' => 'value_id',
-            'other_key' => 'entity_id'
-        ];
-    }
-
-    protected function isSortable()
-    {
-        return $this->sortable;
-    }
-
     public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
     {
-        return new BelongsToManyField($decorator, $this->relation($value), [
-                'name' => $this->getInputName(),
-                'label' => $this->getInputLabel(),
-                'help_text_title' => $this->help_text_title,
-                'help_text' => $this->help_text,
-                'data-sortable' => $this->isSortable() ? 1 : 0,
-            ],
-            function ($query) use ($value) {
-                if (property_exists($this->options_array, 'template')) {
-                    $query->whereHas('template', function($query) {
-                        $query->whereId($this->options_array->template);
-                    });
-                } elseif (property_exists($this->options_array, 'type')) {
-                    $query->ofType($this->options_array->type);
-                }
-
-                if ($this->isSortable()) {
-                    $pivot = $this->getPivot();
-                    $query->leftJoin($pivot->table . ' as pivot_sorting', function($join) use ($value, $pivot) {
-                        $join->on('pivot_sorting.' . $pivot->other_key, '=', $this->getRelationTable() . '.id');
-                        $join->where('pivot_sorting.' . $pivot->foreign_key, '=', $value->id);
-                    });
-
-                    $query->orderBy('pivot_sorting.sorting');
-                }
+        return new BelongsToManyField(
+            $decorator,
+            $this->relation($value),
+            $this->getAdminFieldAttributes(),
+            function($query) use ($value) {
+                $this->filterAdminQuery($query, $value);
             }
         );
     }
 
-    public function getOptionFields()
+    protected function getAdminFieldAttributes()
     {
         return [
-            new TemplateSelectField('Type')
+            'name' => $this->getInputName(),
+            'label' => $this->getInputLabel(),
+            'help_text_title' => $this->help_text_title,
+            'help_text' => $this->help_text,
         ];
     }
+
+    protected function filterAdminQuery($query, $value) {}
 
     public function injectAdminValue(Entity $entity, Revision $revision)
     {
@@ -91,9 +68,6 @@ class BelongsToMany extends BelongsTo
     {
         $pivot = $this->getPivot();
         $query = $value->belongsToMany($this->getRelationModel(), $pivot->table, $pivot->foreign_key, $pivot->other_key);
-        if ($this->isSortable()) {
-            $query->withPivot('sorting')->orderBy('sorting');
-        }
         return $query;
     }
 
@@ -103,15 +77,7 @@ class BelongsToMany extends BelongsTo
         $syncData = [];
 
         if (is_array($value)) {
-            if ($this->isSortable()) {
-                foreach($value as $i => $entityId) {
-                    $syncData[$entityId] = [
-                        'sorting' => $i
-                    ];
-                }
-            } else {
-                $syncData = $value;
-            }
+            $syncData = $value;
         }
 
         $this->relation($valueObj)->sync($syncData);
@@ -121,11 +87,7 @@ class BelongsToMany extends BelongsTo
 
     public function duplicateValue(Value $oldValue, Value $newValue)
     {
-        if ($this->isSortable()) {
-            $syncData = $this->relation($oldValue)->withPivot('sorting')->pluck($this->getPivot()->foreign_key, 'sorting')->toArray();
-        } else {
-            $syncData = $this->relation($oldValue)->pluck($this->getPivot()->foreign_key)->toArray();
-        }
+        $syncData = $this->relation($oldValue)->pluck($this->getPivot()->foreign_key)->toArray();
         $this->relation($newValue)->sync($syncData);
     }
 }
