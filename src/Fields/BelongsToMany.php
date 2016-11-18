@@ -12,7 +12,6 @@ class BelongsToMany extends BelongsTo
 {
     protected $sortable = true;
     protected $relationModel = Entity::class;
-    protected $pivot = 'entity_entity';
 
     protected function getRelationTable()
     {
@@ -27,6 +26,15 @@ class BelongsToMany extends BelongsTo
     protected function getPivotTable()
     {
         return $this->pivot;
+    }
+
+    protected function getPivot()
+    {
+        return (object)[
+            'table' => 'entity_entity',
+            'foreign_key' => 'value_id',
+            'other_key' => 'entity_id'
+        ];
     }
 
     protected function isSortable()
@@ -53,9 +61,10 @@ class BelongsToMany extends BelongsTo
                 }
 
                 if ($this->isSortable()) {
-                    $query->leftJoin('entity_entity as pivot_sorting', function($join) use ($value) {
-                        $join->on('pivot_sorting.entity_id', '=', $this->getRelationTable() . '.id');
-                        $join->where('pivot_sorting.value_id', '=', $value->id);
+                    $pivot = $this->getPivot();
+                    $query->leftJoin($pivot->table . ' as pivot_sorting', function($join) use ($value, $pivot) {
+                        $join->on('pivot_sorting.' . $pivot->other_key, '=', $this->getRelationTable() . '.id');
+                        $join->where('pivot_sorting.' . $pivot->foreign_key, '=', $value->id);
                     });
 
                     $query->orderBy('pivot_sorting.sorting');
@@ -79,7 +88,8 @@ class BelongsToMany extends BelongsTo
 
     public function relation(Value $value)
     {
-        $query = $value->belongsToMany($this->getRelationModel(), $this->getPivotTable());
+        $pivot = $this->getPivot();
+        $query = $value->belongsToMany($this->getRelationModel(), $pivot->table, $pivot->foreign_key, $pivot->other_key);
         if ($this->isSortable()) {
             $query->withPivot('sorting')->orderBy('sorting');
         }
@@ -111,9 +121,9 @@ class BelongsToMany extends BelongsTo
     public function duplicateValue(Value $oldValue, Value $newValue)
     {
         if ($this->isSortable()) {
-            $syncData = $this->relation($oldValue)->withPivot('sorting')->pluck('entity_id', 'sorting')->toArray();
+            $syncData = $this->relation($oldValue)->withPivot('sorting')->pluck($this->getPivot()->foreign_key, 'sorting')->toArray();
         } else {
-            $syncData = $this->relation($oldValue)->pluck('entity_id')->toArray();
+            $syncData = $this->relation($oldValue)->pluck($this->getPivot()->foreign_key)->toArray();
         }
         $this->relation($newValue)->sync($syncData);
     }
