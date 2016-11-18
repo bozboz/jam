@@ -97,7 +97,8 @@ A template is made up of a list of fields. Jam comes with the following field ty
     In order to use this field type you must first set up another entity type that this field can link to using the `Bozboz\Jam\Types\EntityList` type.  
     e.g.
     
-    ```php?start_inline=1
+    ```php
+    <?php
     $mapper = $this->app['EntityMapper'];
 
     $mapper->register([
@@ -143,10 +144,11 @@ Jam doesn't have any frontend routes set up by default but it does have a contro
 
 Generally you'll want to add a catchall route right at the end of your routes file which will handle most if not all of your entity routing. This will use the paths table to lookup the entity based on the request path and serve it up in the view its template has configured.
 
-```php?start_inline=1
+```php
+<?php
 Route::get('{entityPath}', [
     'as' => 'entity',
-    'uses' => '\Bozboz\Http\Controllers\EntityController@forPath'
+    'uses' => '\Bozboz\Jam\Http\Controllers\EntityController@forPath'
 ])->where('entityPath', '(.+)?');
 ```
 
@@ -167,7 +169,8 @@ Every entity with a link builder will have a canonical path which most of the ti
 Just querying the entities will only give you the data from the entities table, in order to load the values you must call the `loadValues` method on either a single or collection of entities. The method takes a list of fields to load or will load all fields if no arguments given.
 
 e.g. 
-```php?start_inline=1
+```php
+<?php
 $pages = $entityRepository->forType('page')->get()->loadFields('content', 'image');
 ```
 
@@ -180,7 +183,8 @@ Jam supports indexing entities via elastic search but each type needs to be set 
 The purpose of `getPreviewData` is to transform the entity in to a suitable format for your search results view and `getSearchableData` is for returning all the values you want to be searchable as one long string.
 
 e.g.
-```php?start_inline=1
+```php
+<?php
 protected function getPreviewData($page)
 {
     return [
