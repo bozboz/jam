@@ -164,23 +164,11 @@ Every entity with a link builder will have a canonical path which most of the ti
 
 ### 3.5. Value Retrieval
 
-Just querying the entities will only give you the data from the entities table, in order to load the values you must call the `injectValues` method on each entity. When working with a collection of entities the values should be eager loaded using the `withFields` method before calling `injectValues`. 
+Just querying the entities will only give you the data from the entities table, in order to load the values you must call the `loadValues` method on either a single or collection of entities. The method takes a list of fields to load or will load all fields if no arguments given.
 
 e.g. 
 ```php?start_inline=1
-$pages = $entityRepository->gotType('page')->withFields('content', 'image')->get()->map(function($page) {
-    return $page->injectValues();
-});
-```
-
-**NOTE:** If you are working with a paginator rather than a collection then you will need to use the `transform` method rather than map to work with the original paginator object so it maintains its functionality.
-
-e.g.
-```php?start_inline=1
-$pages = $entityRepository->gotType('page')->withFields('content', 'image')->paginate();
-$pages->transform(function($page) {
-    return $page->injectValues();
-});
+$pages = $entityRepository->forType('page')->get()->loadFields('content', 'image');
 ```
 
 ---

@@ -374,7 +374,7 @@ class Entity extends Node implements ModelInterface
 
 	public function scopeWithFields($builder, $fields = ['*'])
 	{
-		if ( ! is_array($fields)) {
+		if (is_string($fields)) {
 			$fields = array_slice(func_get_args(), 1);
 		}
 		$builder->with(['currentValues' => function($query) use ($fields) {
@@ -383,6 +383,19 @@ class Entity extends Node implements ModelInterface
 				->with('dynamicRelation');
 		}]);
 	}
+
+    public function loadFields($fields = ['*'])
+    {
+        if (is_string($fields)) {
+            $fields = func_get_args();
+        }
+
+        $query = $this->newQuery()->withFields($fields);
+
+        $query->eagerLoadRelations([$this]);
+
+        return $this->injectValues();
+    }
 
 	public function injectValues()
 	{
