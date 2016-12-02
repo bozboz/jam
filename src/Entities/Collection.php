@@ -29,9 +29,11 @@ class Collection extends NestedCollection
 
     public function loadCanonicalPath()
     {
-        $query = $this->first()->newQuery()->withCanonicalPath();
+        if ($this->first()) {
+            $query = $this->first()->newQuery()->withCanonicalPath();
 
-        $query->eagerLoadRelations($this->items);
+            $query->eagerLoadRelations($this->items);
+        }
 
         return $this;
     }
