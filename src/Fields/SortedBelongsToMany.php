@@ -28,7 +28,8 @@ abstract class SortedBelongsToMany extends BelongsToMany
 
     public function relation(Value $value)
     {
-        return parent::relation($value)->withPivot('sorting')->orderBy('sorting');
+        return parent::relation($value)
+            ->withPivot('sorting')->orderBy($this->getPivot()->table . '.sorting');
     }
 
     public function saveValue(Revision $revision, $value)
