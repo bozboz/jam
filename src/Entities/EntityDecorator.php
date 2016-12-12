@@ -45,6 +45,12 @@ class EntityDecorator extends ModelAdminDecorator
 
 		$columns->prepend($this->getPreviewLink($instance), 'Name');
 
+		if ( ! $instance->roles->isEmpty()) {
+			$columns->push(
+				'<span title="Restricted to role(s): ' . $instance->roles->implode('name') . '" class="fa fa-lock"></span>'
+			);
+		}
+
 		return $columns->all();
 	}
 
@@ -180,7 +186,7 @@ class EntityDecorator extends ModelAdminDecorator
 
 	protected function modifyListingQuery(Builder $query)
 	{
-		$query->with(['paths', 'currentRevision.user', 'template'])->whereHas('template', function($query) {
+		$query->with(['roles', 'paths', 'currentRevision.user', 'template'])->whereHas('template', function($query) {
 			$query->whereTypeAlias($this->type->alias);
 		});
 
