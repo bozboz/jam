@@ -45,15 +45,15 @@ class EntityController extends Controller
             throw new NotFoundHttpException("No entity for path '{$path}'");
         }
 
+        if ( ! $this->repository->isAuthorised($entity)) {
+            throw new AccessDeniedHttpException("Access to entity with path '{$path}' is forbidden.");
+        }
+
         return $this->render($entity);
     }
 
     protected function render($entity)
     {
-        if ( ! $this->repository->isAuthorised($entity)) {
-            throw new AccessDeniedHttpException("Access to entity with path '{$path}' is forbidden.");
-        }
-
         $this->repository->hydrate($entity);
 
         return view($entity->template->view)->withEntity($entity);
