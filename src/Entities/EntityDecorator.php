@@ -41,30 +41,13 @@ class EntityDecorator extends ModelAdminDecorator
 
 	public function getColumns($instance)
 	{
-		switch ($instance->status) {
-			case Revision::PUBLISHED:
-				$publishedAt = $instance->currentRevision->formatted_published_at;
-				$user = $instance->currentRevision->username;
-				$statusLabel = "<small><abbr title='{$publishedAt} by {$user}'>Published</abbr></small>";
-			break;
-
-			case Revision::SCHEDULED:
-				$publishedAt = $instance->currentRevision->formatted_published_at;
-				$user = $instance->currentRevision->username;
-				$statusLabel = "<small><abbr title='{$publishedAt} by {$user}'>Scheduled</abbr></small>";
-			break;
-
-			default:
-				$statusLabel = null;
-			break;
-		}
 		$path = $instance->canonical_path;
 		$columns = collect($this->getCustomColumns($instance));
 		$columns->prepend(
 			$this->getLabel($instance) . ( $path
 				? '&nbsp;&nbsp;<a href="/'.$path.'" target="_blank" title="Go to '.$this->getLabel($instance).'"><i class="fa fa-external-link"></i></a>'
 				: null
-		), 'Name')->put('Status', $statusLabel);
+		), 'Name');
 		return $columns->all();
 	}
 
