@@ -2,16 +2,14 @@
 
 namespace Bozboz\Jam\Repositories;
 
-use Bozboz\Jam\Entities\CurrentValue;
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\EntityPath;
 use Bozboz\Jam\Entities\Events\EntitySaved;
 use Bozboz\Jam\Entities\Revision;
 use Bozboz\Jam\Repositories\Contracts\EntityRepository as EntityRepositoryInterface;
 use Carbon\Carbon;
+use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\Support\Facades\DB;
-use Kalnoy\Nestedset\Collection;
 
 class EntityRepository implements EntityRepositoryInterface
 {
@@ -19,9 +17,10 @@ class EntityRepository implements EntityRepositoryInterface
     protected $query;
     private $event;
 
-    function __construct(Dispatcher $event)
+    function __construct(Dispatcher $event, Guard $auth)
     {
         $this->mapper = app()->make('EntityMapper');
+        $this->auth = $auth;
         $this->event = $event;
     }
 
@@ -139,5 +138,13 @@ class EntityRepository implements EntityRepositoryInterface
         $this->event->fire(new EntitySaved($entity));
 
         return $revision;
+    }
+
+    public function isAuthorised(Entity $entity)
+    {
+        return $entity->roles->isEmpty() || (
+            $this->auth->user() &&
+            $entity->roles->contains($this->auth->user()->role)
+        );
     }
 }

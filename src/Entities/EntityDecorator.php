@@ -3,6 +3,7 @@
 namespace Bozboz\Jam\Entities;
 
 use Bozboz\Admin\Base\ModelAdminDecorator;
+use Bozboz\Admin\Fields\BelongsToManyField;
 use Bozboz\Admin\Fields\HiddenField;
 use Bozboz\Admin\Fields\TextField;
 use Bozboz\Admin\Fields\URLField;
@@ -92,6 +93,7 @@ class EntityDecorator extends ModelAdminDecorator
 			new HiddenField('template_id'),
 			new HiddenField('user_id', Auth::id()),
 			new HiddenField('parent_id'),
+			new BelongsToManyField(app(\Bozboz\Admin\Users\RoleAdminDecorator::class), $instance->roles()),
 			$canEditStatus ? new PublishField('status', $instance) : null,
 		]));
 
@@ -191,5 +193,10 @@ class EntityDecorator extends ModelAdminDecorator
 	public function findInstance($id)
 	{
 		return $this->model->withLatestRevision()->whereId($id)->firstOrFail();
+	}
+
+	public function getSyncRelations()
+	{
+		return ['roles'];
 	}
 }
