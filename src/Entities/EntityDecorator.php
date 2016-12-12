@@ -8,6 +8,7 @@ use Bozboz\Admin\Fields\HiddenField;
 use Bozboz\Admin\Fields\TextField;
 use Bozboz\Admin\Fields\URLField;
 use Bozboz\Admin\Reports\Filters\ArrayListingFilter;
+use Bozboz\Admin\Users\RoleAdminDecorator;
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\Fields\PublishField;
 use Bozboz\Jam\Entities\Revision;
@@ -23,9 +24,12 @@ use Illuminate\Support\Facades\Input;
 class EntityDecorator extends ModelAdminDecorator
 {
 	protected $type;
+	protected $roles;
 
-	public function __construct(Entity $entity)
+	public function __construct(Entity $entity, RoleAdminDecorator $roles)
 	{
+		$this->roles = $roles;
+
 		parent::__construct($entity);
 	}
 
@@ -93,7 +97,10 @@ class EntityDecorator extends ModelAdminDecorator
 			new HiddenField('template_id'),
 			new HiddenField('user_id', Auth::id()),
 			new HiddenField('parent_id'),
-			new BelongsToManyField(app(\Bozboz\Admin\Users\RoleAdminDecorator::class), $instance->roles()),
+			new BelongsToManyField($this->roles, $instance->roles(), [
+				'label' => 'Restrict visibility by role',
+				'help_text' => 'Leave blank for full public access'
+			]),
 			$canEditStatus ? new PublishField('status', $instance) : null,
 		]));
 
