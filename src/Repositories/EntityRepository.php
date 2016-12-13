@@ -45,7 +45,7 @@ class EntityRepository implements EntityRepositoryInterface
             if ($templateAlias) {
                 $query->where('alias', $templateAlias);
             }
-        });
+        })->authorised();
     }
 
     public function getForPath($path)
