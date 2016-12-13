@@ -44,12 +44,7 @@ class EntityDecorator extends ModelAdminDecorator
 		$columns = collect($this->getCustomColumns($instance));
 
 		$columns->prepend($this->getPreviewLink($instance), 'Name');
-
-		if ( ! $instance->roles->isEmpty()) {
-			$columns->push(
-				'<span title="Restricted to role(s): ' . $instance->roles->implode('name') . '" class="fa fa-lock"></span>'
-			);
-		}
+		$columns->put('', $this->getLockState($instance));
 
 		return $columns->all();
 	}
@@ -67,6 +62,13 @@ class EntityDecorator extends ModelAdminDecorator
 		if ( ! $path) return $label;
 
 		return $label . '&nbsp;&nbsp;<a href="/' . $path . '" target="_blank" title="Go to ' . $label . '"><i class="fa fa-external-link"></i></a>';
+	}
+
+	protected function getLockState($instance)
+	{
+		if ( ! $instance->roles->isEmpty()) {
+			return '<span title="Restricted to role(s): ' . $instance->roles->implode('name') . '" class="fa fa-lock"></span>';
+		}
 	}
 
 	public function getHeading($plural = false)
