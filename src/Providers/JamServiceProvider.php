@@ -127,6 +127,8 @@ class JamServiceProvider extends ServiceProvider
             'view_entity_history' => 'Bozboz\Permissions\Rules\Rule',
             'edit_entity_history' => 'Bozboz\Permissions\Rules\Rule',
 
+            'view_gated_entities' => 'Bozboz\Permissions\Rules\GlobalRule',
+
         ]);
     }
 
