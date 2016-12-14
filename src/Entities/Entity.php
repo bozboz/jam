@@ -14,6 +14,7 @@ use Bozboz\Jam\Field;
 use Bozboz\Jam\Mapper;
 use Bozboz\Jam\Templates\Template;
 use Bozboz\Jam\Types\Type;
+use Bozboz\Permissions\Facades\Gate;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Request;
 use Kalnoy\Nestedset\Node;
@@ -415,7 +416,7 @@ class Entity extends Node implements ModelInterface
 	{
 		$query->wheredoesntHave('roles');
 
-		if (\Auth::check() && ! \Gate::allows('view_gated_entities')) {
+		if (\Auth::check() && ! Gate::allows('view_gated_entities')) {
 			$query->orWhereHas('roles', function($q) {
 				$q->where('roles.id', \Auth::user()->role_id);
 			});
