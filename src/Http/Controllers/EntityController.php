@@ -4,6 +4,7 @@ namespace Bozboz\Jam\Http\Controllers;
 
 use Bozboz\Jam\Repositories\Contracts\EntityRepository;
 use Illuminate\Routing\Controller;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class EntityController extends Controller
