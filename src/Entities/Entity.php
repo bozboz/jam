@@ -422,4 +422,15 @@ class Entity extends Node implements ModelInterface
 			});
 		}
 	}
+
+	public function scopeOnlyAuthorisedTo($query, \Bozboz\Permissions\UserInterface $user)
+	{
+		if (Gate::allows('view_gated_entities')) {
+			$query->has('roles');
+		} else {
+			$query->whereHas('roles', function($q) use ($user) {
+				$q->where('roles.id', $user->role_id);
+			});
+		}
+	}
 }
