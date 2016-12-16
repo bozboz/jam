@@ -1,6 +1,10 @@
 # Jam Changelog
 
-## Version 1.0.0
+## Version 1.0.1 (2016-12-16)
+
+-   Fix entity list save redirect for nested lists
+
+## Version 1.0.0 (2016-12-16)
 
 -   Add max_uses to templates
 -   Don't make slugs unique
