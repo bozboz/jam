@@ -16,7 +16,7 @@
         }
     },
     "require": {
-        "bozboz/admin": "2.*@dev",
+        "bozboz/admin": ">2.1",
         "kalnoy/nestedset": "3.1 - 4.1"
     }
 }
