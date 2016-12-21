@@ -343,7 +343,9 @@ class Entity extends Node implements ModelInterface
 
     public function newCollection(array $models = array())
     {
-        return new Collection($models);
+        $collection = new Collection($models);
+        $collection->injectValues();
+        return $collection;
     }
 
 	/**
