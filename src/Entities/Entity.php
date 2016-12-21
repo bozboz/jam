@@ -344,13 +344,9 @@ class Entity extends Node implements ModelInterface
     public function newCollection(array $models = array())
     {
         $collection = new Collection($models);
-<<<<<<< Updated upstream
-        $collection->injectValues();
-=======
         if ($collection->first() && array_key_exists('currentValues', $collection->first()->getRelations())) {
             $collection->injectValues();
         }
->>>>>>> Stashed changes
         return $collection;
     }
 
