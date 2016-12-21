@@ -344,7 +344,7 @@ class Entity extends Node implements ModelInterface
     public function newCollection(array $models = array())
     {
         $collection = new Collection($models);
-        if ($collection->first() && array_key_exists('currentValues', $collection->first()->getRelations())) {
+        if ($collection->first() && $collection->first()->relationLoaded('currentValues')) {
             $collection->injectValues();
         }
         return $collection;
