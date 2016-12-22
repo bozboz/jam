@@ -8,7 +8,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class EntityController extends Controller
 {
-    private $repository;
+    protected $repository;
 
     public function __construct(EntityRepository $repository)
     {
