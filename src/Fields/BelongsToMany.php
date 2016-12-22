@@ -68,7 +68,7 @@ abstract class BelongsToMany extends BelongsTo
     {
         $pivot = $this->getPivot();
         $query = $value->belongsToMany($this->getRelationModel(), $pivot->table, $pivot->foreign_key, $pivot->other_key);
-        return $query;
+        return $query->active();
     }
 
     public function saveValue(Revision $revision, $value)
