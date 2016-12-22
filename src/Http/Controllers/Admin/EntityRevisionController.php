@@ -102,6 +102,11 @@ class EntityRevisionController extends ModelAdminController
 
 	protected function editPermissions($stack, $instance)
 	{
-		$stack->add('edit_entity_type', $instance ? $instance->entity->template->type_alias : null);
+		$stack->add('edit_entity_history', $instance ? $instance->entity->template->type_alias : null);
+	}
+
+	protected function viewPermissions($stack)
+	{
+		$stack->add('view_entity_history');
 	}
 }

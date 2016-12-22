@@ -82,6 +82,8 @@ class TypeDecorator extends ModelAdminDecorator
 		return app('EntityMapper')->getAll()->map(function($type) {
 			$type->id = uniqid();
 			return $type;
-		})->sortBy('name');
+		})->sortBy(function($value) {
+			return $value->name;
+		});
 	}
 }

@@ -4,17 +4,17 @@
 
 - [1. Installation](#1-installation)
 - [2. Data Setup](#2-data-setup)
-    - [2.1. Types](#2-1-types)
-    - [2.2. Templates](#2-2-templates)
-    - [2.3. Fields](#2-3-fields)
-    - [2.4. Entities](#2-4-entities)
-    - [2.5. Revisions](#2-5-revisions)
+    - [2.1. Types](#21-types)
+    - [2.2. Templates](#22-templates)
+    - [2.3. Fields](#23-fields)
+    - [2.4. Entities](#24-entities)
+    - [2.5. Revisions](#25-revisions)
 - [3. Usage](#3-usage)
-    - [3.1. Catchall Route](#3-1-catchall-route)
-    - [3.2. EntityRepository](#3-2-entity-repository)
-    - [3.3. Listings & Other Data](#3-3-listings-other-data)
-    - [3.4. Canonical Paths](#3-4-canonical-paths)
-    - [3.5. Value Retrieval](#3-5-value-retrieval)
+    - [3.1. Catchall Route](#31-catchall-route)
+    - [3.2. EntityRepository](#32-entity-repository)
+    - [3.3. Listings & Other Data](#33-listings-other-data)
+    - [3.4. Canonical Paths](#34-canonical-paths)
+    - [3.5. Value Retrieval](#35-value-retrieval)
 - [4. Search Indexing](#4-search-indexing)
 
 ---
@@ -97,7 +97,8 @@ A template is made up of a list of fields. Jam comes with the following field ty
     In order to use this field type you must first set up another entity type that this field can link to using the `Bozboz\Jam\Types\EntityList` type.  
     e.g.
     
-    ```php?start_inline=1
+    ```php
+    <?php
     $mapper = $this->app['EntityMapper'];
 
     $mapper->register([
@@ -143,10 +144,11 @@ Jam doesn't have any frontend routes set up by default but it does have a contro
 
 Generally you'll want to add a catchall route right at the end of your routes file which will handle most if not all of your entity routing. This will use the paths table to lookup the entity based on the request path and serve it up in the view its template has configured.
 
-```php?start_inline=1
+```php
+<?php
 Route::get('{entityPath}', [
     'as' => 'entity',
-    'uses' => '\Bozboz\Http\Controllers\EntityController@forPath'
+    'uses' => '\Bozboz\Jam\Http\Controllers\EntityController@forPath'
 ])->where('entityPath', '(.+)?');
 ```
 
@@ -160,27 +162,16 @@ Some pages will require more data than just the entity so you will need to creat
 
 ### 3.4. Canonical Paths
 
-Every entity with a link builder will have a canonical path which most of the time will be the path you'll want to use when linking to it from other pages/menus. When fetching a list of entities to link to you should use the `withCanonicalPath` scope in order to eager load the it and then use `$entity->canonical_path` to output it.
+Every entity with a link builder will have a canonical path which most of the time will be the path you'll want to use when linking to it from other pages/menus. When querying entities you should use the `withCanonicalPath` scope in order to eager load it or when working with a collection use the `loadCanonicalPath` method to lazy load it. Use `$entity->canonical_path` to output it.
 
 ### 3.5. Value Retrieval
 
-Just querying the entities will only give you the data from the entities table, in order to load the values you must call the `injectValues` method on each entity. When working with a collection of entities the values should be eager loaded using the `withFields` method before calling `injectValues`. 
+Just querying the entities will only give you the data from the entities table, in order to load the values you must call the `loadValues` method on either a single or collection of entities. The method takes a list of fields to load or will load all fields if no arguments given.
 
 e.g. 
-```php?start_inline=1
-$pages = $entityRepository->gotType('page')->withFields('content', 'image')->get()->map(function($page) {
-    return $page->injectValues();
-});
-```
-
-**NOTE:** If you are working with a paginator rather than a collection then you will need to use the `transform` method rather than map to work with the original paginator object so it maintains its functionality.
-
-e.g.
-```php?start_inline=1
-$pages = $entityRepository->gotType('page')->withFields('content', 'image')->paginate();
-$pages->transform(function($page) {
-    return $page->injectValues();
-});
+```php
+<?php
+$pages = $entityRepository->forType('page')->get()->loadFields('content', 'image');
 ```
 
 ---
@@ -192,7 +183,8 @@ Jam supports indexing entities via elastic search but each type needs to be set 
 The purpose of `getPreviewData` is to transform the entity in to a suitable format for your search results view and `getSearchableData` is for returning all the values you want to be searchable as one long string.
 
 e.g.
-```php?start_inline=1
+```php
+<?php
 protected function getPreviewData($page)
 {
     return [

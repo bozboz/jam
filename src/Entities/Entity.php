@@ -15,18 +15,14 @@ use Bozboz\Jam\Mapper;
 use Bozboz\Jam\Templates\Template;
 use Bozboz\Jam\Types\Type;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Request;
 use Kalnoy\Nestedset\Node;
-use Sofa\Revisionable\Laravel\RevisionableTrait;
-use Sofa\Revisionable\Revisionable;
 
-class Entity extends Node implements ModelInterface, Revisionable
+class Entity extends Node implements ModelInterface
 {
 	use SanitisesInputTrait;
 	use SoftDeletes;
 	use DynamicSlugTrait;
-	use RevisionableTrait;
 
 	protected $table = 'entities';
 
@@ -310,6 +306,11 @@ class Entity extends Node implements ModelInterface, Revisionable
 		}
 	}
 
+	public function setValue($key, $value)
+	{
+		$this->values[$key] = $value;
+	}
+
 	public function getValue($key)
 	{
 		return array_key_exists($key, $this->values) ? $this->values[$key] : new Value(compact('key'));
@@ -340,6 +341,11 @@ class Entity extends Node implements ModelInterface, Revisionable
 		return $model;
 	}
 
+    public function newCollection(array $models = array())
+    {
+        return new Collection($models);
+    }
+
 	/**
 	 * Create a new model instance that is existing.
 	 *
@@ -368,7 +374,7 @@ class Entity extends Node implements ModelInterface, Revisionable
 
 	public function scopeWithFields($builder, $fields = ['*'])
 	{
-		if ( ! is_array($fields)) {
+		if (is_string($fields)) {
 			$fields = array_slice(func_get_args(), 1);
 		}
 		$builder->with(['currentValues' => function($query) use ($fields) {
@@ -377,6 +383,19 @@ class Entity extends Node implements ModelInterface, Revisionable
 				->with('dynamicRelation');
 		}]);
 	}
+
+    public function loadFields($fields = ['*'])
+    {
+        if (is_string($fields)) {
+            $fields = func_get_args();
+        }
+
+        $query = $this->newQuery()->withFields($fields);
+
+        $query->eagerLoadRelations([$this]);
+
+        return $this->injectValues();
+    }
 
 	public function injectValues()
 	{

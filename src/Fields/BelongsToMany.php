@@ -8,36 +8,55 @@ use Bozboz\Jam\Entities\EntityDecorator;
 use Bozboz\Jam\Entities\Revision;
 use Bozboz\Jam\Entities\Value;
 
-class BelongsToMany extends BelongsTo
+abstract class BelongsToMany extends BelongsTo
 {
+    /**
+     * Get relation model
+     *
+     * @return string
+     */
+    abstract protected function getRelationModel();
+
+    /**
+     * Get pivot table config
+     *
+     * @return object [
+     *     'table' => '',
+     *     'foreign_key' => '',
+     *     'other_key' => '',
+     * ]
+     */
+    abstract protected function getPivot();
+
+    protected function getRelationTable()
+    {
+        $model = $this->getRelationModel();
+        return (new $model)->getTable();
+    }
+
     public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
     {
-        return new BelongsToManyField($decorator, $this->relation($value), [
-                'name' => $this->getInputName(),
-                'label' => $this->getInputLabel(),
-                'help_text_title' => $this->help_text_title,
-                'help_text' => $this->help_text,
-            ],
-            function ($query) {
-                if (property_exists($this->options_array, 'template')) {
-                    $query->whereHas('template', function($query) {
-                        $query->whereId($this->options_array->template);
-                    });
-                } elseif (property_exists($this->options_array, 'type')) {
-                    $query->whereHas('template', function($query) {
-                        $query->whereTypeAlias($this->options_array->type);
-                    });
-                }
+        return new BelongsToManyField(
+            $decorator,
+            $this->relation($value),
+            $this->getAdminFieldAttributes(),
+            function($query) use ($value) {
+                $this->filterAdminQuery($query, $value);
             }
         );
     }
 
-    public function getOptionFields()
+    protected function getAdminFieldAttributes()
     {
         return [
-            new TemplateSelectField('Type')
+            'name' => $this->getInputName(),
+            'label' => $this->getInputLabel(),
+            'help_text_title' => $this->help_text_title,
+            'help_text' => $this->help_text,
         ];
     }
+
+    protected function filterAdminQuery($query, $value) {}
 
     public function injectAdminValue(Entity $entity, Revision $revision)
     {
@@ -47,20 +66,28 @@ class BelongsToMany extends BelongsTo
 
     public function relation(Value $value)
     {
-        return $value->belongsToMany(Entity::class, 'entity_entity')->ordered();
+        $pivot = $this->getPivot();
+        $query = $value->belongsToMany($this->getRelationModel(), $pivot->table, $pivot->foreign_key, $pivot->other_key);
+        return $query;
     }
 
     public function saveValue(Revision $revision, $value)
     {
         $valueObj = parent::saveValue($revision, json_encode($value));
+        $syncData = [];
 
-        $this->relation($valueObj)->sync($value ?: []);
+        if (is_array($value)) {
+            $syncData = $value;
+        }
+
+        $this->relation($valueObj)->sync($syncData);
 
         return $valueObj;
     }
 
     public function duplicateValue(Value $oldValue, Value $newValue)
     {
-        $this->relation($newValue)->sync($this->relation($oldValue)->pluck('entity_id')->toArray());
+        $syncData = $this->relation($oldValue)->pluck($this->getPivot()->foreign_key)->toArray();
+        $this->relation($newValue)->sync($syncData);
     }
 }
