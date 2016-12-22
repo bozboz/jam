@@ -2,6 +2,7 @@
 
 namespace Bozboz\Jam\Fields;
 
+use Bozboz\Admin\Fields\CheckboxField;
 use Bozboz\Admin\Fields\SelectField;
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\EntityDecorator;
@@ -19,13 +20,24 @@ class User extends Field
             'label' => $this->getInputLabel(),
             'help_text_title' => $this->help_text_title,
             'help_text' => $this->help_text,
-            'value' => $this->getDefaultUser(),
+            'value' => $value->exists ? $value->value : $this->getDefaultUser(),
         ]);
+    }
+
+    public function getOptionFields()
+    {
+        return [
+            new CheckboxField([
+                'name' => 'options_array[default_to_logged_in_user]',
+                'label' => 'Default to logged in user',
+                'checked' => true
+            ])
+        ];
     }
 
     protected function getDefaultUser()
     {
-        return Auth::user()->id;
+        return $this->getOption('default_to_logged_in_user') ? Auth::user()->id : null;
     }
 
     protected function getUserOptions()
