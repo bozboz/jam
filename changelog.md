@@ -1,5 +1,13 @@
 # Jam Changelog
 
+## Version 1.0.3 (2016-12-22)
+
+-   Make repo in front end controller protected rather than private
+
+## Version 1.0.2 (2016-12-21)
+
+-   Fix nested entity list redirect 
+
 ## Version 1.0.1 (2016-12-16)
 
 -   Fix entity list save redirect for nested lists

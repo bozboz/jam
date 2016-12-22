@@ -24,7 +24,7 @@ class CurrentValue extends Value
 
     public function getOptions()
     {
-        return array_combine(explode(',', $this->option_keys), explode(',', $this->option_values));
+        return array_combine(explode('~~', $this->option_keys), explode('~~', $this->option_values));
     }
 
     public function scopeSelectFields($query, array $fields)
@@ -46,8 +46,8 @@ class CurrentValue extends Value
 
         $builder->select(
                 'entity_values.*',
-                DB::raw("group_concat(entity_template_field_options.key separator ',') as option_keys"),
-                DB::raw("group_concat(entity_template_field_options.value separator ',') as option_values")
+                DB::raw("group_concat(entity_template_field_options.key separator '~~') as option_keys"),
+                DB::raw("group_concat(entity_template_field_options.value separator '~~') as option_values")
             )
             ->leftJoin(
                 'entity_template_field_options',

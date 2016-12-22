@@ -57,7 +57,7 @@ class EntityListController extends EntityController
             return $type->alias;
         });
 
-        if ($entityListTypes->contains($parent->template->alias)) {
+        if ($entityListTypes->contains($parent->template->type_alias)) {
             return $this->getActionName('edit');
         }
 
