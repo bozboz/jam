@@ -4,6 +4,7 @@
 
 -   Make repo in front end controller protected rather than private
 -   Fix user field default value and make defaulting to logged in user optional
+-   Automatically inject values on new collection of entities if values have been eager loaded 
 
 ## Version 1.0.2 (2016-12-21)
 
