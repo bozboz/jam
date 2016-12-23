@@ -1,6 +1,6 @@
 # Jam Changelog
 
-## Version 1.0.4 (Future)
+## Version 1.0.4 (2016-12-23)
 
 -   Exclude inactive entities from BelongsToMany field query
 
