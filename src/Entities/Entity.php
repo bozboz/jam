@@ -167,7 +167,7 @@ class Entity extends Node implements ModelInterface
 	 */
 	public function revisions()
 	{
-		return $this->hasMany(Revision::class);
+		return $this->hasMany(Revision::class)->latest();
 	}
 
 	/**
@@ -187,13 +187,13 @@ class Entity extends Node implements ModelInterface
 	 */
 	public function latestRevision()
 	{
-		return Revision::whereEntityId($this->id)->latest()->first();
+		return $this->revisions->first();
 	}
 
 	public function scopeWithLatestRevision($query)
 	{
 		$query->with(['revisions' => function($query) {
-			$query->latest()->limit(1);
+			$query->limit(1);
 		}]);
 	}
 
