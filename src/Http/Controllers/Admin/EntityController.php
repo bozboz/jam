@@ -159,7 +159,7 @@ class EntityController extends ModelAdminController
 				new IsValid([$this, 'canPublish'])
 			),
 			$this->actions->custom(
-				new Button('Publish as Exit', 'fa fa-save', [
+				new Button('Publish and Exit', 'fa fa-save', [
 					'type' => 'submit',
 					'name' => 'submit',
 					'value' => json_encode([

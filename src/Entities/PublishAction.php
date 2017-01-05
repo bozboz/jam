@@ -17,13 +17,14 @@ class PublishAction extends DropdownAction
 	public function output()
 	{
 		$currentRevision = $this->instance->currentRevision;
+		$hasDrafts = $currentRevision ? $currentRevision->id !== $this->instance->latestRevision()->id : false;
 		$status = $currentRevision ? $currentRevision->status : false;
 		$attributes = $this->attributes;
 
 		switch ($status) {
 
 			case Revision::PUBLISHED:
-				$label = 'Published';
+				$label = 'Published' . ($hasDrafts ? ' (With Drafts)' : '');
 				$icon = 'fa-check';
 				$attributes['class'] = 'btn-success btn-sm';
 			break;
