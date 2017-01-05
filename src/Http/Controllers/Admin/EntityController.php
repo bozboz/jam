@@ -145,20 +145,60 @@ class EntityController extends ModelAdminController
 
 	public function getFormActions($instance)
 	{
-		return [
+		$publishOptions = [
 			$this->actions->custom(
-				new Button('Save', 'fa fa-save', [
+				new Button('Publish', 'fa fa-save', [
 					'type' => 'submit',
-					'name' => 'state',
-					'value' => 'publish',
-					'class' => 'btn-success btn space-left pull-right'
+					'name' => 'submit',
+					'value' => json_encode([
+						'after_save' => 'continue',
+						'status' => 'publish'
+					]),
+					'class' => 'btn-success btn'
 				]),
 				new IsValid([$this, 'canPublish'])
 			),
+			$this->actions->custom(
+				new Button('Publish as Exit', 'fa fa-save', [
+					'type' => 'submit',
+					'name' => 'submit',
+					'value' => json_encode([
+						'after_save' => 'exit',
+						'status' => 'publish'
+					]),
+				]),
+				new IsValid([$this, 'canPublish'])
+			),
+		];
+		$draftOptions = [
 			$this->actions->submit('Save as Draft', 'fa fa-pencil-square-o', [
-				'name' => 'state',
-				'value' => 'draft',
-				'class' => 'btn-warning btn space-left pull-right'
+				'name' => 'submit',
+				'value' => json_encode([
+					'after_save' => 'continue',
+					'status' => 'draft'
+				]),
+				'class' => 'btn-warning btn'
+			]),
+			$this->actions->submit('Save as Draft and Exit', 'fa fa-pencil-square-o', [
+				'name' => 'submit',
+				'value' => json_encode([
+					'after_save' => 'exit',
+					'status' => 'draft'
+				]),
+			]),
+		];
+		return [
+			$this->actions->dropdown($publishOptions, 'Publish', '', [
+				'class' => 'btn-success',
+				'split_button' => true,
+			], [
+				'class' => 'pull-right space-left',
+			]),
+			$this->actions->dropdown($draftOptions, 'Save as Draft', '', [
+				'class' => 'btn-warning',
+				'split_button' => true,
+			], [
+				'class' => 'pull-right space-left',
 			]),
 			$this->actions->custom(
 				new Link(new Url($this->getListingUrl($instance)), 'Back to listing', 'fa fa-list-alt', [
@@ -181,6 +221,9 @@ class EntityController extends ModelAdminController
 
 	protected function save($modelInstance, $input)
 	{
+		if (array_key_exists('submit', $input)) {
+			Input::merge(json_decode($input['submit'], true));
+		}
 		parent::save($modelInstance, $input);
 		$this->repository->newRevision($modelInstance, $input);
 	}

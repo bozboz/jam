@@ -122,7 +122,7 @@ class EntityRepository implements EntityRepositoryInterface
             $field->saveValue($revision, $input[$field->getInputName()]);
         }
 
-        switch ($input->get('state')) {
+        switch ($input->get('status')) {
             case 'publish':
                 $entity->currentRevision()->associate($revision);
             break;
