@@ -34,13 +34,6 @@ class Entity extends Node implements ModelInterface
 		'parent_id'
 	];
 
-	protected $revisionable = [
-		'parent_id',
-		'_lft',
-		'_rgt',
-		'slug',
-	];
-
 	protected static $mapper;
 
 	protected $dates = ['deleted_at'];
