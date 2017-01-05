@@ -1,5 +1,11 @@
 # Jam Changelog
 
+## Version 1.1.0 (Future)
+
+-   Rearrange publishing/scheduling feature for better usability
+-   Allow draft revisions to be created on published entities
+-   Allow previewing unpublished entities/draft revisions
+
 ## Version 1.0.4 (2016-12-23)
 
 -   Exclude inactive entities from BelongsToMany field query
