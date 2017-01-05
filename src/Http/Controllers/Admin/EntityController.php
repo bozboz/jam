@@ -4,8 +4,10 @@ namespace Bozboz\Jam\Http\Controllers\Admin;
 
 use Bozboz\Admin\Http\Controllers\ModelAdminController;
 use Bozboz\Admin\Reports\Actions\Permissions\IsValid;
+use Bozboz\Admin\Reports\Actions\Presenters\Button;
 use Bozboz\Admin\Reports\Actions\Presenters\Form;
 use Bozboz\Admin\Reports\Actions\Presenters\Link;
+use Bozboz\Admin\Reports\Actions\Presenters\Urls\Url;
 use Bozboz\Jam\Entities\EntityDecorator;
 use Bozboz\Jam\Entities\Revision;
 use Bozboz\Jam\Repositories\Contracts\EntityRepository;
@@ -119,18 +121,18 @@ class EntityController extends ModelAdminController
 			$this->actions->publish([
 				$this->actions->custom(
 					new Form($this->getActionName('publish'), 'Publish'),
-					new IsValid([$this, 'canPublish'])
+					new IsValid([$this, 'canPublishFromRow'])
 				),
 				$this->actions->custom(
 					new Form($this->getActionName('unpublish'), 'Hide'),
 					new IsValid([$this, 'canHide'])
 				),
-				$this->actions->custom(
-					new Form($this->getActionName('schedule'), 'Schedule', null, [], [
-						'class' => 'js-datepicker-popup',
-					]),
-					new IsValid([$this, 'canSchedule'])
-				)
+				// $this->actions->custom(
+				// 	new Form($this->getActionName('schedule'), 'Schedule', null, [], [
+				// 		'class' => 'js-datepicker-popup',
+				// 	]),
+				// 	new IsValid([$this, 'canSchedule'])
+				// )
 			]),
 			$this->actions->custom(
 				new Link($entityRevisionController->getActionName('indexForEntity'), 'History', 'fa fa-history', [
@@ -139,6 +141,32 @@ class EntityController extends ModelAdminController
 				new IsValid([$entityRevisionController, 'canView'])
 			)
 		], parent::getRowActions());
+	}
+
+	public function getFormActions($instance)
+	{
+		return [
+			$this->actions->custom(
+				new Button('Save', 'fa fa-save', [
+					'type' => 'submit',
+					'name' => 'state',
+					'value' => 'publish',
+					'class' => 'btn-success btn space-left pull-right'
+				]),
+				new IsValid([$this, 'canPublish'])
+			),
+			$this->actions->submit('Save as Draft', 'fa fa-pencil-square-o', [
+				'name' => 'state',
+				'value' => 'draft',
+				'class' => 'btn-warning btn space-left pull-right'
+			]),
+			$this->actions->custom(
+				new Link(new Url($this->getListingUrl($instance)), 'Back to listing', 'fa fa-list-alt', [
+					'class' => 'btn-default pull-right space-left',
+				]),
+				new IsValid([$this, 'canView'])
+			),
+		];
 	}
 
 	public function createOfType($type, $template)
@@ -243,6 +271,11 @@ class EntityController extends ModelAdminController
 	}
 
 	public function canPublish($instance)
+	{
+		return RuleStack::with('publish_entity')->isAllowed();
+	}
+
+	public function canPublishFromRow($instance)
 	{
 		return $instance->canPublish() && RuleStack::with('publish_entity')->isAllowed();
 	}
