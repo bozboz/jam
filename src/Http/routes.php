@@ -22,6 +22,7 @@ Route::group(array('middleware' => 'web', 'namespace' => 'Bozboz\Jam\Http\Contro
 
 	Route::get('entities/{id}/revisions', 'EntityRevisionController@indexForEntity');
 	Route::post('entities/{id}/revisions/revert', 'EntityRevisionController@revert');
+	Route::get('entities/revisions/{revision}/diff', 'EntityRevisionController@diff');
 
 	Route::resource('entity-list', 'EntityListController', ['except' => ['create']]);
 	Route::get('entity-list/{type}/{template}/{parent_id}/create', [

@@ -7,6 +7,7 @@ use Bozboz\Admin\Reports\Actions\Permissions\IsValid;
 use Bozboz\Admin\Reports\Actions\Presenters\Form;
 use Bozboz\Admin\Reports\Actions\Presenters\Link;
 use Bozboz\Admin\Reports\Actions\Presenters\Urls\Custom as CustomUrl;
+use Bozboz\Jam\Entities\CurrentValue;
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\Revision;
 use Bozboz\Jam\Entities\RevisionDecorator;
@@ -86,6 +87,12 @@ class EntityRevisionController extends ModelAdminController
 				new IsValid([$this, 'canEdit'])
 			),
 			$this->actions->custom(
+				new Link(new CustomUrl(function($instance) {
+					return action($this->getActionName('diff'), $instance->id);
+				}), 'Diff With Previous', 'fa fa-files-o', ['class' => 'btn-default']),
+				new IsValid([$this, 'canEdit'])
+			),
+			$this->actions->custom(
 				new Form($this->getActionName('revert'), 'Revert', 'fa fa-undo', [
 					'class' => 'btn-sm btn-warning',
 					'warn' => 'Are you sure you wish to revert to this revision? This action cannot be undone.'
@@ -93,6 +100,30 @@ class EntityRevisionController extends ModelAdminController
 				new IsValid([$this, 'canEdit'])
 			),
 		];
+	}
+
+	public function diff($revisionId)
+	{
+		$revision = Revision::find($revisionId);
+		$previousRevision = Revision::whereEntityId($revision->entity_id)->where('created_at', '<', $revision->created_at)->limit(1)->first();
+
+		$previousEntity = $previousRevision->entity->load(['revisions' => function($query) use ($previousRevision) {
+			$query->whereId($previousRevision->id);
+		}]);
+		$previousEntity->setRelation('currentValues', CurrentValue::forRevisions([$previousRevision->id])
+			->join('entity_template_fields', 'entity_template_fields.id', '=', 'entity_values.field_id')
+			->orderBy('sorting')->get());
+		$previousEntity->injectValues();
+
+		$entity = $revision->entity->load(['revisions' => function($query) use ($revisionId) {
+			$query->whereId($revisionId);
+		}]);
+		$entity->setRelation('currentValues', CurrentValue::forRevisions([$revisionId])
+			->join('entity_template_fields', 'entity_template_fields.id', '=', 'entity_values.field_id')
+			->orderBy('sorting')->get());
+		$entity->injectValues();
+
+		return view('jam::admin.diff', compact('previousEntity', 'entity'));
 	}
 
 	public function getSuccessResponse($instance)
