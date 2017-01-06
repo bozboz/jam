@@ -199,10 +199,10 @@ class Entity extends Node implements ModelInterface
 
 	public function scopeActive($query)
 	{
-		if (request()->get('p') != md5(date('ymd'))) {
-		$query->whereHas('currentRevision', function($query) {
-			$query->isPublished();
-		});
+		if ( ! config('jam.preview-mode')) {
+			$query->whereHas('currentRevision', function($query) {
+				$query->isPublished();
+			});
 		}
 	}
 
@@ -254,7 +254,7 @@ class Entity extends Node implements ModelInterface
 
 	public function currentValues()
 	{
-		if (request()->get('p') == md5(date('ymd'))) {
+		if (config('jam.preview-mode')) {
 			// This isn't an especially good way of going about things... needs revisiting
 			$latestRevisions = Revision::groupBy(\DB::raw('entity_id DESC'))->orderBy('created_at', 'DESC')->pluck('id');
 			return $this->hasManyThrough(CurrentValue::class, Revision::class)->whereIn('entity_revisions.id', $latestRevisions);
