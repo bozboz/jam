@@ -268,8 +268,8 @@ class Entity extends Node implements ModelInterface
 		return !$this->currentRevision || (
 			$this->currentRevision
 			&& (
-				$this->currentRevision->status != Revision::PUBLISHED
-				|| $this->currentRevision->id != $this->latestRevision()->id
+				$this->currentRevision->status !== Revision::PUBLISHED
+				|| $this->currentRevision->status === Revision::PUBLISHED_WITH_DRAFTS
 			)
 		);
 	}
@@ -283,8 +283,8 @@ class Entity extends Node implements ModelInterface
 	{
 		return !$this->currentRevision || (
 			$this->currentRevision
-			&& $this->currentRevision->status != Revision::SCHEDULED
-			&& $this->currentRevision->status != Revision::PUBLISHED
+			&& $this->currentRevision->status !== Revision::SCHEDULED
+			&& $this->currentRevision->status !== Revision::PUBLISHED
 		);
 	}
 

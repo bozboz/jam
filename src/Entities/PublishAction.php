@@ -17,14 +17,13 @@ class PublishAction extends DropdownAction
 	public function output()
 	{
 		$currentRevision = $this->instance->currentRevision;
-		$hasDrafts = $currentRevision ? $currentRevision->id !== $this->instance->latestRevision()->id : false;
 		$status = $currentRevision ? $currentRevision->status : false;
 		$attributes = $this->attributes;
 
 		switch ($status) {
 
 			case Revision::PUBLISHED:
-				$label = 'Published' . ($hasDrafts ? ' (With Drafts)' : '');
+				$label = 'Published';
 				$icon = 'fa-check';
 				$attributes['class'] = 'btn-success btn-sm';
 			break;
@@ -32,6 +31,12 @@ class PublishAction extends DropdownAction
 			case Revision::SCHEDULED:
 				$label = 'Scheduled';
 				$icon = 'fa-clock-o';
+				$attributes['class'] = 'btn-warning btn-sm';
+			break;
+
+			case Revision::PUBLISHED_WITH_DRAFTS:
+				$label = 'Published (With Drafts)';
+				$icon = 'fa-check';
 				$attributes['class'] = 'btn-warning btn-sm';
 			break;
 
