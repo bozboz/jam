@@ -222,7 +222,9 @@ class EntityController extends ModelAdminController
 	protected function save($modelInstance, $input)
 	{
 		if (array_key_exists('submit', $input)) {
-			Input::merge(json_decode($input['submit'], true));
+			$submit = json_decode($input['submit'], true);
+			Input::merge($submit);
+			$input['status'] = $submit['status'];
 		}
 		parent::save($modelInstance, $input);
 		$this->repository->newRevision($modelInstance, $input);
