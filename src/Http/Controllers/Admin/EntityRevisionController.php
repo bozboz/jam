@@ -105,7 +105,7 @@ class EntityRevisionController extends ModelAdminController
 	public function diff($revisionId)
 	{
 		$revision = Revision::find($revisionId);
-		$previousRevision = Revision::whereEntityId($revision->entity_id)->where('created_at', '<', $revision->created_at)->limit(1)->first();
+		$previousRevision = Revision::whereEntityId($revision->entity_id)->where('created_at', '<', $revision->created_at)->orderBy('created_at', 'desc')->limit(1)->first();
 
 		$previousEntity = $previousRevision->entity->load(['revisions' => function($query) use ($previousRevision) {
 			$query->whereId($previousRevision->id);
