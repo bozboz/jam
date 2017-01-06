@@ -266,11 +266,8 @@ class Entity extends Node implements ModelInterface
 	public function canPublish()
 	{
 		return !$this->currentRevision || (
-			$this->currentRevision
-			&& (
-				$this->currentRevision->status !== Revision::PUBLISHED
-				|| $this->currentRevision->status === Revision::PUBLISHED_WITH_DRAFTS
-			)
+			$this->status !== Revision::PUBLISHED
+			|| $this->status === Revision::PUBLISHED_WITH_DRAFTS
 		);
 	}
 
@@ -282,9 +279,8 @@ class Entity extends Node implements ModelInterface
 	public function canSchedule()
 	{
 		return !$this->currentRevision || (
-			$this->currentRevision
-			&& $this->currentRevision->status !== Revision::SCHEDULED
-			&& $this->currentRevision->status !== Revision::PUBLISHED
+			$this->status !== Revision::SCHEDULED
+			&& $this->status !== Revision::PUBLISHED
 		);
 	}
 
