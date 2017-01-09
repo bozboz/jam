@@ -65,7 +65,7 @@ class BelongsTo extends Field
         $this->injectValue($entity, $value);
         $entity->setAttribute(
             $value->key,
-            $entity->getAttribute($value->key)->name
+            $entity->getAttribute($value->key) ? $entity->getAttribute($value->key)->name : null
         );
         return $value;
     }
