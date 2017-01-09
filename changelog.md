@@ -1,6 +1,6 @@
 # Jam Changelog
 
-## Version 1.1.0 (Future)
+## Version 1.1.0 (2017-01-09)
 
 -   Rearrange publishing/scheduling feature for better usability
 -   Allow draft revisions to be created on published entities
