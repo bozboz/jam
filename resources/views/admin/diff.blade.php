@@ -9,7 +9,7 @@
     </div>
     <h1>Diff for {{ $entity->name }}</h1>
     <h2><small>Showing changes made by {{ $revision->user->first_name }} {{ $revision->user->last_name }} at {{ $revision->created_at->format('H:i - d M Y') }}</small></h2>
-    <p style="text-align:center">Additions are shown in <span style="color: green; text-decoration: underline;">green</span>, deletions are shown in <span style="color:red; text-decoration: underline;">red</span>.</p>
+    <p style="text-align:center">Additions are shown in <span style="color: green; background: #dfd;">green</span>, deletions are shown in <span style="color:red; background: #fdd;">red</span>.</p>
     <table cellpadding="5" style="margin: auto">
         <tr>
             <td><label><input type="radio" name="diff_type" value="diffChars"> Diff by character &nbsp;&nbsp;</label></td>
@@ -44,11 +44,12 @@
               // grey for common parts
               color = part.added ? 'green' :
                 part.removed ? 'red' : 'grey';
-              decoration = part.added || part.removed ? 'underline' : 'none';
+              background = part.added ? '#dfd' :
+                part.removed ? '#fdd' : 'transprent';
               display = type === 'diffLines' ? 'block' : 'inline';
               span = document.createElement('span');
               span.style.color = color;
-              span.style['text-decoration'] = decoration;
+              span.style.background = background;
               span.style.display = display;
               span.appendChild(document
                 .createTextNode(part.value));
