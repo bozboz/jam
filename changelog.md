@@ -1,6 +1,6 @@
 # Jam Changelog
 
-## Version 1.0.5 (Future)
+## Version 1.0.5 (2017-01-09)
 
 -   Fix value duplication for belongs to fields
 
