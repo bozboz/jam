@@ -1,5 +1,13 @@
 # Jam Changelog
 
+## Version 1.0.6 (Future)
+
+-   Add validation to fields to prevent duplicate names on templates
+
+## Version 1.0.5 (2017-01-09)
+
+-   Fix value duplication for belongs to fields
+
 ## Version 1.0.4 (2016-12-23)
 
 -   Exclude inactive entities from BelongsToMany field query

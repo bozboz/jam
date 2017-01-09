@@ -52,7 +52,7 @@ abstract class SortedBelongsToMany extends BelongsToMany
 
     public function duplicateValue(Value $oldValue, Value $newValue)
     {
-        $syncData = $this->relation($oldValue)->withPivot('sorting')->pluck($this->getPivot()->foreign_key, 'sorting')->toArray();
+        $syncData = $this->relation($oldValue)->withPivot('sorting')->pluck($this->getPivot()->other_key, 'sorting')->toArray();
         $this->relation($newValue)->sync($syncData);
     }
 }
