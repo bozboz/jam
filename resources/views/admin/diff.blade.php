@@ -9,7 +9,7 @@
     </div>
     <h1>Diff for {{ $entity->name }}</h1>
     <h2><small>Showing changes made by {{ $revision->user->first_name }} {{ $revision->user->last_name }} at {{ $revision->created_at->format('H:i - d M Y') }}</small></h2>
-    <p style="text-align:center">Additions are shown in <span style="color: green; background: #dfd;">green</span>, deletions are shown in <span style="color:red; background: #fdd;">red</span>.</p>
+    <p style="text-align:center">Additions are shown in <ins>green</ins>, deletions are shown in <del>red</del>.</p>
     <table cellpadding="5" style="margin: auto">
         <tr>
             <td><label><input type="radio" name="diff_type" value="diffChars"> Diff by character &nbsp;&nbsp;</label></td>
@@ -40,16 +40,9 @@
                 fragment = document.createDocumentFragment();
             pre.innerHTML = '';
             diff.forEach(function(part){
-              // green for additions, red for deletions
-              // grey for common parts
-              color = part.added ? 'green' :
-                part.removed ? 'red' : 'grey';
-              background = part.added ? '#dfd' :
-                part.removed ? '#fdd' : 'transprent';
+
               display = type === 'diffLines' ? 'block' : 'inline';
-              span = document.createElement('span');
-              span.style.color = color;
-              span.style.background = background;
+              span = document.createElement(part.added ? 'ins' : part.removed ? 'del' : 'span');
               span.style.display = display;
               span.appendChild(document
                 .createTextNode(part.value));
@@ -75,6 +68,16 @@
             word-break: break-all;
             word-wrap: break-word;
             white-space: pre-wrap;
+        }
+        ins {
+            color: green;
+            background: rgb(221, 255, 221);
+            text-decoration: none;
+        }
+        del {
+            color: red;
+            background: rgb(255, 221, 221);
+            text-decoration: none;
         }
     </style>
 @stop
