@@ -70,8 +70,7 @@
 
     </script>
     <style type="text/css">
-        [data-from] span {
-            displ/*a*/y: block;
+        [data-from] pre {
             word-break: break-all;
             word-wrap: break-word;
             white-space: pre-wrap;
