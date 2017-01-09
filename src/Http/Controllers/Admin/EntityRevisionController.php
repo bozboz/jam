@@ -107,12 +107,8 @@ class EntityRevisionController extends ModelAdminController
 		$revision = Revision::find($revisionId);
 		$previousRevision = Revision::whereEntityId($revision->entity_id)->where('created_at', '<', $revision->created_at)->orderBy('created_at', 'desc')->limit(1)->first();
 
-		if ( ! $previousRevision) {
-			return redirect()->back();
-		}
-
 		$entity = $this->loadRevisionForDiff($revision);
-		$previousEntity = $this->loadRevisionForDiff($previousRevision);
+		$previousEntity = $previousRevision ? $this->loadRevisionForDiff($previousRevision) : new Entity;
 
 		return view('jam::admin.diff', compact('previousEntity', 'entity', 'revision'));
 	}
