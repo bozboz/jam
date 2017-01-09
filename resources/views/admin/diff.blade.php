@@ -8,7 +8,7 @@
         </a>
     </div>
     <h1>Diff for {{ $entity->name }}</h1>
-    <p style="text-align:center">Additions are shown in <span style="color: green">green</span>, deletions are shown in <span style="color:red">red</span>.</p>
+    <p style="text-align:center">Additions are shown in <span style="color: green; text-decoration: underline;">green</span>, deletions are shown in <span style="color:red; text-decoration: underline;">red</span>.</p>
     <table cellpadding="5" style="margin: auto">
         <tr>
             <td><label><input type="radio" name="diff_type" value="diffChars"> Diff by character &nbsp;&nbsp;</label></td>
@@ -43,8 +43,10 @@
               // grey for common parts
               color = part.added ? 'green' :
                 part.removed ? 'red' : 'grey';
+              decoration = part.added || part.removed ? 'underline' : 'none';
               span = document.createElement('span');
               span.style.color = color;
+              span.style['text-decoration'] = decoration;
               span.appendChild(document
                 .createTextNode(part.value));
               fragment.appendChild(span);
