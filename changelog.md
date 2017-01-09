@@ -6,6 +6,10 @@
 -   Allow draft revisions to be created on published entities
 -   Allow previewing unpublished entities/draft revisions
 
+## Version 1.0.5 (2017-01-09)
+
+-   Fix value duplication for belongs to fields
+
 ## Version 1.0.4 (2016-12-23)
 
 -   Exclude inactive entities from BelongsToMany field query
