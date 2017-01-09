@@ -107,23 +107,23 @@ class EntityRevisionController extends ModelAdminController
 		$revision = Revision::find($revisionId);
 		$previousRevision = Revision::whereEntityId($revision->entity_id)->where('created_at', '<', $revision->created_at)->orderBy('created_at', 'desc')->limit(1)->first();
 
-		$previousEntity = $previousRevision->entity->load(['revisions' => function($query) use ($previousRevision) {
-			$query->whereId($previousRevision->id);
-		}]);
-		$previousEntity->setRelation('currentValues', CurrentValue::forRevisions([$previousRevision->id])
-			->join('entity_template_fields', 'entity_template_fields.id', '=', 'entity_values.field_id')
-			->orderBy('sorting')->get());
-		$previousEntity->injectValues();
+		if ( ! $previousRevision) {
+			return redirect()->back();
+		}
 
-		$entity = $revision->entity->load(['revisions' => function($query) use ($revisionId) {
-			$query->whereId($revisionId);
-		}]);
-		$entity->setRelation('currentValues', CurrentValue::forRevisions([$revisionId])
-			->join('entity_template_fields', 'entity_template_fields.id', '=', 'entity_values.field_id')
-			->orderBy('sorting')->get());
-		$entity->injectValues();
+		$entity = $this->loadRevisionForDiff($revision);
+		$previousEntity = $this->loadRevisionForDiff($previousRevision);
 
 		return view('jam::admin.diff', compact('previousEntity', 'entity'));
+	}
+
+	private function loadRevisionForDiff($revision)
+	{
+		$entity = $revision->entity;
+		$entity->template->fields->each(function($field) use ($entity, $revision) {
+			$field->injectDiffValue($entity, $revision);
+		});
+		return $entity;
 	}
 
 	public function getSuccessResponse($instance)

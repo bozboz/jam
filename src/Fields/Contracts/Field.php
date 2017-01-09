@@ -11,7 +11,8 @@ interface Field
 {
 	public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value);
 	public function injectValue(Entity $entity, Value $value);
-	public function injectAdminValue(Entity $entity, Revision $revision);
+    public function injectAdminValue(Entity $entity, Revision $revision);
+	public function injectDiffValue(Entity $entity, Revision $revision);
 	public function getInputName();
 	public function saveValue(Revision $revision, $value);
 	public function getValue(Value $value);

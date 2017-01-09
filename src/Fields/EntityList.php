@@ -60,6 +60,19 @@ class EntityList extends Field
         return $value;
     }
 
+    public function injectDiffValue(Entity $entity, Revision $revision)
+    {
+        $value = $revision->fieldValues->where('key', $this->name)->first() ?: new Value(['key' => $this->name]);
+        $this->injectValue($entity, $value);
+        $entity->setAttribute(
+            $value->key,
+            $entity->getAttribute($value->key)->map(function($entity) {
+                return $entity->name;
+            })->implode("\n")
+        );
+        return $value;
+    }
+
     protected function newListQuery($entity)
     {
         return $entity->childrenOfType($this->getOption('type'))->defaultOrder();
