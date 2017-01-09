@@ -122,6 +122,15 @@ class Field extends Model implements FieldInterface, Sortable
         return $value;
     }
 
+    public function injectDiffValue(Entity $entity, Revision $revision)
+    {
+        $value = $revision->fieldValues->where('key', $this->name)->first() ?: new Value(['key' => $this->name]);
+        $entity->setAttribute($value->key, strip_tags(
+            preg_replace('/<\/(p|h\d|ol|ul|pre|address|blockquote|dl|div|fieldset|form|hr|noscript|table)[^>]*>/', "\n", $value->value))
+        );
+        return $value;
+    }
+
     public function getInputName()
     {
         return e($this->name);

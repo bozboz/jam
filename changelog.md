@@ -5,6 +5,7 @@
 -   Rearrange publishing/scheduling feature for better usability
 -   Allow draft revisions to be created on published entities
 -   Allow previewing unpublished entities/draft revisions
+-   Add revision diff feature
 
 ## Version 1.0.6 (Future)
 
