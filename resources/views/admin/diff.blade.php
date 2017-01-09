@@ -8,6 +8,7 @@
         </a>
     </div>
     <h1>Diff for {{ $entity->name }}</h1>
+    <h2><small>Showing changes made by {{ $revision->user->first_name }} {{ $revision->user->last_name }} at {{ $revision->created_at->format('H:i - d M Y') }}</small></h2>
     <p style="text-align:center">Additions are shown in <span style="color: green; text-decoration: underline;">green</span>, deletions are shown in <span style="color:red; text-decoration: underline;">red</span>.</p>
     <table cellpadding="5" style="margin: auto">
         <tr>
@@ -35,23 +36,25 @@
                 color = '',
                 span = null;
             var diff = JsDiff[type](one, other),
-                display = elem.querySelector('pre'),
+                pre = elem.querySelector('pre'),
                 fragment = document.createDocumentFragment();
-            display.innerHTML = '';
+            pre.innerHTML = '';
             diff.forEach(function(part){
               // green for additions, red for deletions
               // grey for common parts
               color = part.added ? 'green' :
                 part.removed ? 'red' : 'grey';
               decoration = part.added || part.removed ? 'underline' : 'none';
+              display = type === 'diffLines' ? 'block' : 'inline';
               span = document.createElement('span');
               span.style.color = color;
               span.style['text-decoration'] = decoration;
+              span.style.display = display;
               span.appendChild(document
                 .createTextNode(part.value));
               fragment.appendChild(span);
             });
-            display.appendChild(fragment);
+            pre.appendChild(fragment);
         }
     }
 

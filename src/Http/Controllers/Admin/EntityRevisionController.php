@@ -114,7 +114,7 @@ class EntityRevisionController extends ModelAdminController
 		$entity = $this->loadRevisionForDiff($revision);
 		$previousEntity = $this->loadRevisionForDiff($previousRevision);
 
-		return view('jam::admin.diff', compact('previousEntity', 'entity'));
+		return view('jam::admin.diff', compact('previousEntity', 'entity', 'revision'));
 	}
 
 	private function loadRevisionForDiff($revision)
