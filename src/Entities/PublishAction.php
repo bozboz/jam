@@ -34,6 +34,12 @@ class PublishAction extends DropdownAction
 				$attributes['class'] = 'btn-warning btn-sm';
 			break;
 
+			case Revision::PUBLISHED_WITH_DRAFTS:
+				$label = 'Published (With Drafts)';
+				$icon = 'fa-check';
+				$attributes['class'] = 'btn-warning btn-sm';
+			break;
+
 			default:
 				$label = 'Hidden';
 				$icon = 'fa-times';

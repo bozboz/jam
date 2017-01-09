@@ -3,6 +3,7 @@
 namespace Bozboz\Jam\Entities;
 
 use Bozboz\Admin\Base\ModelAdminDecorator;
+use Bozboz\Admin\Fields\DateTimeField;
 use Bozboz\Admin\Fields\HiddenField;
 use Bozboz\Admin\Fields\TextField;
 use Bozboz\Admin\Fields\URLField;
@@ -36,6 +37,9 @@ class EntityDecorator extends ModelAdminDecorator
 
 	public function getColumns($instance)
 	{
+		$linkText = '<i class="fa fa-external-link"></i>';
+		$path = $instance->canonical_path;
+
 		switch ($instance->status) {
 			case Revision::PUBLISHED:
 				$publishedAt = $instance->currentRevision->formatted_published_at;
@@ -49,15 +53,26 @@ class EntityDecorator extends ModelAdminDecorator
 				$statusLabel = "<small><abbr title='{$publishedAt} by {$user}'>Scheduled</abbr></small>";
 			break;
 
+			case Revision::PUBLISHED_WITH_DRAFTS:
+				$publishedAt = $instance->latestRevision()->created_at->format('d-m-Y H:i');
+				$user = $instance->latestRevision()->username;
+				$statusLabel = "<small><abbr title='{$publishedAt} by {$user}'>Has Draft</abbr></small>";
+
+				$linkText = 'preview <i class="fa fa-external-link"></i>';
+				$path = $instance->canonical_path . '?p=' . md5(date('ymd'));
+			break;
+
 			default:
 				$statusLabel = null;
+				$linkText = 'preview <i class="fa fa-external-link"></i>';
+				$path = $instance->canonical_path . '?p=' . md5(date('ymd'));
 			break;
 		}
-		$path = $instance->canonical_path;
+
 		$columns = collect($this->getCustomColumns($instance));
 		$columns->prepend(
 			$this->getLabel($instance) . ( $path
-				? '&nbsp;&nbsp;<a href="/'.$path.'" target="_blank" title="Go to '.$this->getLabel($instance).'"><i class="fa fa-external-link"></i></a>'
+				? '&nbsp;&nbsp;<a href="'.url($path).'" target="_blank" title="Go to '.$this->getLabel($instance).'">'.$linkText.'</a>'
 				: null
 		), 'Name')->put('Status', $statusLabel);
 		return $columns->all();
@@ -92,7 +107,12 @@ class EntityDecorator extends ModelAdminDecorator
 			new HiddenField('template_id'),
 			new HiddenField('user_id', Auth::id()),
 			new HiddenField('parent_id'),
-			$canEditStatus ? new PublishField('status', $instance) : null,
+			$canEditStatus
+				? new DateTimeField('currentRevision[published_at]', [
+					'label' => 'Published At',
+					'help_text' => 'If you enter a date in the future, this will be hidden from the site until that date is reached.',
+				])
+				: new HiddenField('currentRevision[published_at]'),
 		]));
 
 		return $fields->merge($this->getTemplateFields($instance))->all();
@@ -185,7 +205,7 @@ class EntityDecorator extends ModelAdminDecorator
 			$query->whereTypeAlias($this->type->alias);
 		});
 
-		$query->ordered();
+		$query->ordered()->with('revisions');
 	}
 
 	public function findInstance($id)

@@ -34,13 +34,6 @@ class Entity extends Node implements ModelInterface
 		'parent_id'
 	];
 
-	protected $revisionable = [
-		'parent_id',
-		'_lft',
-		'_rgt',
-		'slug',
-	];
-
 	protected static $mapper;
 
 	protected $dates = ['deleted_at'];
@@ -174,7 +167,7 @@ class Entity extends Node implements ModelInterface
 	 */
 	public function revisions()
 	{
-		return $this->hasMany(Revision::class);
+		return $this->hasMany(Revision::class)->latest();
 	}
 
 	/**
@@ -194,21 +187,23 @@ class Entity extends Node implements ModelInterface
 	 */
 	public function latestRevision()
 	{
-		return Revision::whereEntityId($this->id)->latest()->first();
+		return $this->revisions->first();
 	}
 
 	public function scopeWithLatestRevision($query)
 	{
 		$query->with(['revisions' => function($query) {
-			$query->latest()->limit(1);
+			$query->limit(1);
 		}]);
 	}
 
 	public function scopeActive($query)
 	{
-		$query->whereHas('currentRevision', function($query) {
-			$query->isPublished();
-		});
+		if ( ! config('jam.preview-mode')) {
+			$query->whereHas('currentRevision', function($query) {
+				$query->isPublished();
+			});
+		}
 	}
 
 	public function scopeOfType($query, $typeAlias)
@@ -259,14 +254,20 @@ class Entity extends Node implements ModelInterface
 
 	public function currentValues()
 	{
-		return $this->hasMany(CurrentValue::class, 'revision_id', 'revision_id');
+		if (config('jam.preview-mode')) {
+			// This isn't an especially good way of going about things... needs revisiting
+			$latestRevisions = Revision::groupBy(\DB::raw('entity_id DESC'))->orderBy('created_at', 'DESC')->pluck('id');
+			return $this->hasManyThrough(CurrentValue::class, Revision::class)->whereIn('entity_revisions.id', $latestRevisions);
+		} else {
+			return $this->hasMany(CurrentValue::class, 'revision_id', 'revision_id');
+		}
 	}
 
 	public function canPublish()
 	{
 		return !$this->currentRevision || (
-			$this->currentRevision
-			&& $this->currentRevision->status != Revision::PUBLISHED
+			$this->status !== Revision::PUBLISHED
+			|| $this->status === Revision::PUBLISHED_WITH_DRAFTS
 		);
 	}
 
@@ -278,9 +279,8 @@ class Entity extends Node implements ModelInterface
 	public function canSchedule()
 	{
 		return !$this->currentRevision || (
-			$this->currentRevision
-			&& $this->currentRevision->status != Revision::SCHEDULED
-			&& $this->currentRevision->status != Revision::PUBLISHED
+			$this->status !== Revision::SCHEDULED
+			&& $this->status !== Revision::PUBLISHED
 		);
 	}
 
