@@ -17,7 +17,7 @@
             <td><label><input type="radio" name="diff_type" value="diffLines"> Diff by line &nbsp;&nbsp;</label></td>
         </tr>
     </table>
-    <dl>
+    <dl class="js-diff">
     @foreach ($entity->template->fields as $field)
         <dt>{{ $field->getInputLabel() }}</dt>
         <dd style="word-wrap:break-word;" data-from="{{ $previousEntity->getAttribute($field->name) }}" data-to="{{ $entity->getAttribute($field->name) }}"><pre></pre></dd>
@@ -25,6 +25,7 @@
     </dl>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsdiff/3.2.0/diff.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/autolinker/1.4.0/Autolinker.min.js"></script>
     <script>
     function diffIt(type) {
         var entityData = document.querySelectorAll('[data-from]');
@@ -50,6 +51,10 @@
             });
             pre.appendChild(fragment);
         }
+
+        var container = document.querySelector('.js-diff');
+
+        container.innerHTML = Autolinker.link(container.innerHTML);
     }
 
     var radio = document.getElementsByName('diff_type');
