@@ -95,7 +95,7 @@ class EntityRevisionController extends ModelAdminController
 			$this->actions->custom(
 				new Form($this->getActionName('revert'), 'Revert', 'fa fa-undo', [
 					'class' => 'btn-sm btn-warning',
-					'warn' => 'Are you sure you wish to revert to this revision? This action cannot be undone.'
+					'data-warn' => 'Are you sure you wish to revert to this revision? This action cannot be undone.'
 				]),
 				new IsValid([$this, 'canEdit'])
 			),
