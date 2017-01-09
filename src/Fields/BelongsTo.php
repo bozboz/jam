@@ -59,6 +59,17 @@ class BelongsTo extends Field
         }
     }
 
+    public function injectDiffValue(Entity $entity, Revision $revision)
+    {
+        $value = $revision->fieldValues->where('key', $this->name)->first() ?: new Value(['key' => $this->name]);
+        $this->injectValue($entity, $value);
+        $entity->setAttribute(
+            $value->key,
+            $entity->getAttribute($value->key) ? $entity->getAttribute($value->key)->name : null
+        );
+        return $value;
+    }
+
     public function getOptionFields()
     {
         return [

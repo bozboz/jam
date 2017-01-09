@@ -64,6 +64,19 @@ abstract class BelongsToMany extends BelongsTo
         $entity->setAttribute($this->getInputName(), $this->relation($value)->getRelatedIds()->all());
     }
 
+    public function injectDiffValue(Entity $entity, Revision $revision)
+    {
+        $value = $revision->fieldValues->where('key', $this->name)->first() ?: new Value(['key' => $this->name]);
+        $this->injectValue($entity, $value);
+        $entity->setAttribute(
+            $value->key,
+            $entity->getAttribute($value->key)->map(function($entity) {
+                return $entity->name;
+            })->implode("\n")
+        );
+        return $value;
+    }
+
     public function relation(Value $value)
     {
         $pivot = $this->getPivot();

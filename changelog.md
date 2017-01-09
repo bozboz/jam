@@ -1,5 +1,9 @@
 # Jam Changelog
 
+## Version 1.1.0 (Future)
+
+-   Add revision diff feature
+
 ## Version 1.0.6 (Future)
 
 -   Add validation to fields to prevent duplicate names on templates
