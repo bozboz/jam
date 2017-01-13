@@ -4,6 +4,7 @@ namespace Bozboz\Jam\Http\Controllers\Admin;
 
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Templates\Template;
+use Bozboz\Jam\Types\EntityList;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use Redirect;
@@ -34,11 +35,32 @@ class EntityListController extends EntityController
      */
     protected function getSuccessResponse($instance)
     {
-        return \Redirect::action('\\' . $this->getEntityController() . '@edit', [$instance->parent_id]);
+        return Redirect::action($this->getResponseAction($instance), [$instance->parent_id]);
     }
 
     protected function getListingUrl($instance)
     {
-        return action('\\' . $this->getEntityController() . '@edit', [$instance->parent_id]);
+        return action($this->getResponseAction($instance), [$instance->parent_id]);
+    }
+
+    /**
+     * If the parent of the current entity is an entity list type then use this
+     * controller for the response action.
+     * @param  Entity $instance
+     * @return string
+     */
+    protected function getResponseAction($instance)
+    {
+        $parent = $instance->parent;
+
+        $entityListTypes = app('EntityMapper')->getAll(EntityList::class)->map(function($type) {
+            return $type->alias;
+        });
+
+        if ($entityListTypes->contains($parent->template->type_alias)) {
+            return $this->getActionName('edit');
+        }
+
+        return '\\' . $this->getEntityController() . '@edit';
     }
 }

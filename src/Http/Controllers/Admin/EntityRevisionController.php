@@ -7,6 +7,7 @@ use Bozboz\Admin\Reports\Actions\Permissions\IsValid;
 use Bozboz\Admin\Reports\Actions\Presenters\Form;
 use Bozboz\Admin\Reports\Actions\Presenters\Link;
 use Bozboz\Admin\Reports\Actions\Presenters\Urls\Custom as CustomUrl;
+use Bozboz\Jam\Entities\CurrentValue;
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\Revision;
 use Bozboz\Jam\Entities\RevisionDecorator;
@@ -86,13 +87,39 @@ class EntityRevisionController extends ModelAdminController
 				new IsValid([$this, 'canEdit'])
 			),
 			$this->actions->custom(
+				new Link(new CustomUrl(function($instance) {
+					return action($this->getActionName('diff'), $instance->id);
+				}), 'Diff With Previous', 'fa fa-files-o', ['class' => 'btn-default']),
+				new IsValid([$this, 'canEdit'])
+			),
+			$this->actions->custom(
 				new Form($this->getActionName('revert'), 'Revert', 'fa fa-undo', [
 					'class' => 'btn-sm btn-warning',
-					'warn' => 'Are you sure you wish to revert to this revision? This action cannot be undone.'
+					'data-warn' => 'Are you sure you wish to revert to this revision? This action cannot be undone.'
 				]),
 				new IsValid([$this, 'canEdit'])
 			),
 		];
+	}
+
+	public function diff($revisionId)
+	{
+		$revision = Revision::find($revisionId);
+		$previousRevision = Revision::whereEntityId($revision->entity_id)->where('created_at', '<', $revision->created_at)->orderBy('created_at', 'desc')->limit(1)->first();
+
+		$entity = $this->loadRevisionForDiff($revision);
+		$previousEntity = $previousRevision ? $this->loadRevisionForDiff($previousRevision) : new Entity;
+
+		return view('jam::admin.diff', compact('previousEntity', 'entity', 'revision'));
+	}
+
+	private function loadRevisionForDiff($revision)
+	{
+		$entity = $revision->entity;
+		$entity->template->fields->each(function($field) use ($entity, $revision) {
+			$field->injectDiffValue($entity, $revision);
+		});
+		return $entity;
 	}
 
 	public function getSuccessResponse($instance)

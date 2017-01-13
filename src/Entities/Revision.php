@@ -25,6 +25,7 @@ class Revision extends Model
 
 	const PUBLISHED = 1;
 	const SCHEDULED = 2;
+	const PUBLISHED_WITH_DRAFTS = 3;
 
 	public static function boot()
 	{
@@ -86,7 +87,9 @@ class Revision extends Model
 
 	public function getStatusAttribute()
 	{
-		if ($this->published_at && $this->published_at->isFuture()) {
+		if ($this->entity->latestRevision()->id !== $this->id) {
+			return static::PUBLISHED_WITH_DRAFTS;
+		} elseif ($this->published_at && $this->published_at->isFuture()) {
 			return static::SCHEDULED;
 		} else {
 			return static::PUBLISHED;

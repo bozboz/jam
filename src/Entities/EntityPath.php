@@ -24,7 +24,7 @@ class EntityPath extends Model
 	{
 		$query->where(function($query) use ($entity) {
 			$query->whereEntityId($entity->id)->orWhereHas('entity', function($query) use ($entity) {
-				$query->whereDescendantOf($entity, 'and');
+				$query->whereDescendantOf($entity, 'and')->withTrashed();
 			});
 		});
 	}

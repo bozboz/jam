@@ -4,8 +4,10 @@ namespace Bozboz\Jam\Http\Controllers\Admin;
 
 use Bozboz\Admin\Http\Controllers\ModelAdminController;
 use Bozboz\Admin\Reports\Actions\Permissions\IsValid;
+use Bozboz\Admin\Reports\Actions\Presenters\Button;
 use Bozboz\Admin\Reports\Actions\Presenters\Form;
 use Bozboz\Admin\Reports\Actions\Presenters\Link;
+use Bozboz\Admin\Reports\Actions\Presenters\Urls\Url;
 use Bozboz\Jam\Entities\EntityDecorator;
 use Bozboz\Jam\Entities\Revision;
 use Bozboz\Jam\Repositories\Contracts\EntityRepository;
@@ -119,18 +121,18 @@ class EntityController extends ModelAdminController
 			$this->actions->publish([
 				$this->actions->custom(
 					new Form($this->getActionName('publish'), 'Publish'),
-					new IsValid([$this, 'canPublish'])
+					new IsValid([$this, 'canPublishFromRow'])
 				),
 				$this->actions->custom(
 					new Form($this->getActionName('unpublish'), 'Hide'),
 					new IsValid([$this, 'canHide'])
 				),
-				$this->actions->custom(
-					new Form($this->getActionName('schedule'), 'Schedule', null, [], [
-						'class' => 'js-datepicker-popup',
-					]),
-					new IsValid([$this, 'canSchedule'])
-				)
+				// $this->actions->custom(
+				// 	new Form($this->getActionName('schedule'), 'Schedule', null, [], [
+				// 		'class' => 'js-datepicker-popup',
+				// 	]),
+				// 	new IsValid([$this, 'canSchedule'])
+				// )
 			]),
 			$this->actions->custom(
 				new Link($entityRevisionController->getActionName('indexForEntity'), 'History', 'fa fa-history', [
@@ -139,6 +141,72 @@ class EntityController extends ModelAdminController
 				new IsValid([$entityRevisionController, 'canView'])
 			)
 		], parent::getRowActions());
+	}
+
+	public function getFormActions($instance)
+	{
+		$publishOptions = [
+			$this->actions->custom(
+				new Button('Publish', 'fa fa-save', [
+					'type' => 'submit',
+					'name' => 'submit',
+					'value' => json_encode([
+						'after_save' => 'continue',
+						'status' => 'publish'
+					]),
+					'class' => 'btn-success btn'
+				]),
+				new IsValid([$this, 'canPublish'])
+			),
+			$this->actions->custom(
+				new Button('Publish and Exit', 'fa fa-save', [
+					'type' => 'submit',
+					'name' => 'submit',
+					'value' => json_encode([
+						'after_save' => 'exit',
+						'status' => 'publish'
+					]),
+				]),
+				new IsValid([$this, 'canPublish'])
+			),
+		];
+		$draftOptions = [
+			$this->actions->submit('Save as Draft', 'fa fa-pencil-square-o', [
+				'name' => 'submit',
+				'value' => json_encode([
+					'after_save' => 'continue',
+					'status' => 'draft'
+				]),
+				'class' => 'btn-warning btn'
+			]),
+			$this->actions->submit('Save as Draft and Exit', 'fa fa-pencil-square-o', [
+				'name' => 'submit',
+				'value' => json_encode([
+					'after_save' => 'exit',
+					'status' => 'draft'
+				]),
+			]),
+		];
+		return [
+			$this->actions->dropdown($publishOptions, 'Publish', '', [
+				'class' => 'btn-success',
+				'split_button' => true,
+			], [
+				'class' => 'pull-right space-left',
+			]),
+			$this->actions->dropdown($draftOptions, 'Save as Draft', '', [
+				'class' => 'btn-warning',
+				'split_button' => true,
+			], [
+				'class' => 'pull-right space-left',
+			]),
+			$this->actions->custom(
+				new Link(new Url($this->getListingUrl($instance)), 'Back to listing', 'fa fa-list-alt', [
+					'class' => 'btn-default pull-right space-left',
+				]),
+				new IsValid([$this, 'canView'])
+			),
+		];
 	}
 
 	public function createOfType($type, $template)
@@ -153,6 +221,11 @@ class EntityController extends ModelAdminController
 
 	protected function save($modelInstance, $input)
 	{
+		if (array_key_exists('submit', $input)) {
+			$submit = json_decode($input['submit'], true);
+			Input::merge($submit);
+			$input['status'] = $submit['status'];
+		}
 		parent::save($modelInstance, $input);
 		$this->repository->newRevision($modelInstance, $input);
 	}
@@ -243,6 +316,11 @@ class EntityController extends ModelAdminController
 	}
 
 	public function canPublish($instance)
+	{
+		return RuleStack::with('publish_entity')->isAllowed();
+	}
+
+	public function canPublishFromRow($instance)
 	{
 		return $instance->canPublish() && RuleStack::with('publish_entity')->isAllowed();
 	}

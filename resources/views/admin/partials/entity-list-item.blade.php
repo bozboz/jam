@@ -5,7 +5,11 @@
             <div class="panel panel-danger"><div class="panel-heading">
                 Hidden
             </div></div>
-        @elseif ($entity->currentRevision->published_at->isFuture())
+        @elseif ($entity->status === Bozboz\Jam\Entities\Revision::PUBLISHED_WITH_DRAFTS)
+            <div class="panel panel-warning"><div class="panel-heading">
+                Has Draft
+            </div></div>
+        @elseif ($entity->status === Bozboz\Jam\Entities\Revision::SCHEDULED)
             <div class="panel panel-warning"><div class="panel-heading">
                 <abbr title="{{ $entity->currentRevision->formatted_published_at }}">Scheduled</abbr>
             </div></div>

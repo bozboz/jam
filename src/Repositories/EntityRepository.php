@@ -100,34 +100,33 @@ class EntityRepository implements EntityRepositoryInterface
 
     public function newRevision(Entity $entity, $input)
     {
-        switch ($input['status']) {
-            case Revision::SCHEDULED:
-                $publishedAt = $input['currentRevision']['published_at'];
-            break;
+        $input = collect($input);
 
-            case Revision::PUBLISHED:
-                $publishedAt = !$input['currentRevision']['published_at'] || (new Carbon($input['currentRevision']['published_at']))->isFuture()
-                    ? $entity->freshTimestamp()
-                    : $input['currentRevision']['published_at'];
-            break;
-
-            default:
-                $publishedAt = null;
+        if ($input->get('currentRevision')) {
+            $publishedAt = $input['currentRevision']['published_at'];
+        } else {
+            $publishedAt = null;
         }
-        $revision = $entity->revisions()->create([
+        $revision = $entity->revisions()->create(array_filter([
             'published_at' => $publishedAt,
             'user_id' => $input['user_id']
-        ]);
+        ]));
 
         foreach ($entity->template->fields as $field) {
             $field->saveValue($revision, $input[$field->getInputName()]);
         }
 
-        if ($publishedAt) {
-            $entity->currentRevision()->associate($revision);
-        } else {
-            $entity->currentRevision()->dissociate();
+        switch ($input->get('status')) {
+            case 'publish':
+                $entity->currentRevision()->associate($revision);
+            break;
+
+            case 'draft':
+            default:
+                // do nothing
+            break;
         }
+
         $entity->save();
 
         $this->event->fire(new EntitySaved($entity));

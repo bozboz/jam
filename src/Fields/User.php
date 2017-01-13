@@ -6,6 +6,7 @@ use Bozboz\Admin\Fields\CheckboxField;
 use Bozboz\Admin\Fields\SelectField;
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\EntityDecorator;
+use Bozboz\Jam\Entities\Revision;
 use Bozboz\Jam\Entities\Value;
 use Bozboz\Jam\Fields\Field;
 use Illuminate\Support\Facades\Auth;
@@ -38,6 +39,19 @@ class User extends Field
     protected function getDefaultUser()
     {
         return $this->getOption('default_to_logged_in_user') ? Auth::user()->id : null;
+    }
+
+    public function injectDiffValue(Entity $entity, Revision $revision)
+    {
+        $value = $revision->fieldValues->where('key', $this->name)->first() ?: new Value(['key' => $this->name]);
+        $user = $this->getValue($value);
+        if ($user) {
+            $entity->setAttribute(
+                $value->key,
+                $user->first_name . ' ' . $user->last_name
+            );
+        }
+        return $value;
     }
 
     protected function getUserOptions()

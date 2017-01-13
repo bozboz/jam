@@ -32,6 +32,19 @@ class Gallery extends Field
 		$entity->setAttribute($this->getInputName(), $this->relation($value)->getRelatedIds()->all());
 	}
 
+    public function injectDiffValue(Entity $entity, Revision $revision)
+    {
+        $value = $revision->fieldValues->where('key', $this->name)->first() ?: new Value(['key' => $this->name]);
+        $this->injectValue($entity, $value);
+        $entity->setAttribute(
+            $value->key,
+            $entity->getAttribute($value->key)->map(function($media) {
+                return url($media->getFilename());
+            })->implode("\n")
+        );
+        return $value;
+    }
+
 	public function getInputName()
 	{
 		return e($this->name).'_relationship';
