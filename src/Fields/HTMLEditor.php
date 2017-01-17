@@ -7,15 +7,18 @@ use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\EntityDecorator;
 use Bozboz\Jam\Entities\Value;
 
-class HTMLEditor extends Field
+class HTMLEditor extends Textarea
 {
-	public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
-	{
-	    return new HTMLEditorField([
-			'name' => $this->getInputName(),
-			'label' => $this->getInputLabel(),
-            'help_text_title' => $this->help_text_title,
-            'help_text' => $this->help_text,
-		]);
-	}
+	public function getOption($key)
+    {
+        if ($key == 'wysiwyg') {
+            return 1;
+        }
+        return parent::getOption($key);
+    }
+
+    public function getOptionFields()
+    {
+        return [];
+    }
 }
