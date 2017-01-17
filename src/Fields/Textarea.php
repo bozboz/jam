@@ -12,6 +12,13 @@ use Netcarver\Textile\Parser;
 
 class Textarea extends Field
 {
+    public function getValueAttribute()
+    {
+        if ( ! trim(strip_tags($this->attributes['value']))) {
+            return null;
+        }
+        return $this->attributes['value'];
+    }
 	public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
 	{
         if ($this->getOption('wysiwyg')) {
