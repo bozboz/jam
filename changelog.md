@@ -1,5 +1,11 @@
 # Jam Changelog
 
+## Version 1.2.0 (Future)
+
+-   Allow entities to be gated by user role
+-   Strip the stupid `<p><br></p>` the summernote adds out of WYSIWYG fields
+-   Set up dropdown field type
+
 ## Version 1.1.0 (2017-01-09)
 
 -   Rearrange publishing/scheduling feature for better usability
