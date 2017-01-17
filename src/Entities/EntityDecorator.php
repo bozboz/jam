@@ -129,16 +129,17 @@ class EntityDecorator extends ModelAdminDecorator
 	public function getFields($instance)
 	{
 		$canEditStatus = Gate::allows('hide_entity') || Gate::allows('publish_entity') || Gate::allows('schedule_entity');
+		$canRestrictAccess = Gate::allows('gate_entities');
 		$fields = new Collection(array_filter([
 			new TextField('name', ['label' => 'Name *']),
 			$instance->exists && $instance->template->type()->isVisible() ? new TextField('slug', ['label' => 'Slug *']) : null,
 			new HiddenField('template_id'),
 			new HiddenField('user_id', Auth::id()),
 			new HiddenField('parent_id'),
-			new BelongsToManyField($this->roles, $instance->roles(), [
+			$canRestrictAccess ? new BelongsToManyField($this->roles, $instance->roles(), [
 				'label' => 'Restrict visibility by role',
 				'help_text' => 'Leave blank for full public access'
-			]),
+			]) : null,
 			$canEditStatus
 				? new DateTimeField('currentRevision[published_at]', [
 					'label' => 'Published At',
