@@ -45,46 +45,47 @@ class EntityDecorator extends ModelAdminDecorator
 		$columns = collect($this->getCustomColumns($instance));
 
 		$columns->prepend($this->getPreviewLink($instance), 'Name');
+
+		$linkText = '<i class="fa fa-external-link"></i>';
+		$path = $instance->canonical_path;
+
+		switch ($instance->status) {
+			case Revision::PUBLISHED:
+				$publishedAt = $instance->currentRevision->formatted_published_at;
+				$user = $instance->currentRevision->username;
+				$statusLabel = "<small><abbr title='{$publishedAt} by {$user}'>Published</abbr></small>";
+			break;
+
+			case Revision::SCHEDULED:
+				$publishedAt = $instance->currentRevision->formatted_published_at;
+				$user = $instance->currentRevision->username;
+				$statusLabel = "<small><abbr title='{$publishedAt} by {$user}'>Scheduled</abbr></small>";
+			break;
+
+			case Revision::PUBLISHED_WITH_DRAFTS:
+				$publishedAt = $instance->latestRevision()->created_at->format('d-m-Y H:i');
+				$user = $instance->latestRevision()->username;
+				$statusLabel = "<small><abbr title='{$publishedAt} by {$user}'>Has Draft</abbr></small>";
+
+				$linkText = 'preview <i class="fa fa-external-link"></i>';
+				$path = $instance->canonical_path . '?p=' . md5(date('ymd'));
+			break;
+
+			default:
+				$statusLabel = null;
+				$linkText = 'preview <i class="fa fa-external-link"></i>';
+				$path = $instance->canonical_path . '?p=' . md5(date('ymd'));
+			break;
+		}
+
+		$columns->prepend(
+			$this->getLabel($instance) . ( $path
+				? '&nbsp;&nbsp;<a href="'.url($path).'" target="_blank" title="Go to '.$this->getLabel($instance).'">'.$linkText.'</a>'
+				: null
+		), 'Name')->put('Status', $statusLabel);
+
 		$columns->put('', $this->getLockState($instance));
 
-		// $linkText = '<i class="fa fa-external-link"></i>';
-		// $path = $instance->canonical_path;
-
-		// switch ($instance->status) {
-		// 	case Revision::PUBLISHED:
-		// 		$publishedAt = $instance->currentRevision->formatted_published_at;
-		// 		$user = $instance->currentRevision->username;
-		// 		$statusLabel = "<small><abbr title='{$publishedAt} by {$user}'>Published</abbr></small>";
-		// 	break;
-
-		// 	case Revision::SCHEDULED:
-		// 		$publishedAt = $instance->currentRevision->formatted_published_at;
-		// 		$user = $instance->currentRevision->username;
-		// 		$statusLabel = "<small><abbr title='{$publishedAt} by {$user}'>Scheduled</abbr></small>";
-		// 	break;
-
-		// 	case Revision::PUBLISHED_WITH_DRAFTS:
-		// 		$publishedAt = $instance->latestRevision()->created_at->format('d-m-Y H:i');
-		// 		$user = $instance->latestRevision()->username;
-		// 		$statusLabel = "<small><abbr title='{$publishedAt} by {$user}'>Has Draft</abbr></small>";
-
-		// 		$linkText = 'preview <i class="fa fa-external-link"></i>';
-		// 		$path = $instance->canonical_path . '?p=' . md5(date('ymd'));
-		// 	break;
-
-		// 	default:
-		// 		$statusLabel = null;
-		// 		$linkText = 'preview <i class="fa fa-external-link"></i>';
-		// 		$path = $instance->canonical_path . '?p=' . md5(date('ymd'));
-		// 	break;
-		// }
-
-		// $columns = collect($this->getCustomColumns($instance));
-		// $columns->prepend(
-		// 	$this->getLabel($instance) . ( $path
-		// 		? '&nbsp;&nbsp;<a href="'.url($path).'" target="_blank" title="Go to '.$this->getLabel($instance).'">'.$linkText.'</a>'
-		// 		: null
-		// ), 'Name')->put('Status', $statusLabel);
 		return $columns->all();
 	}
 
@@ -241,7 +242,7 @@ class EntityDecorator extends ModelAdminDecorator
 
 	public function findInstance($id)
 	{
-		return $this->model->withLatestRevision()->whereId($id)->firstOrFail();
+		return $this->model->withLatestRevision()->with('currentRevision')->whereId($id)->firstOrFail();
 	}
 
 	public function getSyncRelations()
