@@ -317,22 +317,22 @@ class EntityController extends ModelAdminController
 
 	public function canPublish($instance)
 	{
-		return RuleStack::with('publish_entity')->isAllowed();
+		return RuleStack::with('publish_entity', $instance->template->type_alias)->isAllowed();
 	}
 
 	public function canPublishFromRow($instance)
 	{
-		return $instance->canPublish() && RuleStack::with('publish_entity')->isAllowed();
+		return $instance->canPublish() && RuleStack::with('publish_entity', $instance->template->type_alias)->isAllowed();
 	}
 
 	public function canHide($instance)
 	{
-		return $instance->canHide() && RuleStack::with('hide_entity')->isAllowed();
+		return $instance->canHide() && RuleStack::with('hide_entity', $instance->template->type_alias)->isAllowed();
 	}
 
 	public function canSchedule($instance)
 	{
-		return $instance->canSchedule() && RuleStack::with('schedule_entity')->isAllowed();
+		return $instance->canSchedule() && RuleStack::with('schedule_entity', $instance->template->type_alias)->isAllowed();
 	}
 
 	protected function createPermissions($stack, $instance)
