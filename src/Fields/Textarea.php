@@ -19,6 +19,7 @@ class Textarea extends Field
         }
         return $this->attributes['value'];
     }
+
 	public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
 	{
         if ($this->getOption('wysiwyg')) {

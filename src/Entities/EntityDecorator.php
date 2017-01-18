@@ -68,13 +68,13 @@ class EntityDecorator extends ModelAdminDecorator
 				$statusLabel = "<small><abbr title='{$publishedAt} by {$user}'>Has Draft</abbr></small>";
 
 				$linkText = 'preview <i class="fa fa-external-link"></i>';
-				$path = $instance->canonical_path . '?p=' . md5(date('ymd'));
+				$path = $path ? $path . '?p=' . md5(date('ymd')) : null;
 			break;
 
 			default:
 				$statusLabel = null;
 				$linkText = 'preview <i class="fa fa-external-link"></i>';
-				$path = $instance->canonical_path . '?p=' . md5(date('ymd'));
+				$path = $path ? $path . '?p=' . md5(date('ymd')) : null;
 			break;
 		}
 
