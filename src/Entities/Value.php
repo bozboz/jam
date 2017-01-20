@@ -17,6 +17,14 @@ class Value extends Model
 		'field_id',
 	];
 
+    public function getValueAttribute()
+    {
+        if ( ! trim(strip_tags($this->attributes['value']))) {
+            return null;
+        }
+        return $this->attributes['value'];
+    }
+
 	public function revision()
 	{
 		return $this->belongsTo(Revision::class);
