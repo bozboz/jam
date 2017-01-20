@@ -418,12 +418,14 @@ class Entity extends Node implements ModelInterface
 
 	public function scopeAuthorised($query)
 	{
-		$query->wheredoesntHave('roles');
+		if ( ! Gate::allows('view_gated_entities')) {
+			$query->wheredoesntHave('roles');
 
-		if (\Auth::check() && ! Gate::allows('view_gated_entities')) {
-			$query->orWhereHas('roles', function($q) {
-				$q->where('roles.id', \Auth::user()->role_id);
-			});
+			if (\Auth::check()) {
+				$query->orWhereHas('roles', function($q) {
+					$q->where('roles.id', \Auth::user()->role_id);
+				});
+			}
 		}
 	}
 
