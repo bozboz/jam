@@ -1,5 +1,9 @@
 # Jam Changelog
 
+## Version 1.1.1 (2017-01-25)
+
+-   Fix initial publish action
+
 ## Version 1.1.0 (2017-01-09)
 
 -   Rearrange publishing/scheduling feature for better usability

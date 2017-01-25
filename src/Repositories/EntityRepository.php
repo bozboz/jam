@@ -109,7 +109,7 @@ class EntityRepository implements EntityRepositoryInterface
         $input = collect($input);
 
         if ($input->get('currentRevision')) {
-            $publishedAt = $input['currentRevision']['published_at'];
+            $publishedAt = $input['currentRevision']['published_at'] ?: $entity->freshTimestamp();
         } else {
             $publishedAt = null;
         }
