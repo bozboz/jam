@@ -14,6 +14,7 @@ use Bozboz\Jam\Field;
 use Bozboz\Jam\Mapper;
 use Bozboz\Jam\Templates\Template;
 use Bozboz\Jam\Types\Type;
+use Bozboz\Permissions\Facades\Gate;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Request;
 use Kalnoy\Nestedset\Node;
@@ -112,6 +113,11 @@ class Entity extends Node implements ModelInterface
 	public function getForeignKey()
 	{
 		return 'entity_id';
+	}
+
+	public function roles()
+	{
+		return $this->belongsToMany(\Bozboz\Admin\Users\Role::class, 'entity_role');
 	}
 
 	public function paths()
@@ -408,5 +414,29 @@ class Entity extends Node implements ModelInterface
 		});
 
 		return $this;
+	}
+
+	public function scopeAuthorised($query)
+	{
+		if ( ! Gate::allows('view_gated_entities')) {
+			$query->wheredoesntHave('roles');
+
+			if (\Auth::check()) {
+				$query->orWhereHas('roles', function($q) {
+					$q->where('roles.id', \Auth::user()->role_id);
+				});
+			}
+		}
+	}
+
+	public function scopeOnlyAuthorisedTo($query, \Bozboz\Permissions\UserInterface $user)
+	{
+		if (Gate::allows('view_gated_entities')) {
+			$query->has('roles');
+		} else {
+			$query->whereHas('roles', function($q) use ($user) {
+				$q->where('roles.id', $user->role_id);
+			});
+		}
 	}
 }

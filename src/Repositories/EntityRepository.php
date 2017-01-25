@@ -2,32 +2,26 @@
 
 namespace Bozboz\Jam\Repositories;
 
-use Bozboz\Jam\Entities\CurrentValue;
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\EntityPath;
 use Bozboz\Jam\Entities\Events\EntitySaved;
 use Bozboz\Jam\Entities\Revision;
 use Bozboz\Jam\Repositories\Contracts\EntityRepository as EntityRepositoryInterface;
+use Bozboz\Permissions\Facades\Gate;
 use Carbon\Carbon;
+use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\Support\Facades\DB;
-use Kalnoy\Nestedset\Collection;
 
 class EntityRepository implements EntityRepositoryInterface
 {
     protected $mapper;
-    protected $query;
     private $event;
 
-    function __construct(Dispatcher $event)
+    function __construct(Dispatcher $event, Guard $auth)
     {
         $this->mapper = app()->make('EntityMapper');
+        $this->auth = $auth;
         $this->event = $event;
-    }
-
-    public function newQuery($typeAlias)
-    {
-        $this->query = $this->mapper->get($typeAlias)->getEntity()->newQuery();
     }
 
     public function find($id)
@@ -51,7 +45,7 @@ class EntityRepository implements EntityRepositoryInterface
             if ($templateAlias) {
                 $query->where('alias', $templateAlias);
             }
-        });
+        })->authorised();
     }
 
     public function getForPath($path)
@@ -109,7 +103,7 @@ class EntityRepository implements EntityRepositoryInterface
         $input = collect($input);
 
         if ($input->get('currentRevision')) {
-            $publishedAt = $input['currentRevision']['published_at'];
+            $publishedAt = $input['currentRevision']['published_at'] ?: $entity->freshTimestamp();
         } else {
             $publishedAt = null;
         }
@@ -138,5 +132,22 @@ class EntityRepository implements EntityRepositoryInterface
         $this->event->fire(new EntitySaved($entity));
 
         return $revision;
+    }
+
+    /**
+     * Authorised if:
+     *   - the entity has no defined roles
+     *   - the authenticated user has the "view_gated_entitites" permission
+     *   - the authenticated user's role matches the entity's
+     *
+     * @param  Bozboz\Jam\Entities\Entity  $entity
+     * @return boolean
+     */
+    public function isAuthorised(Entity $entity)
+    {
+        return $entity->roles->isEmpty() || Gate::allows('view_gated_entities') || (
+            $this->auth->user() &&
+            $entity->roles->contains($this->auth->user()->role)
+        );
     }
 }

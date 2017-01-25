@@ -13,12 +13,12 @@
     <table cellpadding="5" style="margin: auto">
         <tr>
             <td><label><input type="radio" name="diff_type" value="diffChars"> Diff by character &nbsp;&nbsp;</label></td>
-            <td><label><input type="radio" name="diff_type" value="diffWords" checked> Diff by word &nbsp;&nbsp;</label></td>
-            <td><label><input type="radio" name="diff_type" value="diffLines"> Diff by line &nbsp;&nbsp;</label></td>
+            <td><label><input type="radio" name="diff_type" value="diffWords"> Diff by word &nbsp;&nbsp;</label></td>
+            <td><label><input type="radio" name="diff_type" value="diffLines" checked> Diff by line &nbsp;&nbsp;</label></td>
         </tr>
     </table>
     <dl class="js-diff">
-    @foreach ($entity->template->fields as $field)
+    @foreach ($entity->template->fields->sortBy('sorting') as $field)
         <dt>{{ $field->getInputLabel() }}</dt>
         <dd style="word-wrap:break-word;" data-from="{{ $previousEntity->getAttribute($field->name) }}" data-to="{{ $entity->getAttribute($field->name) }}"><pre></pre></dd>
     @endforeach

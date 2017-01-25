@@ -116,7 +116,7 @@ class EntityRevisionController extends ModelAdminController
 	private function loadRevisionForDiff($revision)
 	{
 		$entity = $revision->entity;
-		$entity->template->fields->each(function($field) use ($entity, $revision) {
+		$entity->template->fields()->orderBy('sorting')->get()->each(function($field) use ($entity, $revision) {
 			$field->injectDiffValue($entity, $revision);
 		});
 		return $entity;

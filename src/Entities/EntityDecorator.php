@@ -3,11 +3,13 @@
 namespace Bozboz\Jam\Entities;
 
 use Bozboz\Admin\Base\ModelAdminDecorator;
+use Bozboz\Admin\Fields\BelongsToManyField;
 use Bozboz\Admin\Fields\DateTimeField;
 use Bozboz\Admin\Fields\HiddenField;
 use Bozboz\Admin\Fields\TextField;
 use Bozboz\Admin\Fields\URLField;
 use Bozboz\Admin\Reports\Filters\ArrayListingFilter;
+use Bozboz\Admin\Users\RoleAdminDecorator;
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\Fields\PublishField;
 use Bozboz\Jam\Entities\Revision;
@@ -23,9 +25,12 @@ use Illuminate\Support\Facades\Input;
 class EntityDecorator extends ModelAdminDecorator
 {
 	protected $type;
+	protected $roles;
 
-	public function __construct(Entity $entity)
+	public function __construct(Entity $entity, RoleAdminDecorator $roles)
 	{
+		$this->roles = $roles;
+
 		parent::__construct($entity);
 	}
 
@@ -37,6 +42,10 @@ class EntityDecorator extends ModelAdminDecorator
 
 	public function getColumns($instance)
 	{
+		$columns = collect($this->getCustomColumns($instance));
+
+		$columns->prepend($this->getPreviewLink($instance), 'Name');
+
 		$linkText = '<i class="fa fa-external-link"></i>';
 		$path = $instance->canonical_path;
 
@@ -59,28 +68,47 @@ class EntityDecorator extends ModelAdminDecorator
 				$statusLabel = "<small><abbr title='{$publishedAt} by {$user}'>Has Draft</abbr></small>";
 
 				$linkText = 'preview <i class="fa fa-external-link"></i>';
-				$path = $instance->canonical_path . '?p=' . md5(date('ymd'));
+				$path = $path ? $path . '?p=' . md5(date('ymd')) : null;
 			break;
 
 			default:
 				$statusLabel = null;
 				$linkText = 'preview <i class="fa fa-external-link"></i>';
-				$path = $instance->canonical_path . '?p=' . md5(date('ymd'));
+				$path = $path ? $path . '?p=' . md5(date('ymd')) : null;
 			break;
 		}
 
-		$columns = collect($this->getCustomColumns($instance));
 		$columns->prepend(
 			'<span title="' . $instance->template->name . '">' . $this->getLabel($instance) . '</span>' . ( $path
 				? '&nbsp;&nbsp;<a href="'.url($path).'" target="_blank" title="Go to '.$this->getLabel($instance).'">'.$linkText.'</a>'
 				: null
 		), 'Name')->put('Status', $statusLabel);
+
+		$columns->put('', $this->getLockState($instance));
+
 		return $columns->all();
 	}
 
 	protected function getCustomColumns($instance)
 	{
 		return [];
+	}
+
+	protected function getPreviewLink($instance)
+	{
+		$path = $instance->canonical_path;
+		$label = $this->getLabel($instance);
+
+		if ( ! $path) return $label;
+
+		return $label . '&nbsp;&nbsp;<a href="/' . $path . '" target="_blank" title="Go to ' . $label . '"><i class="fa fa-external-link"></i></a>';
+	}
+
+	protected function getLockState($instance)
+	{
+		if ( ! $instance->roles->isEmpty()) {
+			return '<span title="Restricted to role(s): ' . $instance->roles->implode('name') . '" class="fa fa-lock"></span>';
+		}
 	}
 
 	public function getHeading($plural = false)
@@ -101,12 +129,17 @@ class EntityDecorator extends ModelAdminDecorator
 	public function getFields($instance)
 	{
 		$canEditStatus = Gate::allows('hide_entity') || Gate::allows('publish_entity') || Gate::allows('schedule_entity');
+		$canRestrictAccess = Gate::allows('gate_entities');
 		$fields = new Collection(array_filter([
 			new TextField('name', ['label' => 'Name *']),
 			$instance->exists && $instance->template->type()->isVisible() ? new TextField('slug', ['label' => 'Slug *']) : null,
 			new HiddenField('template_id'),
 			new HiddenField('user_id', Auth::id()),
 			new HiddenField('parent_id'),
+			$canRestrictAccess ? new BelongsToManyField($this->roles, $instance->roles(), [
+				'label' => 'Restrict visibility by role',
+				'help_text' => 'Leave blank for full public access'
+			]) : null,
 			$canEditStatus
 				? new DateTimeField('currentRevision[published_at]', [
 					'label' => 'Published At',
@@ -201,7 +234,7 @@ class EntityDecorator extends ModelAdminDecorator
 
 	protected function modifyListingQuery(Builder $query)
 	{
-		$query->with(['paths', 'currentRevision.user', 'template'])->whereHas('template', function($query) {
+		$query->with(['roles', 'paths', 'currentRevision.user', 'template'])->whereHas('template', function($query) {
 			$query->whereTypeAlias($this->type->alias);
 		});
 
@@ -210,6 +243,11 @@ class EntityDecorator extends ModelAdminDecorator
 
 	public function findInstance($id)
 	{
-		return $this->model->withLatestRevision()->whereId($id)->firstOrFail();
+		return $this->model->withLatestRevision()->with('currentRevision')->whereId($id)->firstOrFail();
+	}
+
+	public function getSyncRelations()
+	{
+		return ['roles'];
 	}
 }

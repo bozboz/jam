@@ -129,6 +129,9 @@ class JamServiceProvider extends ServiceProvider
             'view_entity_history' => 'Bozboz\Permissions\Rules\Rule',
             'edit_entity_history' => 'Bozboz\Permissions\Rules\Rule',
 
+            'view_gated_entities' => 'Bozboz\Permissions\Rules\GlobalRule',
+            'gate_entities' => 'Bozboz\Permissions\Rules\Rule',
+
         ]);
     }
 
@@ -156,6 +159,7 @@ class JamServiceProvider extends ServiceProvider
             'belongs-to-many'          => \Bozboz\Jam\Fields\BelongsToManyEntity::class,
             'date'                     => \Bozboz\Jam\Fields\Date::class,
             'date-time'                => \Bozboz\Jam\Fields\DateTime::class,
+            'select'                   => \Bozboz\Jam\Fields\Dropdown::class,
             'embed'                    => \Bozboz\Jam\Fields\Oembed::class,
             'entity-list'              => \Bozboz\Jam\Fields\EntityList::class,
             'gallery'                  => \Bozboz\Jam\Fields\Gallery::class,

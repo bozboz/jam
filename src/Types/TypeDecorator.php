@@ -25,7 +25,7 @@ class TypeDecorator extends ModelAdminDecorator
 	public function getColumns($instance)
 	{
 		return [
-			'Name' => $this->getLabel($instance),
+			'Name' => str_replace(' ', '&nbsp', $this->getLabel($instance)),
 			'Templates' => $this->getTemplateLinks($instance->templates()->orderBy('name')->get()),
 		];
 	}

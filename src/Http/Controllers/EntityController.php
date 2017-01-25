@@ -4,6 +4,7 @@ namespace Bozboz\Jam\Http\Controllers;
 
 use Bozboz\Jam\Repositories\Contracts\EntityRepository;
 use Illuminate\Routing\Controller;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class EntityController extends Controller
@@ -43,6 +44,10 @@ class EntityController extends Controller
             }
 
             throw new NotFoundHttpException("No entity for path '{$path}'");
+        }
+
+        if ( ! $this->repository->isAuthorised($entity)) {
+            throw new AccessDeniedHttpException("Access to entity with path '{$path}' is forbidden.");
         }
 
         return $this->render($entity);
