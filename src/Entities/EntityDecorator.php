@@ -71,7 +71,7 @@ class EntityDecorator extends ModelAdminDecorator
 
 		$columns = collect($this->getCustomColumns($instance));
 		$columns->prepend(
-			$this->getLabel($instance) . ( $path
+			'<span title="' . $instance->template->name . '">' . $this->getLabel($instance) . '</span>' . ( $path
 				? '&nbsp;&nbsp;<a href="'.url($path).'" target="_blank" title="Go to '.$this->getLabel($instance).'">'.$linkText.'</a>'
 				: null
 		), 'Name')->put('Status', $statusLabel);
