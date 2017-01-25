@@ -12,6 +12,7 @@ use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\Revision;
 use Bozboz\Jam\Entities\RevisionDecorator;
 use Bozboz\Jam\Entities\RevisionReport;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 
 class EntityRevisionController extends ModelAdminController
@@ -86,12 +87,20 @@ class EntityRevisionController extends ModelAdminController
 				}), 'View', 'fa fa-eye', ['class' => 'btn-info']),
 				new IsValid([$this, 'canEdit'])
 			),
-			$this->actions->custom(
-				new Link(new CustomUrl(function($instance) {
-					return action($this->getActionName('diff'), $instance->id);
-				}), 'Diff With Previous', 'fa fa-files-o', ['class' => 'btn-default']),
-				new IsValid([$this, 'canEdit'])
-			),
+			$this->actions->dropdown([
+				$this->actions->custom(
+					new Link(new CustomUrl(function($instance) {
+						return action($this->getActionName('diff'), $instance->id);
+					}), '...between this and previous revision'),
+					new IsValid([$this, 'canView'])
+				),
+				$this->actions->custom(
+					new Link(new CustomUrl(function($instance) {
+						return action($this->getActionName('diff'), [$instance->id, 'against-live' => 1]);
+					}), '...between this and live revision'),
+					new IsValid([$this, 'canDiffLive'])
+				)
+			], 'Show Changes', 'fa fa-files-o', ['class' => 'btn-default'], ['class' => 'dropdown-menu-right']),
 			$this->actions->custom(
 				new Form($this->getActionName('revert'), 'Revert', 'fa fa-undo', [
 					'class' => 'btn-sm btn-warning',
@@ -102,10 +111,16 @@ class EntityRevisionController extends ModelAdminController
 		];
 	}
 
-	public function diff($revisionId)
+	public function diff(Request $request, $revisionId)
 	{
 		$revision = Revision::find($revisionId);
-		$previousRevision = Revision::whereEntityId($revision->entity_id)->where('created_at', '<', $revision->created_at)->orderBy('created_at', 'desc')->limit(1)->first();
+		if ($request->has('against-live')) {
+			$previousRevision = $revision->entity->currentRevision;
+		} else {
+			$previousRevision = Revision::whereEntityId($revision->entity_id)
+				->where('created_at', '<', $revision->created_at)
+				->orderBy('created_at', 'desc')->limit(1)->first();
+		}
 
 		$entity = $this->loadRevisionForDiff($revision);
 		$previousEntity = $previousRevision ? $this->loadRevisionForDiff($previousRevision) : new Entity;
@@ -125,6 +140,11 @@ class EntityRevisionController extends ModelAdminController
 	public function getSuccessResponse($instance)
 	{
 		return Redirect::action($this->getActionName('indexForEntity'), ['entity_id' => $instance->entity->id]);
+	}
+
+	public function canDiffLive($instance)
+	{
+		return $this->canView() && $instance->entity->currentRevision;
 	}
 
 	protected function editPermissions($stack, $instance)
