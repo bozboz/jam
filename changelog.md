@@ -6,6 +6,10 @@
 -   Strip the stupid `<p><br></p>` the summernote adds out of WYSIWYG fields
 -   Set up dropdown field type
 
+## Version 1.1.1 (2017-01-25)
+
+-   Fix initial publish action
+
 ## Version 1.1.0 (2017-01-09)
 
 -   Rearrange publishing/scheduling feature for better usability
