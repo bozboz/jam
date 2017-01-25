@@ -117,7 +117,7 @@ class Entity extends Node implements ModelInterface
 
 	public function roles()
 	{
-		return $this->belongsToMany(\Bozboz\Admin\Users\Role::class, 'entity_role');
+		return $this->belongsToMany(\Bozboz\Admin\Users\Role::class, 'entity_role')->withTimestamps();
 	}
 
 	public function paths()
