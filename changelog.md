@@ -10,9 +10,6 @@
 -   Allow draft revisions to be created on published entities
 -   Allow previewing unpublished entities/draft revisions
 -   Add revision diff feature
-
-## Version 1.0.6 (Future)
-
 -   Add validation to fields to prevent duplicate names on templates
 
 ## Version 1.0.5 (2017-01-09)
