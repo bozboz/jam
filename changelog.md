@@ -1,5 +1,9 @@
 # Jam Changelog
 
+## Version 1.1.2 (2017-01-26)
+
+-   Prevent meta fields from being duplicated when duplicating a template
+
 ## Version 1.1.1 (2017-01-25)
 
 -   Fix initial publish action
@@ -11,6 +15,10 @@
 -   Allow previewing unpublished entities/draft revisions
 -   Add revision diff feature
 -   Add validation to fields to prevent duplicate names on templates
+
+## Version 1.0.6 (2017-01-26)
+
+-   Prevent meta fields from being duplicated when duplicating a template
 
 ## Version 1.0.5 (2017-01-09)
 
