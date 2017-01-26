@@ -3,12 +3,17 @@
 ## Version 1.2.1 (Future)
 
 -   Make the slug field a little more user friendly
+-   Prevent meta fields from being duplicated when duplicating a template
 
 ## Version 1.2.0 (2017-01-26)
 
 -   Allow entities to be gated by user role
 -   Strip the stupid `<p><br></p>` the summernote adds out of WYSIWYG fields
 -   Set up dropdown field type
+
+## Version 1.1.2 (2017-01-26)
+
+-   Prevent meta fields from being duplicated when duplicating a template
 
 ## Version 1.1.1 (2017-01-25)
 
@@ -20,10 +25,11 @@
 -   Allow draft revisions to be created on published entities
 -   Allow previewing unpublished entities/draft revisions
 -   Add revision diff feature
-
-## Version 1.0.6 (Future)
-
 -   Add validation to fields to prevent duplicate names on templates
+
+## Version 1.0.6 (2017-01-26)
+
+-   Prevent meta fields from being duplicated when duplicating a template
 
 ## Version 1.0.5 (2017-01-09)
 

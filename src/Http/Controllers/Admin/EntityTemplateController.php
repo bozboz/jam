@@ -66,15 +66,24 @@ class EntityTemplateController extends ModelAdminController
 			$newTemplate->save();
 
 			$template->fields->each(function($field) use ($newTemplate) {
-				$newField = $field->replicate(['id']);
-				$newField->template()->associate($newTemplate);
-				$newField->save();
+				switch ($field->alias) {
+					case 'meta_title':
+					case 'meta_description':
+						// do nothing, these are generated automatically
+					break;
 
-				$field->options->each(function($option) use ($newField) {
-					$newOption = $option->replicate(['id']);
-					$newOption->field()->associate($newField);
-					$newOption->save();
-				});
+					default:
+						$newField = $field->replicate(['id']);
+						$newField->template()->associate($newTemplate);
+						$newField->save();
+
+						$field->options->each(function($option) use ($newField) {
+							$newOption = $option->replicate(['id']);
+							$newOption->field()->associate($newField);
+							$newOption->save();
+						});
+					break;
+				}
 			});
 		});
 
