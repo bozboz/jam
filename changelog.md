@@ -1,5 +1,9 @@
 # Jam Changelog
 
+## Version 1.2.1 (Future)
+
+-   Make the slug field a little more user friendly
+
 ## Version 1.2.0 (2017-01-26)
 
 -   Allow entities to be gated by user role
