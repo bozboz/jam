@@ -1,6 +1,6 @@
 # Jam Changelog
 
-## Version 1.2.0 (Future)
+## Version 1.2.0 (2017-01-26)
 
 -   Allow entities to be gated by user role
 -   Strip the stupid `<p><br></p>` the summernote adds out of WYSIWYG fields
