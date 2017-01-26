@@ -1,6 +1,6 @@
 # Jam Changelog
 
-## Version 1.2.1 (Future)
+## Version 1.2.1 (2017-01-26)
 
 -   Make the slug field a little more user friendly
 -   Prevent meta fields from being duplicated when duplicating a template
