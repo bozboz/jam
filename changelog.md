@@ -1,5 +1,9 @@
 # Jam Changelog
 
+## Version 1.2.2 (Future)
+
+-   Fix duplicate entity path form error
+
 ## Version 1.2.1 (2017-01-26)
 
 -   Make the slug field a little more user friendly

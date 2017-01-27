@@ -135,7 +135,7 @@ class EntityDecorator extends ModelAdminDecorator
 
 		$fields = new Collection(array_filter([
 			new TextField('name', ['label' => 'Name *']),
-			$instance->exists && $instance->template->type()->isVisible() ? new AddonTextField('slug', [
+			($instance->exists || request()->old()) && $instance->template->type()->isVisible() ? new AddonTextField('slug', [
 				'label' => 'URL *',
 				'data-addonText' => $this->getParentUrl($instance),
 			]) : null,
