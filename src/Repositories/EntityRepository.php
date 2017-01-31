@@ -145,9 +145,16 @@ class EntityRepository implements EntityRepositoryInterface
      */
     public function isAuthorised(Entity $entity)
     {
-        return $entity->roles->isEmpty() || Gate::allows('view_gated_entities') || (
+        $ancestorRoles = collect();
+        $entity->ancestors()->with('roles')->get()->each(function($ancestor) use ($ancestorRoles) {
+            $ancestor->roles->each(function($role) use ($ancestorRoles) {
+                $ancestorRoles->push($role);
+            });
+        });
+        return ($ancestorRoles->isEmpty() && $entity->roles->isEmpty()) || Gate::allows('view_gated_entities') || (
             $this->auth->user() &&
-            $entity->roles->contains($this->auth->user()->role)
+            $entity->roles->contains($this->auth->user()->role) &&
+            ($ancestorRoles->isEmpty() || $ancestorRoles->contains($this->auth->user()->role) )
         );
     }
 }

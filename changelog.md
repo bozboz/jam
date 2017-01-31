@@ -1,5 +1,9 @@
 # Jam Changelog
 
+## Version 1.2.4 (Future)
+
+-   Also gate entities that have gated ancestors
+
 ## Version 1.2.3 (2017-01-31)
 
 -   Remove stupid debug stupid me shouldn't have committed
