@@ -1,5 +1,9 @@
 # Jam Changelog
 
+## Version 1.2.3 (2017-01-31)
+
+-   Remove stupid debug stupid me shouldn't have committed
+
 ## Version 1.2.2 (2017-01-31)
 
 -   Fix duplicate entity path form error

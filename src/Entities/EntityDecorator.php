@@ -131,7 +131,7 @@ class EntityDecorator extends ModelAdminDecorator
 	public function getFields($instance)
 	{
 		$canEditStatus = Gate::allows('hide_entity') || Gate::allows('publish_entity') || Gate::allows('schedule_entity');
-		$canRestrictAccess = false;// Gate::allows('gate_entities');
+		$canRestrictAccess = Gate::allows('gate_entities');
 
 		$fields = new Collection(array_filter([
 			new TextField('name', ['label' => 'Name *']),
