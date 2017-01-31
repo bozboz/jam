@@ -1,6 +1,6 @@
 # Jam Changelog
 
-## Version 1.2.2 (Future)
+## Version 1.2.2 (2017-01-31)
 
 -   Fix duplicate entity path form error
 
