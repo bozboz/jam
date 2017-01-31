@@ -19,12 +19,10 @@ class Value extends Model
 
     public function getValueAttribute()
     {
-    	if (array_key_exists('value', $this->attributes)) {
-	        if ( ! trim(strip_tags($this->attributes['value']))) {
-	            return null;
-	        }
-	        return $this->attributes['value'];
-    	}
+        if ( ! trim(strip_tags($this->getAttributeFromArray('value')))) {
+            return null;
+        }
+        return $this->getAttributeFromArray('value');
     }
 
 	public function revision()
