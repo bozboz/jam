@@ -47,7 +47,9 @@ class EntityTemplateController extends ModelAdminController
 	{
 		$template = $this->decorator->findInstance($id);
 
-		$types = app('EntityMapper')->getAll();
+		$types = app('EntityMapper')->getAll()->sortBy(function($type) {
+			return $type->name;
+		});
 
 		return view('jam::admin.duplicate-template')->with(compact('template', 'types'));
 	}
@@ -65,7 +67,7 @@ class EntityTemplateController extends ModelAdminController
 			$newTemplate->type_alias = $typeAlias;
 			$newTemplate->save();
 
-			$template->fields->each(function($field) use ($newTemplate) {
+			$template->fields()->orderBy('sorting')->get()->each(function($field) use ($newTemplate) {
 				switch ($field->alias) {
 					case 'meta_title':
 					case 'meta_description':
@@ -73,7 +75,7 @@ class EntityTemplateController extends ModelAdminController
 					break;
 
 					default:
-						$newField = $field->replicate(['id']);
+						$newField = $field->replicate(['id', 'sorting']);
 						$newField->template()->associate($newTemplate);
 						$newField->save();
 
