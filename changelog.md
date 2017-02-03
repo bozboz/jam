@@ -1,6 +1,6 @@
 # Jam Changelog
 
-## Version 1.2.4 (Future)
+## Version 1.2.4 (2017-02-03)
 
 -   Also gate entities that have gated ancestors
 -   Fix sorting on duplicated template fields
