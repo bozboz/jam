@@ -3,6 +3,7 @@
 ## Version 1.2.4 (Future)
 
 -   Also gate entities that have gated ancestors
+-   Fix sorting on duplicated template fields
 
 ## Version 1.2.3 (2017-01-31)
 
