@@ -1,5 +1,10 @@
 # Jam Changelog
 
+## Version 1.2.5 (2017-02-10)
+
+-   Fix search breadcrumbs
+-   Allow name/path to be overridden for indexed entities
+
 ## Version 1.2.4 (2017-02-03)
 
 -   Also gate entities that have gated ancestors
