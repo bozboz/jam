@@ -20,6 +20,8 @@ class Indexer
         $indexableEntity = new IndexableEntity;
         $indexableEntity->make($entity);
 
+        $indexableEntity->name = $this->getName($entity);
+        $indexableEntity->path = $this->getPath($entity);
         $indexableEntity->preview_data = $this->getPreviewData($indexableEntity);
         $indexableEntity->searchable_data = $this->getSearchableData($indexableEntity);
 
@@ -28,6 +30,16 @@ class Indexer
         } else {
             $this->deleteIndex($indexableEntity);
         }
+    }
+
+    protected function getName($entity)
+    {
+        return $entity->name;
+    }
+
+    protected function getPath($entity)
+    {
+        return $entity->canonical_path;
     }
 
     protected function getPreviewData($indexableEntity)

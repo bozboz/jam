@@ -11,7 +11,6 @@ class IndexableEntity extends Entity implements Indexable
     {
         $entity->injectValues();
         $this->attributes = $entity->toArray();
-        $this->attributes['canonical_path'] = "/$entity->canonical_path";
         $this->searchable_id = $entity->id;
         $this->searchable_type = get_class($entity);
     }
@@ -20,12 +19,12 @@ class IndexableEntity extends Entity implements Indexable
     {
         return [
             'name' => $this->name,
-            'path' => $this->canonical_path,
+            'path' => $this->path,
             'preview_data' => $this->preview_data,
             'searchable_data' => $this->searchable_data,
-            'breadcrumbs' => $this->getAncestors()->map(function($entity) {
+            'breadcrumbs' => $this->ancestors()->withCanonicalPath()->get()->map(function($entity) {
                 return [
-                    'path' => "/$entity->canonical_path",
+                    'path' => '/' . $entity->paths->pluck('path')->first(),
                     'name' => $entity->name,
                 ];
             }),
@@ -48,11 +47,6 @@ class IndexableEntity extends Entity implements Indexable
     {
         return $this->currentRevision
             && new Carbon($this->currentRevision['published_at']) < new Carbon
-            && array_key_exists('canonical_path', $this->attributes);
-    }
-
-    public function getCanonicalPathAttribute()
-    {
-        return array_key_exists('canonical_path', $this->attributes) ? $this->attributes['canonical_path'] : null;
+            && array_key_exists('path', $this->attributes);
     }
 }
