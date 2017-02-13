@@ -1,5 +1,9 @@
 # Jam Changelog
 
+## Version 1.3.0 (2017-02-13)
+
+-   Allow nested entities to create child entities from parent row in report
+
 ## Version 1.2.5 (2017-02-10)
 
 -   Fix search breadcrumbs

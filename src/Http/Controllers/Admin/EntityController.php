@@ -12,6 +12,7 @@ use Bozboz\Jam\Entities\EntityDecorator;
 use Bozboz\Jam\Entities\Revision;
 use Bozboz\Jam\Repositories\Contracts\EntityRepository;
 use Bozboz\Jam\Templates\Template;
+use Bozboz\Jam\Types\NestedType;
 use Bozboz\Permissions\RuleStack;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -68,6 +69,33 @@ class EntityController extends ModelAdminController
 		return $this->type->getReport($this->decorator);
 	}
 
+	protected function getTemplateOptions()
+	{
+		if ( ! $this->type) {
+			return collect();
+		}
+
+		static $options;
+
+		if ( ! $options) {
+			$options = Template::whereTypeAlias($this->type->alias)
+				->where(function($query) {
+					$query->whereHas('entities', function($query) {
+						$query->selectRaw('COUNT(*) as count');
+						$query->havingRaw('entity_templates.max_uses > count');
+						$query->orHavingRaw('entity_templates.max_uses IS NULL');
+					});
+					$query->orWhere(function($query) {
+						$query->doesntHave('entities');
+					});
+				})
+				->orderBy('name')
+				->get();
+		}
+
+		return $options;
+	}
+
 	/**
 	 * Return an array of actions the report can perform
 	 *
@@ -75,27 +103,13 @@ class EntityController extends ModelAdminController
 	 */
 	protected function getReportActions()
 	{
-		$options = Template::whereTypeAlias($this->type->alias)
-			->where(function($query) {
-				$query->whereHas('entities', function($query) {
-					$query->selectRaw('COUNT(*) as count');
-					$query->havingRaw('entity_templates.max_uses > count');
-					$query->orHavingRaw('entity_templates.max_uses IS NULL');
-				});
-				$query->orWhere(function($query) {
-					$query->doesntHave('entities');
-				});
-			})
-			->orderBy('name')
-			->get()->map(function($template) {
+		return [
+			$this->actions->dropdown($this->getTemplateOptions()->map(function($template) {
 				return $this->actions->custom(
 					new Link([$this->getActionName('createOfType'), [$template->type_alias, $template->alias]], $template->name),
 					new IsValid([$this, 'canCreate'])
 				);
-			});
-
-		return [
-			$this->actions->dropdown($options->all(), 'New', 'fa fa-plus', [
+			})->all(), 'New', 'fa fa-plus', [
 				'class' => 'btn-success',
 			], [
 				'class' => 'pull-right',
@@ -139,7 +153,15 @@ class EntityController extends ModelAdminController
 					'class' => 'btn-default'
 				]),
 				new IsValid([$entityRevisionController, 'canView'])
-			)
+			),
+			$this->actions->dropdown($this->getTemplateOptions()->map(function($template) {
+				return $this->actions->custom(
+					new Link([$this->getActionName('createOfTypeForParent'), [$template->type_alias, $template->alias]], $template->name),
+					new IsValid([$this, 'canCreateForParent'])
+				);
+			})->all(), 'New Child', 'fa fa-plus', [
+				'class' => 'btn-default btn-sm',
+			]),
 		], parent::getRowActions());
 	}
 
@@ -215,6 +237,18 @@ class EntityController extends ModelAdminController
 		$instance = $this->decorator->newEntityOfType($template);
 
 		if ( ! $this->canCreate($instance)) App::abort(403);
+
+		return $this->renderFormFor($instance, $this->createView, 'POST', 'store');
+	}
+
+	public function createOfTypeForParent($type, $template, $parentId)
+	{
+		$template = Template::whereTypeAlias($type)->whereAlias($template)->first();
+		$instance = $this->decorator->newEntityOfType($template);
+
+		$instance->parent_id = $parentId;
+
+		if ( ! $this->canCreateForParent($this->decorator->findInstance($parentId))) App::abort(403);
 
 		return $this->renderFormFor($instance, $this->createView, 'POST', 'store');
 	}
@@ -313,6 +347,11 @@ class EntityController extends ModelAdminController
 	protected function getListingUrl($instance)
 	{
 		return action($this->getActionName('show'), ['type' => $instance->template->type_alias]);
+	}
+
+	public function canCreateForParent($instance)
+	{
+		return $this->canCreate() && $instance && get_class($instance->template->type()) === NestedType::class;
 	}
 
 	public function canPublish($instance)

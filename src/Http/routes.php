@@ -12,6 +12,7 @@ Route::group(array('middleware' => 'web', 'namespace' => 'Bozboz\Jam\Http\Contro
 	Route::group(['prefix' => 'entities/{type}/{template}'], function()
 	{
 		Route::get('create', 'EntityController@createOfType');
+		Route::get('create-for-parent/{parent_id}', 'EntityController@createOfTypeForParent');
 	});
 	Route::group(['prefix' => 'entities/{id}'], function()
 	{
