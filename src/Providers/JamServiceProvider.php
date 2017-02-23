@@ -143,9 +143,8 @@ class JamServiceProvider extends ServiceProvider
             'pages' => new \Bozboz\Jam\Types\NestedType([
                 'name' => 'Pages',
                 'entity' => \Bozboz\Jam\Entities\SortableEntity::class,
-                'link_builder' => function() {
-                    return app(\Bozboz\Jam\Entities\Contracts\LinkBuilder::class);
-                }
+                'link_builder' => \Bozboz\Jam\Entities\Contracts\LinkBuilder::class,
+                'can_restrict_access' => true,
             ]),
         ]);
     }

@@ -1,5 +1,9 @@
 # Jam Changelog
 
+## Version 1.3.1 (2017-02-23)
+
+-   Make entity role restriction togglable and off by default
+
 ## Version 1.3.0 (2017-02-13)
 
 -   Allow nested entities to create child entities from parent row in report
