@@ -1,5 +1,9 @@
 # Jam Changelog
 
+## Version 1.3.2 (2017-03-13)
+
+-   Fix empty textarea stripping in value model
+
 ## Version 1.3.1 (2017-02-23)
 
 -   Make entity role restriction togglable and off by default
