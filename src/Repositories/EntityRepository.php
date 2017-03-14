@@ -145,7 +145,6 @@ class EntityRepository implements EntityRepositoryInterface
      */
     public function isAuthorised(Entity $entity)
     {
-        dd($this->isAuthorisedForType($entity));
         return Gate::allows('view_gated_entities')
             || (
                 $this->isAuthorisedForEntity($entity)
