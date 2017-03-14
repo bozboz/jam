@@ -1,5 +1,9 @@
 # Jam Changelog
 
+## Version 1.4.0 (2017-03-14)
+
+-   Allow entity types to be gated
+
 ## Version 1.3.2 (2017-03-13)
 
 -   Fix empty textarea stripping in value model

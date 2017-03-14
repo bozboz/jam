@@ -16,6 +16,7 @@ class Type implements \Bozboz\Admin\Base\ModelInterface
         'search_handler' => \Bozboz\Jam\Entities\NotIndexed::class,
         'decorator' => \Bozboz\Jam\Entities\EntityDecorator::class,
         'can_restrict_access' => false,
+        'gated' => false,
     ];
 
     public function __construct($attributes = [])
@@ -48,6 +49,11 @@ class Type implements \Bozboz\Admin\Base\ModelInterface
     public function canRestrictAccess()
     {
         return $this->can_restrict_access;
+    }
+
+    public function isGated()
+    {
+        return $this->gated;
     }
 
     protected function getLinkBuilder()

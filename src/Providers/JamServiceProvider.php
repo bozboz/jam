@@ -13,6 +13,7 @@ use Bozboz\Jam\Fields\Field;
 use Bozboz\Jam\Mapper;
 use Bozboz\Jam\Templates\Template;
 use Bozboz\Jam\Types\Type;
+use Bozboz\Permissions\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class JamServiceProvider extends ServiceProvider
@@ -102,7 +103,7 @@ class JamServiceProvider extends ServiceProvider
                 }
             });
 
-            if ($menu->gate('manage_entities')) {
+            if (Gate::allows('manage_entities')) {
                 $menu['Jam'] = [
                     'Types' => $url->route('admin.entity-types.index'),
                 ];
@@ -131,6 +132,8 @@ class JamServiceProvider extends ServiceProvider
 
             'view_gated_entities' => 'Bozboz\Permissions\Rules\GlobalRule',
             'gate_entities' => 'Bozboz\Permissions\Rules\Rule',
+
+            'view_gated_entity_type' => 'Bozboz\Permissions\Rules\Rule',
 
         ]);
     }

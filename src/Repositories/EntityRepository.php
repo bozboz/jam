@@ -145,16 +145,43 @@ class EntityRepository implements EntityRepositoryInterface
      */
     public function isAuthorised(Entity $entity)
     {
+        dd($this->isAuthorisedForType($entity));
+        return Gate::allows('view_gated_entities')
+            || (
+                $this->isAuthorisedForEntity($entity)
+                && $this->isAuthorisedForType($entity)
+            );
+    }
+
+    protected function isAuthorisedForEntity($entity)
+    {
+        return $entity->roles->isEmpty()
+            || (
+                $this->auth->user()
+                && $entity->roles->contains($this->auth->user()->role)
+            )
+            || $this->isAuthorisedForEntityAncestors($entity);
+    }
+
+    protected function isAuthorisedForEntityAncestors($entity)
+    {
         $ancestorRoles = collect();
         $entity->ancestors()->with('roles')->get()->each(function($ancestor) use ($ancestorRoles) {
             $ancestor->roles->each(function($role) use ($ancestorRoles) {
                 $ancestorRoles->push($role);
             });
         });
-        return ($ancestorRoles->isEmpty() && $entity->roles->isEmpty()) || Gate::allows('view_gated_entities') || (
-            $this->auth->user() &&
-            $entity->roles->contains($this->auth->user()->role) &&
-            ($ancestorRoles->isEmpty() || $ancestorRoles->contains($this->auth->user()->role) )
-        );
+
+        return $ancestorRoles->isEmpty()
+            || (
+                $this->auth->user()
+                && $ancestorRoles->contains($this->auth->user()->role)
+            );
+    }
+
+    protected function isAuthorisedForType($entity)
+    {
+        $type = $entity->template->type();
+        return ! $type->isGated() || Gate::allows('view_gated_entity_type', $type->alias);
     }
 }
