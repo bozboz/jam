@@ -2,11 +2,13 @@
 
 namespace Bozboz\Jam\Entities;
 
+use Illuminate\Support\Facades\App;
 use Bozboz\Admin\Exceptions\ValidationException;
 use Bozboz\Jam\Entities\Contracts\LinkBuilder as Contract;
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\EntityPath;
 use Illuminate\Database\QueryException;
+use Illuminate\Routing\Exceptions\UrlGenerationException;
 use Illuminate\Support\MessageBag;
 
 class LinkBuilder implements Contract
@@ -51,9 +53,14 @@ class LinkBuilder implements Contract
 				$this->createOrRestorePath($path, $instance, $canonicalId);
 			});
 		} catch (QueryException $e) {
-			throw new ValidationException(new MessageBag([
-				'slug' => 'There is already a page with the url ' . url(str_replace_array('\?', $e->getBindings(), '?'))
-			]));
+			$message = 'There is already a page with the url ' . url(str_replace_array('\?', $e->getBindings(), '?'));
+			if (App::runningInConsole()) {
+				throw new UrlGenerationException($message);
+			} else {
+				throw new ValidationException(new MessageBag([
+					'slug' => $message
+				]));
+			}
 		}
 	}
 

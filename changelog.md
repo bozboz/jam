@@ -2,6 +2,7 @@
 
 ## Version 1.5.0 (Future)
 - Add search filter to entity report
+- Throw different exception in link builder when running in console
 
 ## Version 1.4.1 (2017-03-14)
 - Remove debug
