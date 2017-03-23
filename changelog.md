@@ -6,6 +6,7 @@
 - Don't parse oembed value if it's null in oembed field type
 - Fix template duplication (don't duplicate meta fields)
 - Add `active()` and `ordered()` to `forType` query in repo
+- Show type name in jam template listing
 
 ## Version 1.4.1 (2017-03-14)
 - Remove debug

@@ -26,6 +26,7 @@ class TypeDecorator extends ModelAdminDecorator
 	{
 		return [
 			'Name' => str_replace(' ', '&nbsp', $this->getLabel($instance)),
+			'Group' => $instance->menu_title ?: 'Content',
 			'Templates' => $this->getTemplateLinks($instance->templates()->orderBy('name')->get()),
 		];
 	}
@@ -82,8 +83,8 @@ class TypeDecorator extends ModelAdminDecorator
 		return app('EntityMapper')->getAll()->map(function($type) {
 			$type->id = uniqid();
 			return $type;
-		})->sortBy(function($value) {
-			return $value->name;
+		})->sortBy(function($type) {
+			return $type->menu_title;
 		});
 	}
 }
