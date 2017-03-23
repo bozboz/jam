@@ -68,7 +68,7 @@ class EntityTemplateController extends ModelAdminController
 			$newTemplate->save();
 
 			$template->fields()->orderBy('sorting')->get()->each(function($field) use ($newTemplate) {
-				switch ($field->alias) {
+				switch ($field->name) {
 					case 'meta_title':
 					case 'meta_description':
 						// do nothing, these are generated automatically

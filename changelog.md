@@ -4,6 +4,7 @@
 - Add search filter to entity report
 - Throw different exception in link builder when running in console
 - Don't parse oembed value if it's null in oembed field type
+- Fix template duplication (don't duplicate meta fields)
 
 ## Version 1.4.1 (2017-03-14)
 - Remove debug
