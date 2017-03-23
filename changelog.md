@@ -5,6 +5,7 @@
 - Throw different exception in link builder when running in console
 - Don't parse oembed value if it's null in oembed field type
 - Fix template duplication (don't duplicate meta fields)
+- Add `active()` and `ordered()` to `forType` query in repo
 
 ## Version 1.4.1 (2017-03-14)
 - Remove debug
