@@ -1,5 +1,11 @@
 # Jam Changelog
 
+## Version 1.5.0 (Future)
+- Add search filter to entity report
+
+## Version 1.4.1 (2017-03-14)
+- Remove debug
+
 ## Version 1.4.0 (2017-03-14)
 
 -   Allow entity types to be gated

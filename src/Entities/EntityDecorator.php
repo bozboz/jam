@@ -10,6 +10,7 @@ use Bozboz\Admin\Fields\HiddenField;
 use Bozboz\Admin\Fields\TextField;
 use Bozboz\Admin\Fields\URLField;
 use Bozboz\Admin\Reports\Filters\ArrayListingFilter;
+use Bozboz\Admin\Reports\Filters\SearchListingFilter;
 use Bozboz\Admin\Users\RoleAdminDecorator;
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\Fields\PublishField;
@@ -203,7 +204,7 @@ class EntityDecorator extends ModelAdminDecorator
 			->pluck('name', 'id');
 
 		if ($options->count() > 1) {
-			return [
+			$filters = [
 				new ArrayListingFilter(
 					'template', $options->prepend('- All -', ''), function($query) {
 						$query->whereTemplateId(Input::get('template'));
@@ -211,8 +212,16 @@ class EntityDecorator extends ModelAdminDecorator
 				),
 			];
 		} else {
-			return [];
+			$filters = [];
 		}
+
+		return array_merge($filters, [
+			new SearchListingFilter('search', function($builder, $value) {
+                $builder->where(function ($query) use ($value) {
+                    $query->orWhere('name', 'LIKE', '%' . $value . '%');
+                });
+            })
+		]);
 	}
 
 	/**
