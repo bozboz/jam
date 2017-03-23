@@ -19,9 +19,9 @@ class Oembed extends Text
 {
     public function getValue(Value $value)
     {
-        return Cache::rememberForever($this->getCacheKey($value), function() use ($value) {
+        return $value->value ? Cache::rememberForever($this->getCacheKey($value), function() use ($value) {
             return Embed::create($value->value);
-        });
+        }) : null;
     }
 
     protected function getCacheKey($value)
