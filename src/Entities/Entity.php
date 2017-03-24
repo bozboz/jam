@@ -299,6 +299,15 @@ class Entity extends Node implements ModelInterface
 		}
 	}
 
+	public function getPublishedAtAttribute()
+	{
+		if ($this->currentRevision) {
+			return $this->currentRevision->published_at;
+		} else {
+			return false;
+		}
+	}
+
 	/**
 	 * Load field values as the admin wants them as an array for all fields
 	 * @param  Revision|null $revision

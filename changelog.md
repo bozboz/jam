@@ -7,6 +7,7 @@
 - Fix template duplication (don't duplicate meta fields)
 - Add `active()` and `ordered()` to `forType` query in repo
 - Show type name in jam template listing
+- Add accessor method for pulished date in entity
 
 ## Version 1.4.1 (2017-03-14)
 - Remove debug
