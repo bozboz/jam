@@ -8,6 +8,7 @@
 - Add `active()` and `ordered()` to `forType` query in repo
 - Show type name in jam template listing
 - Add accessor method for pulished date in entity
+- Add type menu title to type listing for better sparation
 
 ## Version 1.4.1 (2017-03-14)
 - Remove debug

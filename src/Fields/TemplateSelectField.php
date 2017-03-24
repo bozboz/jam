@@ -20,8 +20,8 @@ class TemplateSelectField extends FieldGroup
             new SelectField('options_array[type]', [
                 'label' => 'Type',
                 'options' => app('EntityMapper')->getAll()->map(function($type) {
-                    return $type->name;
-                })->prepend('- All -', ''),
+                    return ($type->menu_title ?: 'Content') . ' - ' . $type->name;
+                })->sort()->prepend('- All -', ''),
                 'class' => 'js-entity-type-select form-control select2'
             ]),
             new SelectField('options_array[template]', [

@@ -128,7 +128,6 @@ class EntityDecorator extends ModelAdminDecorator
 		return $instance->name;
 	}
 
-
 	public function getFields($instance)
 	{
 		$canEditStatus = Gate::allows('hide_entity') || Gate::allows('publish_entity') || Gate::allows('schedule_entity');

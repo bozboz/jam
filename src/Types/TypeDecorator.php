@@ -17,6 +17,8 @@ use Bozboz\Jam\Types\Type;
 
 class TypeDecorator extends ModelAdminDecorator
 {
+	private $previousTitle = false;
+
 	public function __construct(Type $instance)
 	{
 		parent::__construct($instance);
@@ -24,11 +26,13 @@ class TypeDecorator extends ModelAdminDecorator
 
 	public function getColumns($instance)
 	{
-		return [
+		$columns = [
+			'Group' => ! $this->previousTitle || $this->previousTitle !== $instance->menu_title ? '<strong>'.($instance->menu_title ?: 'Content').'</strong>' : '',
 			'Name' => str_replace(' ', '&nbsp', $this->getLabel($instance)),
-			'Group' => $instance->menu_title ?: 'Content',
 			'Templates' => $this->getTemplateLinks($instance->templates()->orderBy('name')->get()),
 		];
+		$this->previousTitle = $instance->menu_title;
+		return $columns;
 	}
 
 	protected function getTemplateLinks($templates)
