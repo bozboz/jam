@@ -48,7 +48,7 @@ class EntityTemplateController extends ModelAdminController
 		$template = $this->decorator->findInstance($id);
 
 		$types = app('EntityMapper')->getAll()->sortBy(function($type) {
-			return $type->name;
+			return ($type->menu_title ?: 'Content') . $type->name;
 		});
 
 		return view('jam::admin.duplicate-template')->with(compact('template', 'types'));

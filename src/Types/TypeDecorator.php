@@ -27,8 +27,10 @@ class TypeDecorator extends ModelAdminDecorator
 	public function getColumns($instance)
 	{
 		$columns = [
-			'Group' => ! $this->previousTitle || $this->previousTitle !== $instance->menu_title ? '<strong>'.($instance->menu_title ?: 'Content').'</strong>' : '',
-			'Name' => str_replace(' ', '&nbsp', $this->getLabel($instance)),
+			'Group' => ! $this->previousTitle || $this->previousTitle !== $instance->menu_title
+				? '<strong>'.(str_replace(' ', '&nbsp', $instance->menu_title) ?: 'Content').'</strong>'
+				: '',
+			'Name' => '<abbr title="' . $instance->alias . '">' . str_replace(' ', '&nbsp', $this->getLabel($instance)) . '</abbr>',
 			'Templates' => $this->getTemplateLinks($instance->templates()->orderBy('name')->get()),
 		];
 		$this->previousTitle = $instance->menu_title;
@@ -88,7 +90,7 @@ class TypeDecorator extends ModelAdminDecorator
 			$type->id = uniqid();
 			return $type;
 		})->sortBy(function($type) {
-			return $type->menu_title;
+			return ($type->menu_title ?: 'Content') . $type->name;
 		});
 	}
 }

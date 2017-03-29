@@ -19,7 +19,7 @@
                 @foreach ($types as $type)
                     <li><label>
                         {{ Form::checkbox("types[]", $type->alias) }}
-                        {{ $type->name }}
+                        {{ $type->menu_title ?: 'Content' }} - {{ $type->name }}
                     </label></li>
                 @endforeach
                 </ul>
