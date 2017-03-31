@@ -157,7 +157,7 @@ class JamServiceProvider extends ServiceProvider
         $mapper = $this->app['FieldMapper'];
 
         $mapper->register([
-            'belongs-to'               => \Bozboz\Jam\Fields\BelongsTo::class,
+            'belongs-to'               => \Bozboz\Jam\Fields\BelongsToEntity::class,
             'belongs-to-many'          => \Bozboz\Jam\Fields\BelongsToManyEntity::class,
             'date'                     => \Bozboz\Jam\Fields\Date::class,
             'date-time'                => \Bozboz\Jam\Fields\DateTime::class,

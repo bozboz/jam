@@ -9,6 +9,7 @@
 - Show type name in jam template listing
 - Add accessor method for pulished date in entity
 - Add type menu title to type listing for better sparation
+- Allow BelongsTo field to be extended 
 
 ## Version 1.4.1 (2017-03-14)
 - Remove debug

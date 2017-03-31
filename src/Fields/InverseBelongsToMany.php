@@ -13,9 +13,9 @@ use Bozboz\Jam\Entities\Value;
 use Bozboz\Jam\Http\Controllers\Admin\EntityController;
 use Illuminate\Support\Facades\DB;
 
-class InverseBelongsToMany extends BelongsTo
+class InverseBelongsToMany //extends BelongsTo
 {
-    private $netity;
+    private $entity;
 
     public static function getDescriptiveName()
     {

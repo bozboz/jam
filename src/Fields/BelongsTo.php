@@ -3,52 +3,41 @@
 namespace Bozboz\Jam\Fields;
 
 use Bozboz\Admin\Fields\BelongsToField;
-use Bozboz\Admin\Fields\CheckboxField;
-use Bozboz\Admin\Fields\FieldGroup;
-use Bozboz\Admin\Fields\HiddenField;
-use Bozboz\Admin\Fields\SelectField;
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\EntityDecorator;
 use Bozboz\Jam\Entities\Revision;
 use Bozboz\Jam\Entities\Value;
-use Bozboz\Jam\Templates\Template;
 use Bozboz\Jam\Types\Type;
 
-class BelongsTo extends Field
+abstract class BelongsTo extends Field
 {
+    /**
+     * Get relation model
+     *
+     * @return string
+     */
+    abstract protected function getRelationModel();
+
+    public function relation(Value $value)
+    {
+        return $value->belongsTo($this->getRelationModel(), 'foreign_key');
+    }
+
     public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
     {
-        if (property_exists($this->options_array, 'entity')) {
-
-            if (property_exists($this->options_array, 'make_parent')) {
-                if (!$instance->parent_id) {
-                    $instance->parent_id = $this->options_array->entity;
-                }
-                return new HiddenField($this->getInputName());
-            }
-
-            return new HiddenField($this->getInputName(), $this->options_array->entity);
-        }
-
         return new BelongsToField($decorator, $this->relation($value), [
                 'name' => $this->getInputName(),
                 'label' => $this->getInputLabel(),
                 'help_text_title' => $this->help_text_title,
                 'help_text' => $this->help_text,
             ],
-            function ($query) {
-                if (property_exists($this->options_array, 'template')) {
-                    $query->whereHas('template', function($query) {
-                        $query->whereId($this->options_array->template);
-                    });
-                } elseif (property_exists($this->options_array, 'type')) {
-                    $query->whereHas('template', function($query) {
-                        $query->whereTypeAlias($this->options_array->type);
-                    });
-                }
+            function ($query) use ($value) {
+                $this->filterAdminQuery($query, $value);
             }
         );
     }
+
+    protected function filterAdminQuery($query, $value) {}
 
     public function getInputName()
     {
@@ -68,22 +57,6 @@ class BelongsTo extends Field
             $entity->getAttribute($value->key) ? $entity->getAttribute($value->key)->name : null
         );
         return $value;
-    }
-
-    public function getOptionFields()
-    {
-        return [
-            new CheckboxField([
-                'label' => 'Make related entity the parent',
-                'name' => 'options_array[make_parent]'
-            ]),
-            new EntitySelectField('Entity')
-        ];
-    }
-
-    public function relation(Value $value)
-    {
-        return $value->belongsTo(Entity::class, 'foreign_key')->ordered();
     }
 
     protected function usesForeignKey()

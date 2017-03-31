@@ -11,13 +11,6 @@ use Bozboz\Jam\Entities\Value;
 abstract class BelongsToMany extends BelongsTo
 {
     /**
-     * Get relation model
-     *
-     * @return string
-     */
-    abstract protected function getRelationModel();
-
-    /**
      * Get pivot table config
      *
      * @return object [
