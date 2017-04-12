@@ -236,10 +236,13 @@ class Entity extends Node implements ModelInterface
 		$query->where("{$alias}.key", $key);
 	}
 
-	public function scopeWhereValue($query, $key, $value)
+	public function scopeWhereValue($query, $key, $operator, $value = null)
 	{
+        if (func_num_args() == 2) {
+            list($value, $operator) = [$operator, '='];
+        }
 		$alias = 'where_value_'.uniqid();
-		$query->joinValueByKey($key, $alias)->where("{$alias}.value", $value);
+		$query->joinValueByKey($key, $alias)->where("{$alias}.value", $operator, $value);
 	}
 
 	public function scopeWhereBelongsTo($query, $relation, $related)

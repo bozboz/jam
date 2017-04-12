@@ -10,6 +10,7 @@
 - Add accessor method for pulished date in entity
 - Add type menu title to type listing for better sparation
 - Allow BelongsTo field to be extended 
+- Allow operator to be changed for `whereValue` entity scope
 
 ## Version 1.4.1 (2017-03-14)
 - Remove debug
