@@ -254,11 +254,30 @@ class Entity extends Node implements ModelInterface
 
 	public function scopeWhereBelongsToManyEntity($query, $relation, $related)
 	{
+		$query->whereBelongsToMany($relation, $related, 'entity_entity', 'entity_id');
+	}
+
+	public function scopeWhereBelongsToMany($query, $relation, $related, $pivot, $foreignKey)
+	{
 		$valueAlias = 'belongs_to_many_value_'.uniqid();
 		$entityEntityAlias = 'belongs_to_many_entity_'.uniqid();
 		$query->joinValueByKey($relation, $valueAlias);
-		$query->join("entity_entity as {$entityEntityAlias}", "{$entityEntityAlias}.value_id", '=', "{$valueAlias}.id");
-		$query->whereIn("{$entityEntityAlias}.entity_id", is_object($related) ? (array)$related->getKey() : (array)$related);
+		$query->join("{$pivot} as {$entityEntityAlias}", "{$entityEntityAlias}.value_id", '=', "{$valueAlias}.id");
+		$query->whereIn("{$entityEntityAlias}.{$foreignKey}", is_object($related) ? (array)$related->getKey() : (array)$related);
+	}
+
+	public function scopeWhereNotBelongsToManyEntity($query, $relation, $related)
+	{
+		$query->whereNotBelongsToMany($relation, $related, 'entity_entity', 'entity_id');
+	}
+
+	public function scopeWhereNotBelongsToMany($query, $relation, $related, $pivot, $foreignKey)
+	{
+		$valueAlias = 'belongs_to_many_value_'.uniqid();
+		$entityEntityAlias = 'belongs_to_many_entity_'.uniqid();
+		$query->joinValueByKey($relation, $valueAlias);
+		$query->join("{$pivot} as {$entityEntityAlias}", "{$entityEntityAlias}.value_id", '=', "{$valueAlias}.id");
+		$query->whereNotIn("{$entityEntityAlias}.{$foreignKey}", is_object($related) ? (array)$related->getKey() : (array)$related);
 	}
 
 	public function currentValues()
