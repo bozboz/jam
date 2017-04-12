@@ -42,7 +42,6 @@ class EntityList extends Field
 
     public function injectValue(Entity $entity, Value $value)
     {
-        $repository = app()->make(\Bozboz\Jam\Repositories\Contracts\EntityRepository::class);
         $entity->setAttribute(
             $value->key,
             $this->newListQuery($entity)->active()->withFields()->with('template')
