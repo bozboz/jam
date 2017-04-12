@@ -5,7 +5,7 @@ namespace Bozboz\Jam\Types;
 class EntityList extends Type
 {
     protected $attributes = [
-        'menu_title' => null,
+        'menu_title' => 'Entity Lists',
         'name' => null,
         'report' => null,
         'link_builder' => \Bozboz\Jam\Entities\LinksDisabled::class,
