@@ -28,8 +28,8 @@ class FieldDecorator extends ModelAdminDecorator
 			'Name' => $this->getLabel($instance),
 			'Type' => $instance->getDescriptiveName(),
 			'Validation' => $instance->validation,
-			'Options' => $instance->options->pluck('value', 'key')->transform(function($value, $key) {
-				return "$key: $value";
+			'Options' => $instance->options->pluck('value', 'key')->map(function($value, $key) {
+				return "$key: " . str_replace("\n", ', ', $value);
 			})->implode(' / '),
 		];
 	}
