@@ -9,10 +9,8 @@ class EntityPath extends Model
 {
 	use SoftDeletes;
 
-	protected $fillable = [
-		'entity_id',
-		'path',
-		'canonical_id',
+	protected $guarded = [
+		'id',
 	];
 
 	public function entity()
