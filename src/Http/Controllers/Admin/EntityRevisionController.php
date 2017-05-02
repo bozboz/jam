@@ -106,7 +106,7 @@ class EntityRevisionController extends ModelAdminController
 					'class' => 'btn-sm btn-warning',
 					'data-warn' => 'Are you sure you wish to revert to this revision? This action cannot be undone.'
 				]),
-				new IsValid([$this, 'canEdit'])
+				new IsValid([$this, 'canRevert'])
 			),
 		];
 	}
@@ -140,6 +140,15 @@ class EntityRevisionController extends ModelAdminController
 	public function getSuccessResponse($instance)
 	{
 		return Redirect::action($this->getActionName('indexForEntity'), ['entity_id' => $instance->entity->id]);
+	}
+
+	public function canRevert($instance)
+	{
+		return $this->canEdit($instance)
+			&& (
+				$instance->entity->currentRevision
+				&& $instance->entity->currentRevision->created_at != $instance->created_at
+			);
 	}
 
 	public function canDiffLive($instance)

@@ -134,6 +134,10 @@ class EntityController extends ModelAdminController
 		return array_merge([
 			$this->actions->publish([
 				$this->actions->custom(
+					new Link($entityRevisionController->getActionName('indexForEntity'), 'History', 'fa fa-history'),
+					new IsValid([$entityRevisionController, 'canView'])
+				),
+				$this->actions->custom(
 					new Form($this->getActionName('publish'), 'Publish'),
 					new IsValid([$this, 'canPublishFromRow'])
 				),
@@ -148,12 +152,6 @@ class EntityController extends ModelAdminController
 				// 	new IsValid([$this, 'canSchedule'])
 				// )
 			]),
-			$this->actions->custom(
-				new Link($entityRevisionController->getActionName('indexForEntity'), 'History', 'fa fa-history', [
-					'class' => 'btn-default'
-				]),
-				new IsValid([$entityRevisionController, 'canView'])
-			),
 			$this->actions->dropdown($this->getTemplateOptions()->map(function($template) {
 				return $this->actions->custom(
 					new Link([$this->getActionName('createOfTypeForParent'), [$template->type_alias, $template->alias]], $template->name),

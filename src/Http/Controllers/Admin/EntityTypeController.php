@@ -15,6 +15,7 @@ use Bozboz\Jam\Types\TypeTemplatesAction;
 class EntityTypeController extends ModelAdminController
 {
 	protected $useActions = true;
+	protected $useAnythingPermissions = false;
 
 	use RestrictAllPermissionsTrait;
 
