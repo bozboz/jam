@@ -1,6 +1,6 @@
 # Jam Changelog
 
-## Version 1.5.0 (Future)
+## Version 1.5.0 (2017-05-04)
 - Add search filter to entity report
 - Throw different exception in link builder when running in console
 - Don't parse oembed value if it's null in oembed field type
