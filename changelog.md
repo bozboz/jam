@@ -12,6 +12,7 @@
 - Allow BelongsTo field to be extended 
 - Allow operator to be changed for `whereValue` entity scope
 - Change EntityPath fillable to guarded
+- Move history link to published dropdown on entity report
 
 ## Version 1.4.1 (2017-03-14)
 - Remove debug
