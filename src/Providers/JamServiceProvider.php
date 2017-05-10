@@ -63,9 +63,9 @@ class JamServiceProvider extends ServiceProvider
             "{$packageRoot}database/migrations" => database_path('migrations')
         ], 'migrations');
 
-        $this->publishes([
-            "{$packageRoot}config/jam.php" => config_path('jam.php')
-        ]);
+        $this->mergeConfigFrom(
+            "{$packageRoot}config/jam.php", 'jam'
+        );
 
         $this->registerPermissions();
 
