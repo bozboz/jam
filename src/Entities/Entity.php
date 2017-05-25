@@ -321,10 +321,10 @@ class Entity extends Node implements ModelInterface
 		}
 	}
 
-	public function getPublishedAtAttribute()
+	public function getPublishedAtAttribute($format = null)
 	{
 		if ($this->currentRevision) {
-			return $this->currentRevision->published_at;
+			return $format ? $this->currentRevision->published_at->format($format) : $this->currentRevision->published_at;
 		} else {
 			return false;
 		}

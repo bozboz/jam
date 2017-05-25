@@ -1,5 +1,8 @@
 # Jam Changelog
 
+## Version 1.5.1 (2017-05-25)
+- Add optional format argument to published_at mutator on entity
+
 ## Version 1.5.0 (2017-05-04)
 - Add search filter to entity report
 - Throw different exception in link builder when running in console
