@@ -26,6 +26,7 @@ class JamServiceProvider extends ServiceProvider
         'Bozboz\Jam\Console\Commands\CountErrors',
         'Bozboz\Jam\Console\Commands\FixTree',
         'Bozboz\Jam\Console\Commands\RecalculatePaths',
+        'Bozboz\Jam\Console\Commands\SeederMake',
     ];
 
     public function register()

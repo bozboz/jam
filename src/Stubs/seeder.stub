@@ -1,0 +1,14 @@
+<?php
+
+use Bozboz\Jam\Fields\Field;
+use Bozboz\Jam\Fields\Options\Option;
+use Bozboz\Jam\Templates\Template;
+use Illuminate\Database\Seeder;
+
+class DummyClass extends Seeder
+{
+    public function run()
+    {
+        {seed}
+    }
+}

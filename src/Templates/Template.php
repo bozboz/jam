@@ -38,7 +38,7 @@ class Template extends Model
 	{
 		parent::boot();
 		static::created(function($template) {
-			if ($template->type()->isVisible()) {
+			if ($template->type()->isVisible() && $template->fields) {
 				$template->fields()->create([
 					'type_alias' => 'text',
 					'name' => 'meta_title',

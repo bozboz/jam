@@ -29,6 +29,7 @@ class Field extends Model implements FieldInterface, Sortable
         'type_alias',
         'help_text_title',
         'help_text',
+        'sorting',
     ];
 
     protected $nullable = [
