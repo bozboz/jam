@@ -7,6 +7,7 @@ use Bozboz\Admin\Permissions\RestrictAllPermissionsTrait;
 use Bozboz\Admin\Reports\Actions\Permissions\IsValid;
 use Bozboz\Admin\Reports\Actions\Permissions\Valid;
 use Bozboz\Admin\Reports\Actions\Presenters\Link;
+use Bozboz\Jam\Entities\Value;
 use Bozboz\Jam\Fields\Field;
 use Bozboz\Jam\Fields\FieldDecorator;
 use Bozboz\Jam\Templates\Template;
@@ -102,7 +103,13 @@ class EntityTemplateFieldController extends ModelAdminController
 
 	protected function save($modelInstance, $input)
 	{
+		$modelInstance->fill($input);
+		if ($modelInstance->isDirty('name')) {
+			Value::whereFieldId($modelInstance->id)->update(['key' => $modelInstance->name]);
+		}
+
 		parent::save($modelInstance, $input);
+
 		$modelInstance->options()->delete();
 		if (array_key_exists('options_array', $input)) {
 			$options = [];
