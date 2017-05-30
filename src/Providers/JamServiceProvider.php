@@ -14,6 +14,7 @@ use Bozboz\Jam\Mapper;
 use Bozboz\Jam\Templates\Template;
 use Bozboz\Jam\Types\Type;
 use Bozboz\Permissions\Facades\Gate;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 
 class JamServiceProvider extends ServiceProvider
@@ -106,7 +107,8 @@ class JamServiceProvider extends ServiceProvider
 
             if (Gate::allows('manage_entities')) {
                 $menu['Jam'] = [
-                    'Types' => $url->route('admin.entity-types.index'),
+                    'Templates' => $url->route('admin.entity-types.index'),
+                    'Template History' => $url->route('admin.entity-template-history.index'),
                 ];
             }
         });

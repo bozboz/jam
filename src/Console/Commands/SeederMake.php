@@ -117,7 +117,7 @@ class SeederMake extends GeneratorCommand
      */
     protected function getNameInput()
     {
-        return 'Create' . trim(studly_case($this->argument('type'))) . trim(studly_case($this->argument('template'))) . 'JamTemplate';
+        return studly_case(trim($this->argument('type')) . trim($this->argument('template'))) . 'JamTemplate';
     }
 
     /**

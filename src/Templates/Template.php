@@ -11,11 +11,13 @@ use Bozboz\Jam\Entities\Revision;
 use Bozboz\Jam\Entities\Value;
 use Bozboz\Jam\Fields\Field;
 use Bozboz\Jam\Fields\Text;
+use Bozboz\Jam\Revisionable;
 use Bozboz\Jam\Types\Type;
 
 class Template extends Model
 {
 	use DynamicSlugTrait;
+	use Revisionable;
 
 	protected $table = 'entity_templates';
 
@@ -38,7 +40,7 @@ class Template extends Model
 	{
 		parent::boot();
 		static::created(function($template) {
-			if ($template->type()->isVisible() && $template->fields) {
+			if ($template->type()->isVisible()) {
 				$template->fields()->create([
 					'type_alias' => 'text',
 					'name' => 'meta_title',
@@ -95,5 +97,10 @@ class Template extends Model
 	public function type()
 	{
 		return Entity::getMapper()->get($this->type_alias);
+	}
+
+	public function getTemplateForRevision()
+	{
+		return $this;
 	}
 }

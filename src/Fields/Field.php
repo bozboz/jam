@@ -12,12 +12,15 @@ use Bozboz\Jam\Entities\Value;
 use Bozboz\Jam\Fields\Contracts\Field as FieldInterface;
 use Bozboz\Jam\Fields\Options\Option;
 use Bozboz\Jam\Mapper;
+use Bozboz\Jam\Revisionable;
 use Bozboz\Jam\Templates\Template;
+use Bozboz\Jam\Templates\TemplateRevision;
 use Illuminate\Database\Eloquent\Collection;
 
 class Field extends Model implements FieldInterface, Sortable
 {
     use SortableTrait;
+    use Revisionable;
 
     protected $table = 'entity_template_fields';
 
