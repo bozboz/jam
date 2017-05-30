@@ -76,7 +76,7 @@ When you're making changes to templates in development the same changes will nee
 
 If you have created a brand new template that doesn't exist in the live database yet then your best bet it to use the seeder generator using the console command `php artisan jam:make-seeder <type alias> <template alias>`. This will generate a seeder that can be run on the live database to insert the template, all its fields and field options. The seeders generated will have a name created from the type and template aliases suffixed with "JamTemplate.php".
 
-eg. `php artisan jam:make-seeder pages text-page` would generate a seeder named `PagesTextPageJamTemplate.php` so once deployed to the live server it would be run using `php artisan db:seed --class=databasePagesTextPageJamTemplate`
+eg. `php artisan jam:make-seeder pages text-page` would generate a seeder named `PagesTextPageJamTemplate.php` so once deployed to the live server it would be run using `php artisan db:seed --class=PagesTextPageJamTemplate`
 
 If you're not creating whole new templates but rather changing parts of existing templates then the best thing to do is view the history for that template and manually redo the changes shown there on the production database after the work has been deployed.
 
