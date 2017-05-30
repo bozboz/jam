@@ -6,6 +6,7 @@
 - [2. Data Setup](#2-data-setup)
     - [2.1. Types](#21-types)
     - [2.2. Templates](#22-templates)
+        - [2.2.1. Migrating Templates](#221-migrating-templates)
     - [2.3. Fields](#23-fields)
     - [2.4. Entities](#24-entities)
     - [2.5. Revisions](#25-revisions)
@@ -68,6 +69,16 @@ If you require nested sorting you should use the NestedType.
 Once you've got some types you need to give them some templates. A template dictates what data the entity has. Types can have as many templates as you like. To add a template log in to the admin, click on "Jam" then pick a type to edit. 
 
 When adding a template you must give it a `name` and `view` but the `listing view` and `max_uses` values are optional. The view field will be used in the default render method to pick what view to actually render. The implementation of listing_view is largely down to the requirements but its intention is that you could have multiple templates in a type that require different views in a listing. Once you've created a template the admin menu will acknowledge the type and display it in the the menu wherever the configured menu_builder dictates. `max_uses` allows you to limit the number of times a template may be used e.g. setting it to 1 will hide the option to create a new entity with that template after 1 is created.
+
+#### 2.2.1. Migrating Templates
+
+When you're making changes to templates in development the same changes will need to be made to the production database upon release. To aid with that there is a seeder generator and a history view for templates. 
+
+If you have created a brand new template that doesn't exist in the live database yet then your best bet it to use the seeder generator using the console command `php artisan jam:make-seeder <type alias> <template alias>`. This will generate a seeder that can be run on the live database to insert the template, all its fields and field options. The seeders generated will have a name created from the type and template aliases suffixed with "JamTemplate.php".
+
+eg. `php artisan jam:make-seeder pages text-page` would generate a seeder named `PagesTextPageJamTemplate.php` so once deployed to the live server it would be run using `php artisan db:seed --class=databasePagesTextPageJamTemplate`
+
+If you're not creating whole new templates but rather changing parts of existing templates then the best thing to do is view the history for that template and manually redo the changes shown there on the production database after the work has been deployed.
 
 ### 2.3. Fields
 
