@@ -40,7 +40,7 @@ class TemplateRevisionDecorator extends ModelAdminDecorator
     {
         $old = $instance->decoded_old ? collect($instance->decoded_old) : null;
         $new = $instance->decoded_new ? collect($instance->decoded_new) : null;
-        return '<a href="#" onClick="console.log($(this).next());$(this).next().toggle()">View</a><ul style="display:none">'
+        return '<a href="#" onClick="$(this).next().toggle()">View</a><ul style="display:none">'
             . collect(array_keys(array_merge($instance->getDecodedOldAttribute(true), $instance->getDecodedNewAttribute(true))))
             ->map(function($attribute) use ($old, $new) {
                 if ($old && $new) {

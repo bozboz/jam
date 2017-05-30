@@ -3,6 +3,7 @@
 namespace Bozboz\Jam;
 
 use Bozboz\Jam\Templates\TemplateRevision;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
 
 trait Revisionable
@@ -44,11 +45,15 @@ trait Revisionable
 
     public function logDelete()
     {
-        $this->logRevision(
-            'deleted',
-            $this->onlyFillable($this->toArray()),
-            []
-        );
+        try {
+            $this->logRevision(
+                'deleted',
+                $this->onlyFillable($this->toArray()),
+                []
+            );
+        } catch (QueryException $e) {
+            // Do nothing
+        }
     }
 
     public function logRevision($action, $old, $new)
