@@ -83,6 +83,7 @@ class EntityListField extends AdminField
     protected $parentEntity;
     protected $field;
     protected $entityList;
+    protected $view = 'admin::fields.helptext-before-field';
 
     public function __construct(Entity $parentEntity, $field, $entityList, array $attributes = [])
     {
