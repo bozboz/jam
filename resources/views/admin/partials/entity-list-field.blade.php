@@ -31,4 +31,6 @@
      -->@include($entity->template->listing_view ?: 'jam::admin.partials.entity-list-item')<!--
     @endforeach
     --></ol>
+@else
+    <p>You must save as draft or publish before you can begin adding {{ str_plural(str_replace('_', ' ', $field->name)) }}.</p>
 @endif
