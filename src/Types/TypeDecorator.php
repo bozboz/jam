@@ -12,6 +12,7 @@ use Bozboz\Admin\Reports\Actions\Presenters\Link;
 use Bozboz\Admin\Reports\Actions\Presenters\Urls\Url;
 use Bozboz\Jam\Http\Controllers\Admin\EntityTemplateController;
 use Bozboz\Jam\Http\Controllers\Admin\EntityTemplateFieldController;
+use Bozboz\Jam\Http\Controllers\Admin\TemplateHistoryController;
 use Bozboz\Jam\Mapper;
 use Bozboz\Jam\Types\Type;
 
@@ -46,6 +47,7 @@ class TypeDecorator extends ModelAdminDecorator
 				'template_id' => $template->id
 			]));
 			$duplicateUrl = new Url(action('\\'.EntityTemplateController::class.'@duplicate', $template->id));
+			$historyUrl = new Url(action('\\'.TemplateHistoryController::class.'@index', ['template'=>$template->id]));
 
 			$options = [
 				new Action(
@@ -58,6 +60,10 @@ class TypeDecorator extends ModelAdminDecorator
 				),
 				new Action(
 					new Link($duplicateUrl, 'Duplicate', 'fa fa-copy'),
+					new IsValid([app(EntityTemplateController::class), 'canView'])
+				),
+				new Action(
+					new Link($historyUrl, 'History', 'fa fa-history'),
 					new IsValid([app(EntityTemplateController::class), 'canView'])
 				),
 			];
