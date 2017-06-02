@@ -25,6 +25,6 @@ class Option extends Model
 
     public function template()
     {
-        return $this->field->template;
+        return $this->field->template();
     }
 }
