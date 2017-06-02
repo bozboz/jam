@@ -54,9 +54,19 @@ class TemplateDecorator extends ModelAdminDecorator
 			new TextField('type_alias', ['disabled']),
 			new TextField('name'),
 			($instance->exists ? new TextField('alias') : null),
-			new SelectField('view', ['options' => $this->getViews(), 'class' => 'select2 form-control']),
-			new SelectField('listing_view', ['options' => $this->getViews(), 'class' => 'select2 form-control']),
-			new TextField('max_uses'),
+			new SelectField('view', [
+				'options' => $this->getViews(),
+				'class' => 'select2 form-control',
+				'help_text' => 'This will be used in the default render method to pick what view to actually render.'
+			]),
+			new SelectField('listing_view', [
+				'options' => $this->getViews(),
+				'class' => 'select2 form-control',
+				'help_text' => 'The implementation of listing_view is largely down to the requirements but its intention is that you could have multiple templates in a type that require different views in a listing.',
+			]),
+			new TextField('max_uses', [
+				'help_text' => 'Allows you to limit the number of times a template may be used e.g. setting it to 1 will hide the option to create a new entity with that template after 1 is created.'
+			]),
 			new HiddenField('type_alias')
 		];
 	}

@@ -149,7 +149,8 @@ class EntityDecorator extends ModelAdminDecorator
 			$canEditStatus
 				? new DateTimeField('currentRevision[published_at]', [
 					'label' => 'Published At',
-					'help_text' => 'If you enter a date in the future, this will be hidden from the site until that date is reached.',
+					'placeholder' => date('d/m/Y'),
+					'help_text' => "If you enter a date in the future, this will be hidden from the site until that date is reached.",
 				])
 				: new HiddenField('currentRevision[published_at]'),
 		]));

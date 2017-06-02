@@ -44,11 +44,14 @@ class Template extends Model
 				$template->fields()->create([
 					'type_alias' => 'text',
 					'name' => 'meta_title',
-					'validation' => 'required'
+					'validation' => 'required|max:160',
+					'help_text' => 'maximum 160 characters, should be kept under 60 (Search engine result title)',
 				]);
 				$template->fields()->create([
 					'type_alias' => 'text',
 					'name' => 'meta_description',
+					'validation' => 'max:160',
+					'help_text' => 'maximum 160 characters (Search engine result description)',
 				]);
 			}
 		});
