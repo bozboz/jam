@@ -3,6 +3,7 @@
 ## Version 1.6.0 (Future)
 - Add seeder generator for copying template schema to production
 - Add template history tracking for easier migration of JAM schema
+- Allow entities to be saved as draft even if the form doesn't validate
 
 ## Version 1.5.1 (2017-05-25)
 - Add optional format argument to published_at mutator on entity

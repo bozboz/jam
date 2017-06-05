@@ -88,16 +88,25 @@ class Entity extends Node implements ModelInterface
 
 	public function getValidator()
 	{
-		$validation = (array) $this->template->fields->map(function($field) {
+		if (str_contains(Request::get('submit'), '"status":"draft"')) {
+			$validation = [];
+		} else {
+			$validation = $this->getValidationRulesFromTemplate();
+		}
+
+		return new EntityValidator(
+			array_filter(array_combine(array_column($validation, 'name'), array_column($validation, 'validation')))
+		);
+	}
+
+	protected function getValidationRulesFromTemplate()
+	{
+		return (array) $this->template->fields->map(function($field) {
 			return [
 				'name' => $field->getInputName(),
 				'validation' => $field->validation
 			];
 		})->all();
-
-		return new EntityValidator(
-			array_filter(array_combine(array_column($validation, 'name'), array_column($validation, 'validation')))
-		);
 	}
 
 	public function getSlugSourceField()
