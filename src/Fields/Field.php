@@ -27,6 +27,7 @@ class Field extends Model implements FieldInterface, Sortable
     protected $fillable = [
         'id',
         'name',
+        'label',
         'validation',
         'template_id',
         'type_alias',
@@ -39,6 +40,7 @@ class Field extends Model implements FieldInterface, Sortable
         'validation',
         'help_text_title',
         'help_text',
+        'label',
     ];
 
     protected static $mapper;
@@ -142,7 +144,8 @@ class Field extends Model implements FieldInterface, Sortable
 
     public function getInputLabel()
     {
-        return preg_replace('/([A-Z])/', ' $1', studly_case($this->name)) . (str_contains($this->validation, 'required') ? ' *' : '');
+        return ($this->label ?: preg_replace('/([A-Z])/', ' $1', studly_case($this->name)))
+            . (str_contains($this->validation, 'required') ? ' *' : '');
     }
 
     public function saveValue(Revision $revision, $value)

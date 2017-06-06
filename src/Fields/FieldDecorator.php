@@ -51,6 +51,7 @@ class FieldDecorator extends ModelAdminDecorator
 			// new SelectField('type_alias', ['options' => $this->getTypeOptions()]),
 			new TextField('type_alias', ['disabled' => 'disabled']),
 			new TextField('name'),
+			new TextField('label', ['help_text' => '(optional) name will be used otherwise']),
 			new TextField('validation'),
 			new TextField('help_text_title'),
 			new TextareaField('help_text'),
