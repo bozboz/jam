@@ -7,6 +7,7 @@ use Bozboz\Admin\Permissions\RestrictAllPermissionsTrait;
 use Bozboz\Admin\Reports\Actions\Permissions\IsValid;
 use Bozboz\Admin\Reports\Actions\Permissions\Valid;
 use Bozboz\Admin\Reports\Actions\Presenters\Link;
+use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\Value;
 use Bozboz\Jam\Fields\Field;
 use Bozboz\Jam\Fields\FieldDecorator;
@@ -120,6 +121,19 @@ class EntityTemplateFieldController extends ModelAdminController
 				];
 			}
 			$modelInstance->options()->createMany($options);
+		}
+
+		if ($modelInstance->wasRecentlyCreated) {
+			Entity::with('currentRevision')->has('currentRevision')->whereHas('template', function($query) use ($modelInstance) {
+				$query->whereId($modelInstance->template_id);
+			})->get()->pluck('currentRevision')->each(function($revision) use ($modelInstance) {
+				$revision->fieldValues()->create([
+					'key' => $modelInstance->name,
+					'field_id' => $modelInstance->id,
+					'type_alias' => $modelInstance->type_alias,
+					'value' => '',
+				]);
+			});
 		}
 	}
 

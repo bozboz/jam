@@ -5,6 +5,7 @@
 - Add template history tracking for easier migration of JAM schema
 - Allow entities to be saved as draft even if the form doesn't validate
 - Allow custom labels to be added to JAM fields
+- Automatically insert a blank value to the current revision when new field added to a template
 
 ## Version 1.5.1 (2017-05-25)
 - Add optional format argument to published_at mutator on entity
