@@ -1,6 +1,6 @@
 # Jam Changelog
 
-## Version 1.6.0 (Future)
+## Version 1.6.0 (2017-06-12)
 - Add seeder generator for copying template schema to production
 - Add template history tracking for easier migration of JAM schema
 - Allow entities to be saved as draft even if the form doesn't validate
