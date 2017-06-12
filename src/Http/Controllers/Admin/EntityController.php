@@ -344,6 +344,12 @@ class EntityController extends ModelAdminController
 
 	protected function getListingUrl($instance)
 	{
+		if (
+			$instance->redirect_back_url
+			&& starts_with($instance->redirect_back_url, $this->getSuccessResponse($instance)->getTargetUrl())
+		) {
+			return $instance->redirect_back_url;
+		}
 		return action($this->getActionName('show'), ['type' => $instance->template->type_alias]);
 	}
 
