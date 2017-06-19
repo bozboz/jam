@@ -1,5 +1,8 @@
 # Jam Changelog
 
+## Version 1.6.1 (2017-06-19)
+- Fix per page option on entity listing
+
 ## Version 1.6.0 (2017-06-12)
 - Add seeder generator for copying template schema to production
 - Add template history tracking for easier migration of JAM schema

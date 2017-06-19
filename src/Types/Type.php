@@ -86,20 +86,20 @@ class Type implements \Bozboz\Admin\Base\ModelInterface
         return  $this->getObj('menu_builder')->buildMenu($this, $menu, $url);
     }
 
-    public function getReport($decorator)
+    public function getReport($decorator, $perPage)
     {
-        return $this->getObj('report', $decorator);
+        return $this->getObj('report', $decorator, $perPage);
     }
 
-    protected function getObj($type, $arg = null)
+    protected function getObj($type, $arg1 = null, $arg2 = null)
     {
         $class = $this->attributes[$type];
         if (is_callable($class)) {
             return call_user_func($class);
-        } elseif (is_null($arg)) {
+        } elseif (is_null($arg1)) {
             return app($class);
         } elseif ($class) {
-            return new $class($arg);
+            return new $class($arg1, $arg2);
         }
     }
 

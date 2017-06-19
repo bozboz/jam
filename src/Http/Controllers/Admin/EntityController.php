@@ -66,7 +66,7 @@ class EntityController extends ModelAdminController
 	 */
 	protected function getListingReport()
 	{
-		return $this->type->getReport($this->decorator);
+		return $this->type->getReport($this->decorator, request()->get('per-page'));
 	}
 
 	protected function getTemplateOptions()
