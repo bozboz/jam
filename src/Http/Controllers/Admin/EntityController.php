@@ -189,6 +189,17 @@ class EntityController extends ModelAdminController
 				]),
 				new IsValid([$this, 'canPublish'])
 			),
+			$this->actions->custom(
+				new Button('Publish and Create Another', 'fa fa-save', [
+					'type' => 'submit',
+					'name' => 'submit',
+					'value' => json_encode([
+						'after_save' => 'create_another',
+						'status' => 'publish'
+					]),
+				]),
+				new IsValid([$this, 'canPublish'])
+			),
 		];
 		$draftOptions = [
 			$this->actions->submit('Save as Draft', 'fa fa-pencil-square-o', [
@@ -203,6 +214,13 @@ class EntityController extends ModelAdminController
 				'name' => 'submit',
 				'value' => json_encode([
 					'after_save' => 'exit',
+					'status' => 'draft'
+				]),
+			]),
+			$this->actions->submit('Save as Draft and Create Another', 'fa fa-pencil-square-o', [
+				'name' => 'submit',
+				'value' => json_encode([
+					'after_save' => 'create_another',
 					'status' => 'draft'
 				]),
 			]),
@@ -340,6 +358,21 @@ class EntityController extends ModelAdminController
 	protected function getSuccessResponse($instance)
 	{
 		return \Redirect::action($this->getActionName('show'), ['type' => $instance->template->type_alias]);
+	}
+
+	protected function reEdit($instance)
+	{
+		if (Input::has('after_save') && Input::get('after_save') === 'create_another') {
+
+			$action = $instance->parent_id ? 'createOfTypeForParent' : 'createOfType';
+
+			return Redirect::action($this->getActionName($action), [
+				$instance->template->type_alias,
+				$instance->template->alias
+			]);
+		}
+
+		return parent::reEdit($instance);
 	}
 
 	protected function getListingUrl($instance)
