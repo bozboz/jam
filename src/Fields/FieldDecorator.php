@@ -26,10 +26,11 @@ class FieldDecorator extends ModelAdminDecorator
 	{
 		return [
 			'Name' => $this->getLabel($instance),
+			'Label' => $instance->label,
 			'Type' => $instance->getDescriptiveName(),
 			'Validation' => $instance->validation,
 			'Options' => $instance->options->pluck('value', 'key')->map(function($value, $key) {
-				return "$key: " . str_replace("\n", ', ', $value);
+				return "$key: " . str_limit(str_replace("\n", ', ', $value));
 			})->implode(' / '),
 		];
 	}
@@ -48,15 +49,19 @@ class FieldDecorator extends ModelAdminDecorator
 	public function getFields($instance)
 	{
 		return array_merge([
-			// new SelectField('type_alias', ['options' => $this->getTypeOptions()]),
-			new TextField('type_alias', ['disabled' => 'disabled']),
+			new SelectField('type_alias', [
+				'options' => $this->getTypeOptions(),
+				'help_text_title' => 'WARNING:',
+				'help_text' => 'Be VERY careful when changing field types, you can end up breaking things quite easily.',
+			]),
+			// new SelectField('type_alias', ['disabled' => 'disabled']),
 			new TextField('name'),
 			new TextField('label', ['help_text' => '(optional) name will be used otherwise']),
 			new TextField('validation'),
 			new TextField('help_text_title'),
 			new TextareaField('help_text'),
 			new HiddenField('template_id'),
-			new HiddenField('type_alias'),
+			// new HiddenField('type_alias'),
 		], $instance->getOptionFields());
 	}
 
