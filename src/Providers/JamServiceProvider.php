@@ -176,6 +176,7 @@ class JamServiceProvider extends ServiceProvider
             'textarea'                 => \Bozboz\Jam\Fields\Textarea::class,
             'toggle'                   => \Bozboz\Jam\Fields\Toggle::class,
             'user'                     => \Bozboz\Jam\Fields\User::class,
+            'link'                     => \Bozboz\Jam\Fields\Link::class,
         ]);
     }
 

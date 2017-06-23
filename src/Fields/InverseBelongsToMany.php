@@ -13,13 +13,27 @@ use Bozboz\Jam\Entities\Value;
 use Bozboz\Jam\Http\Controllers\Admin\EntityController;
 use Illuminate\Support\Facades\DB;
 
-class InverseBelongsToMany //extends BelongsTo
+class InverseBelongsToMany extends BelongsToMany
 {
     private $entity;
 
     public static function getDescriptiveName()
     {
         return 'Inverse Belongs To Many (read-only)';
+    }
+
+    protected function getRelationModel()
+    {
+        return Entity::class;
+    }
+
+    protected function getPivot()
+    {
+        return (object)[
+            'table' => 'entity_entity',
+            'other_key' => 'value_id',
+            'foreign_key' => 'entity_id',
+        ];
     }
 
     public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
@@ -48,7 +62,9 @@ class InverseBelongsToMany //extends BelongsTo
     {
         $this->entity = $entity;
         $value = parent::injectAdminValue($entity, $revision);
-        $entity->setAttribute($this->getInputName(), $this->getValue($value));
+        if ($value) {
+            $entity->setAttribute($this->getInputName(), $this->getValue($value));
+        }
     }
 
     public function getValue(Value $value)

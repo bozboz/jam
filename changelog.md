@@ -3,6 +3,7 @@
 ## Version 1.7.0 (Future)
 - Add ability to change type of existing fields
 - Add "Save and Create Another" option to entity form
+- Add link field type
 
 ## Version 1.6.1 (2017-06-19)
 - Fix per page option on entity listing
