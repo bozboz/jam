@@ -1,6 +1,6 @@
 # Jam Changelog
 
-## Version 1.7.0 (Future)
+## Version 1.7.0 (2017-06-26)
 - Add ability to change type of existing fields
 - Add "Save and Create Another" option to entity form
 - Add link field type
