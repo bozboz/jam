@@ -239,6 +239,13 @@ class EntityController extends ModelAdminController
 				'class' => 'pull-right space-left',
 			]),
 			$this->actions->custom(
+				new Link(new Url(url($instance->canonical_path  . '?p=' . md5(date('ymd')))), 'Preview', 'fa fa-eye', [
+					'class' => 'btn-info pull-right space-left',
+					'target' => '_blank',
+				]),
+				new IsValid([$this, 'canPreview'])
+			),
+			$this->actions->custom(
 				new Link(new Url($this->getListingUrl($instance)), 'Back to listing', 'fa fa-list-alt', [
 					'class' => 'btn-default pull-right space-left',
 				]),
@@ -368,7 +375,8 @@ class EntityController extends ModelAdminController
 
 			return Redirect::action($this->getActionName($action), [
 				$instance->template->type_alias,
-				$instance->template->alias
+				$instance->template->alias,
+				$instance->parent_id
 			]);
 		}
 
@@ -389,6 +397,11 @@ class EntityController extends ModelAdminController
 	public function canCreateForParent($instance)
 	{
 		return $this->canCreate() && $instance && get_class($instance->template->type()) === NestedType::class;
+	}
+
+	public function canPreview($instance)
+	{
+		return $instance->exists && $instance->template->type()->isVisible();
 	}
 
 	public function canPublish($instance)
