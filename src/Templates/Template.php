@@ -44,14 +44,13 @@ class Template extends Model
 				$template->fields()->create([
 					'type_alias' => 'text',
 					'name' => 'meta_title',
-					'validation' => 'required|max:160',
-					'help_text' => 'maximum 160 characters, should be kept under 60 (Search engine result title)',
+					'validation' => 'required',
+					'help_text' => 'We suggest a <a href="https://moz.com/learn/seo/title-tag">max of 55 chars</a>',
 				]);
 				$template->fields()->create([
 					'type_alias' => 'text',
 					'name' => 'meta_description',
-					'validation' => 'max:160',
-					'help_text' => 'maximum 160 characters (Search engine result description)',
+					'help_text' => 'We suggest a <a href="https://moz.com/learn/seo/meta-description">max of 55 chars</a>',
 				]);
 			}
 		});
