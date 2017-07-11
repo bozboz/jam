@@ -178,7 +178,7 @@ Every entity with a link builder will have a canonical path which most of the ti
 
 ### 3.5. Value Retrieval
 
-Just querying the entities will only give you the data from the entities table, in order to load the values you must call the `loadValues` method on either a single or collection of entities. The method takes a list of fields to load or will load all fields if no arguments given.
+Just querying the entities will only give you the data from the entities table, in order to load the values you must call the `loadFields` method on either a single or collection of entities. The method takes a list of fields to load or will load all fields if no arguments given.
 
 e.g. 
 ```php
