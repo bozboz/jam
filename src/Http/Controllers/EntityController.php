@@ -40,7 +40,7 @@ class EntityController extends Controller
             $redirect = $this->repository->get301ForPath($path);
 
             if ($redirect) {
-                return redirect($redirect);
+                return redirect($redirect, 301);
             }
 
             throw new NotFoundHttpException("No entity for path '{$path}'");
