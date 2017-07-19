@@ -261,6 +261,13 @@ class Entity extends Node implements ModelInterface
 		$query->whereIn("{$alias}.foreign_key", is_object($related) ? (array)$related->getKey() : (array)$related);
 	}
 
+	public function scopeWhereNotBelongsTo($query, $relation, $related)
+	{
+		$alias = 'belongs_to_value_'.uniqid();
+		$query->joinValueByKey($relation, $alias);
+		$query->whereNotIn("{$alias}.foreign_key", is_object($related) ? (array)$related->getKey() : (array)$related);
+	}
+
 	public function scopeWhereBelongsToManyEntity($query, $relation, $related)
 	{
 		$query->whereBelongsToMany($relation, $related, 'entity_entity', 'entity_id');

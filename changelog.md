@@ -1,8 +1,9 @@
 # Jam Changelog
 
-## Version 1.8.0 (Future)
+## Version 1.8.0 (2017-07-19)
 - Add preview link to entity edit form
 - Make old path redirect 301
+- Add `whereNotBelongsTo` scope to Entity
 
 ## Version 1.7.0 (2017-06-26)
 - Add ability to change type of existing fields
