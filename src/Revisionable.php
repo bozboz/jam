@@ -62,7 +62,7 @@ trait Revisionable
             'action' => $action,
             'old' => $old,
             'new' => $new,
-            'user_id' => Auth::user()->id,
+            'user_id' => Auth::user() ? Auth::user()->id : null,
             'template_id' => $this->getTemplateForRevision()->id,
         ]);
     }

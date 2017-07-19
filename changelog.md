@@ -1,5 +1,8 @@
 # Jam Changelog
 
+## Version 1.8.1 (2017-07-19)
+- Fix template creation from command line
+
 ## Version 1.8.0 (2017-07-19)
 - Add preview link to entity edit form
 - Make old path redirect 301
