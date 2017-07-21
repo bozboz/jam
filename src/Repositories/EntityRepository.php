@@ -90,7 +90,7 @@ class EntityRepository implements EntityRepositoryInterface
 
     protected function breadcrumbs(Entity $entity)
     {
-        return $entity->ancestors()->with('template')->active()->get()->push($entity)->map(function($crumb) {
+        return $entity->ancestors()->with('template')->active()->withCanonicalPath()->get()->push($entity)->map(function($crumb) {
             return (object) [
                 'url' => $crumb->canonical_path,
                 'label' => $crumb->name
