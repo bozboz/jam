@@ -2,10 +2,11 @@
 
 namespace Bozboz\Jam\Fields;
 
-use Bozboz\Admin\Fields\DateField;
-use Bozboz\Jam\Entities\Entity;
-use Bozboz\Jam\Entities\EntityDecorator;
+use Carbon\Carbon;
 use Bozboz\Jam\Entities\Value;
+use Bozboz\Jam\Entities\Entity;
+use Bozboz\Admin\Fields\DateField;
+use Bozboz\Jam\Entities\EntityDecorator;
 
 class Date extends Field
 {
@@ -18,4 +19,9 @@ class Date extends Field
             'help_text' => $this->help_text,
 		]);
 	}
+
+    public function getValue(Value $value)
+    {
+        return $value->value ? new Carbon($value->value) : null;
+    }
 }
