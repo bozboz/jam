@@ -28,14 +28,19 @@ class Collection extends NestedCollection
      */
     public function loadRelationFields($relation, $fields = ['*'])
     {
+        if ($items->isEmpty()) return $this;
+
         if ( ! key_exists($relation, $this->first()->getAttributes())) {
             $this->loadFields($relation);
         }
+
         $relations = $this->pluck($relation)->filter();
         if ( ! $relations->first() instanceof Entity) {
             $relations = $relations->flatten();
         }
+
         (new static($relations->unique()))->loadFields($fields);
+
         return $this;
     }
 
