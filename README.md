@@ -186,6 +186,14 @@ e.g.
 $pages = $entityRepository->forType('page')->get()->loadFields('content', 'image');
 ```
 
+If you need to load values for a belongs to or belongs to many entity relation then you can use the `loadRelationFields(string $relationName, mixed $field/s)` method. This will also check that the relation itself is loaded and load it if not so you don't have to load it beforehand.
+
+e.g.
+```php
+<?php
+$entities->loadRelationFields('categories', ['description', 'image']);
+```
+
 ---
 
 ## 4. Search Indexing
