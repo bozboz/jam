@@ -34,7 +34,7 @@ abstract class SortedBelongsToMany extends BelongsToMany
 
     public function saveValue(Revision $revision, $value)
     {
-        $valueObj = parent::saveValue($revision, json_encode($value));
+        $valueObj = $this->parentSaveValue($revision, json_encode($value));
         $syncData = [];
 
         if (is_array($value)) {

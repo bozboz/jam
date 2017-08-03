@@ -53,8 +53,14 @@ abstract class BelongsToMany extends BelongsTo
 
     public function injectAdminValue(Entity $entity, Revision $revision)
     {
-        $value = parent::injectAdminValue($entity, $revision);
+        $value = $this->parentInjectAdminValue($entity, $revision);
         $entity->setAttribute($this->getInputName(), $this->relation($value)->getRelatedIds()->all());
+        return $value;
+    }
+
+    public function parentInjectAdminValue(Entity $entity, Revision $revision)
+    {
+        return parent::injectAdminValue($entity, $revision);
     }
 
     public function injectDiffValue(Entity $entity, Revision $revision)
@@ -77,9 +83,14 @@ abstract class BelongsToMany extends BelongsTo
         return $query->active();
     }
 
+    public function parentSaveValue(Revision $revision, $value)
+    {
+        return parent::saveValue($revision, json_encode($value));
+    }
+
     public function saveValue(Revision $revision, $value)
     {
-        $valueObj = parent::saveValue($revision, json_encode($value));
+        $valueObj = $this->parentSaveValue($revision, json_encode($value));
         $syncData = [];
 
         if (is_array($value)) {
