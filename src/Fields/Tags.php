@@ -5,7 +5,6 @@ namespace Bozboz\Jam\Fields;
 use Bozboz\Jam\Entities\Value;
 use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\Revision;
-use Bozboz\Admin\Fields\BelongsToManyField;
 
 abstract class Tags extends BelongsToMany
 {
@@ -26,7 +25,12 @@ abstract class Tags extends BelongsToMany
     public function relation(Value $value)
     {
         $pivot = $this->getPivot();
-        return $value->revision->entity->belongsToMany($this->getRelationModel(), $pivot->table, $pivot->foreign_key, $pivot->other_key)->withTimestamps();
+        if ($value->revision) {
+            $entity = $value->revision->entity;
+        } else {
+            $entity = new Entity;
+        }
+        return $entity->belongsToMany($this->getRelationModel(), $pivot->table, $pivot->foreign_key, $pivot->other_key);
     }
 
     public function saveValue(Revision $revision, $value)
