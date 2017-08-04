@@ -3,6 +3,7 @@
 namespace Bozboz\Jam\Entities;
 
 use Bozboz\Jam\Fields\Field;
+use Bozboz\Jam\Entities\Entity;
 use Illuminate\Database\Eloquent\Model;
 
 class Value extends Model

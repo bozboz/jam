@@ -22,17 +22,6 @@ abstract class Tags extends BelongsToMany
         $entity->setAttribute($this->getInputName(), $this->relation($value)->get()->pluck('name')->all());
     }
 
-    public function relation(Value $value)
-    {
-        $pivot = $this->getPivot();
-        if ($value->revision) {
-            $entity = $value->revision->entity;
-        } else {
-            $entity = new Entity;
-        }
-        return $entity->belongsToMany($this->getRelationModel(), $pivot->table, $pivot->foreign_key, $pivot->other_key);
-    }
-
     public function saveValue(Revision $revision, $value)
     {
         $model = $this->getRelationModel();
