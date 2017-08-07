@@ -44,10 +44,7 @@ class EntityList extends Field
     {
         $entity->setAttribute(
             $value->key,
-            $this->newListQuery($entity)->active()->withFields()->with('template')
-                ->get()->each(function($entity) {
-                    $entity->injectValues();
-                })
+            $this->newListQuery($entity)->active()->withFields()->get()
         );
         return $value;
     }
@@ -75,6 +72,24 @@ class EntityList extends Field
     protected function newListQuery($entity)
     {
         return $entity->childrenOfType($this->getOption('type'))->defaultOrder();
+    }
+
+    public function duplicateValue(Value $oldValue, Value $newValue)
+    {
+        if ($oldValue->revision->entity->id === $newValue->revision->entity->id) {
+            parent::duplicateValue($oldValue, $newValue);
+        } else {
+            $newParent = $newValue->revision->entity;
+            $oldValue->templateField->newListQuery($oldValue->revision->entity)->get()->each(function($entity) use ($newParent) {
+                $newEntity = $entity->replicate();
+                $newEntity->apppendTo($newParent);
+                $newEntity->save();
+
+                $newRevision = $entity->latestRevision()->duplicate($newEntity);
+                $newEntity->currentRevision()->associate($newRevision);
+                $newEntity->save();
+            });
+        }
     }
 }
 

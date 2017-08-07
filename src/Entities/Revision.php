@@ -46,9 +46,14 @@ class Revision extends Model
 		});
 	}
 
-	public function duplicate()
+	public function duplicate($entity = null)
 	{
 		$newRevision = $this->replicate();
+
+		if ($entity) {
+			$newRevision->entity()->associate($entity);
+		}
+
 		$newRevision->save();
 
 		$this->fieldValues->each(function($value) use ($newRevision) {

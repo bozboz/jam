@@ -19,6 +19,7 @@ Route::group(array('middleware' => 'web', 'namespace' => 'Bozboz\Jam\Http\Contro
 		Route::post('publish', 'EntityController@publish');
 		Route::post('unpublish', 'EntityController@unpublish');
 		Route::post('schedule', 'EntityController@schedule');
+		Route::get('duplicate', 'EntityController@duplicate');
 	});
 
 	Route::get('entities/{id}/revisions', 'EntityRevisionController@indexForEntity');
@@ -30,6 +31,7 @@ Route::group(array('middleware' => 'web', 'namespace' => 'Bozboz\Jam\Http\Contro
 		'uses' => 'EntityListController@createForEntityListField',
 		'as' => 'admin.entity-list.create-for-list'
 	]);
+	Route::get('entity-list/{id}/duplicate', 'EntityListController@duplicate');
 
 	Route::resource('entity-types', 'EntityTypeController');
 

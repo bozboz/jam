@@ -138,6 +138,10 @@ class EntityController extends ModelAdminController
 					new IsValid([$entityRevisionController, 'canView'])
 				),
 				$this->actions->custom(
+					new Link($entityRevisionController->getActionName('duplicate'), 'Duplicate', 'fa fa-copy'),
+					new IsValid([$this, 'canCreate'])
+				),
+				$this->actions->custom(
 					new Form($this->getActionName('publish'), 'Publish'),
 					new IsValid([$this, 'canPublishFromRow'])
 				),
@@ -179,7 +183,7 @@ class EntityController extends ModelAdminController
 				new IsValid([$this, 'canPublish'])
 			),
 			$this->actions->custom(
-				new Button('Publish and Exit', 'fa fa-save', [
+				new Button('Publish and Exit', null, [
 					'type' => 'submit',
 					'name' => 'submit',
 					'value' => json_encode([
@@ -190,7 +194,7 @@ class EntityController extends ModelAdminController
 				new IsValid([$this, 'canPublish'])
 			),
 			$this->actions->custom(
-				new Button('Publish and Create Another', 'fa fa-save', [
+				new Button('Publish and Create Another', null, [
 					'type' => 'submit',
 					'name' => 'submit',
 					'value' => json_encode([
@@ -210,14 +214,14 @@ class EntityController extends ModelAdminController
 				]),
 				'class' => 'btn-warning btn'
 			]),
-			$this->actions->submit('Save as Draft and Exit', 'fa fa-pencil-square-o', [
+			$this->actions->submit('Save as Draft and Exit', null, [
 				'name' => 'submit',
 				'value' => json_encode([
 					'after_save' => 'exit',
 					'status' => 'draft'
 				]),
 			]),
-			$this->actions->submit('Save as Draft and Create Another', 'fa fa-pencil-square-o', [
+			$this->actions->submit('Save as Draft and Create Another', null, [
 				'name' => 'submit',
 				'value' => json_encode([
 					'after_save' => 'create_another',
@@ -244,6 +248,12 @@ class EntityController extends ModelAdminController
 					'target' => '_blank',
 				]),
 				new IsValid([$this, 'canPreview'])
+			),
+			$this->actions->custom(
+				new Link($this->getActionName('duplicate'), 'Duplicate', 'fa fa-copy', [
+					'class' => 'btn-default pull-right space-left',
+				]),
+				new IsValid([$this, 'canCreate'])
 			),
 			$this->actions->custom(
 				new Link(new Url($this->getListingUrl($instance)), 'Back to listing', 'fa fa-list-alt', [
@@ -318,7 +328,7 @@ class EntityController extends ModelAdminController
 	public function schedule(Request $request, $id)
 	{
 		try {
-			$scheduleDate = new Carbon(Input::get('date'));
+			$scheduleDate = new Carbon($request->get('date'));
 		} catch (\Exception $e) {
 			Redirect::back()->with('error', 'Invalid schedule date.');
 		}
@@ -357,6 +367,32 @@ class EntityController extends ModelAdminController
 		DB::commit();
 
 		return $modelInstance;
+	}
+
+	public function duplicate($id)
+	{
+		DB::beginTransaction();
+
+		$entity = $this->decorator->findInstance($id);
+
+		$newEntity = $entity->replicate();
+		$newEntity->name = 'Copy of - ' . $newEntity->name;
+		$newEntity->currentRevision()->dissociate();
+		$newEntity->save();
+
+		$newRevision = $entity->latestRevision()->duplicate($newEntity);
+
+		Input::merge(['after_save' => 'continue']);
+
+		$response = $this->reEdit($newEntity);
+		$response->with('model.updated', sprintf(
+			'Successfully duplicated "%s"',
+			$this->decorator->getLabel($entity)
+		));
+
+		DB::commit();
+
+		return $response;
 	}
 
 	/**
