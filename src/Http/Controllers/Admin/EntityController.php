@@ -138,7 +138,7 @@ class EntityController extends ModelAdminController
 					new IsValid([$entityRevisionController, 'canView'])
 				),
 				$this->actions->custom(
-					new Link($entityRevisionController->getActionName('duplicate'), 'Duplicate', 'fa fa-copy'),
+					new Link($this->getActionName('duplicate'), 'Duplicate', 'fa fa-copy'),
 					new IsValid([$this, 'canCreate'])
 				),
 				$this->actions->custom(
