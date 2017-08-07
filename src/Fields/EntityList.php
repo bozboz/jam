@@ -82,7 +82,7 @@ class EntityList extends Field
             $newParent = $newValue->revision->entity;
             $oldValue->templateField->newListQuery($oldValue->revision->entity)->get()->each(function($entity) use ($newParent) {
                 $newEntity = $entity->replicate();
-                $newEntity->apppendTo($newParent);
+                $newEntity->appendTo($newParent);
                 $newEntity->save();
 
                 $newRevision = $entity->latestRevision()->duplicate($newEntity);
