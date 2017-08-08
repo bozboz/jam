@@ -432,7 +432,7 @@ class EntityController extends ModelAdminController
 
 	public function canCreateForParent($instance)
 	{
-		return $this->canCreate() && $instance && get_class($instance->template->type()) === NestedType::class;
+		return $this->canCreate() && $instance;
 	}
 
 	public function canPreview($instance)

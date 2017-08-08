@@ -31,6 +31,7 @@ Route::group(array('middleware' => 'web', 'namespace' => 'Bozboz\Jam\Http\Contro
 		'uses' => 'EntityListController@createForEntityListField',
 		'as' => 'admin.entity-list.create-for-list'
 	]);
+	Route::get('entity-list/{type}/{template}/create-for-parent/{parent_id}', 'EntityListController@createOfTypeForParent');
 	Route::get('entity-list/{id}/duplicate', 'EntityListController@duplicate');
 
 	Route::resource('entity-types', 'EntityTypeController');
