@@ -139,7 +139,7 @@ class EntityController extends ModelAdminController
 				),
 				$this->actions->custom(
 					new Link($this->getActionName('duplicate'), 'Duplicate', 'fa fa-copy'),
-					new IsValid([$this, 'canCreate'])
+					new IsValid([$this, 'canDuplicate'])
 				),
 				$this->actions->custom(
 					new Form($this->getActionName('publish'), 'Publish'),
@@ -253,7 +253,7 @@ class EntityController extends ModelAdminController
 				new Link($this->getActionName('duplicate'), 'Duplicate', 'fa fa-copy', [
 					'class' => 'btn-default pull-right space-left',
 				]),
-				new IsValid([$this, 'canCreate'])
+				new IsValid([$this, 'canDuplicate'])
 			),
 			$this->actions->custom(
 				new Link(new Url($this->getListingUrl($instance)), 'Back to listing', 'fa fa-list-alt', [
@@ -438,6 +438,11 @@ class EntityController extends ModelAdminController
 	public function canPreview($instance)
 	{
 		return $instance->exists && $instance->template->type()->isVisible();
+	}
+
+	public function canDuplicate($instance)
+	{
+		return $instance->exists && $this->canCreate($instance);
 	}
 
 	public function canPublish($instance)
