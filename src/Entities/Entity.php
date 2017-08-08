@@ -241,8 +241,19 @@ class Entity extends Node implements ModelInterface
 	public function scopeJoinValueByKey($query, $key, $alias = 'entity_values')
 	{
 		$query->select('entities.*');
-		$query->join("entity_values as {$alias}", 'entities.revision_id', '=', "{$alias}.revision_id");
-		$query->where("{$alias}.key", $key);
+		$query->join("entity_values as {$alias}", function($join) use ($alias, $key) {
+			$join->on('entities.revision_id', '=', "{$alias}.revision_id");
+			$join->where("{$alias}.key", '=', $key);
+		});
+	}
+
+	public function scopeLeftJoinValueByKey($query, $key, $alias = 'entity_values')
+	{
+		$query->select('entities.*');
+		$query->leftJoin("entity_values as {$alias}", function($join) use ($alias, $key) {
+			$join->on('entities.revision_id', '=', "{$alias}.revision_id");
+			$join->where("{$alias}.key", '=', $key);
+		});
 	}
 
 	public function scopeWhereValue($query, $key, $operator, $value = null)
@@ -252,6 +263,15 @@ class Entity extends Node implements ModelInterface
         }
 		$alias = 'where_value_'.uniqid();
 		$query->joinValueByKey($key, $alias)->where("{$alias}.value", $operator, $value);
+	}
+
+	public function scopeOrWhereValue($query, $key, $operator, $value = null)
+	{
+        if (func_num_args() == 2) {
+            list($value, $operator) = [$operator, '='];
+        }
+		$alias = 'where_value_'.uniqid();
+		$query->leftJoinValueByKey($key, $alias)->orWhere("{$alias}.value", $operator, $value);
 	}
 
 	public function scopeWhereBelongsTo($query, $relation, $related)
