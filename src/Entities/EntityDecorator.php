@@ -219,10 +219,13 @@ class EntityDecorator extends ModelAdminDecorator
 			new SearchListingFilter('search', function($builder, $value) {
                 $builder->where(function ($query) use ($value) {
                     $query->orWhere('name', 'LIKE', '%' . $value . '%');
+                    $this->customSearchFilters($query, $value);
                 });
             })
 		]);
 	}
+
+	protected function customSearchFilters($query, $value) {}
 
 	/**
 	 * Return a new entity, associated with given $template
