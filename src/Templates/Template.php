@@ -50,7 +50,7 @@ class Template extends Model
 				$template->fields()->create([
 					'type_alias' => 'text',
 					'name' => 'meta_description',
-					'help_text' => 'We suggest a <a href="https://moz.com/learn/seo/meta-description">max of 55 chars</a>',
+					'help_text' => 'We suggest a <a href="https://moz.com/learn/seo/meta-description">max of 160 chars</a>',
 				]);
 			}
 		});
