@@ -354,6 +354,8 @@ class EntityController extends ModelAdminController
 		$newRevision = $revision->duplicate();
 
 		$newRevision->published_at = $publishedAt;
+		$newRevision->expired_at = null;
+
 		$newRevision->user()->associate(Auth::user());
 		$newRevision->save();
 

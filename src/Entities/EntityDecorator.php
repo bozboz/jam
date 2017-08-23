@@ -73,6 +73,11 @@ class EntityDecorator extends ModelAdminDecorator
 				$path = $path ? $path . '?p=' . md5(date('ymd')) : null;
 			break;
 
+			case Revision::EXPIRED:
+				$expiredAt = $instance->currentRevision->formatted_expired_at;
+				$statusLabel = "<small><abbr title='{$expiredAt}'>Expired</abbr></small>";
+			break;
+
 			default:
 				$statusLabel = null;
 				$linkText = 'preview <i class="fa fa-external-link"></i>';
@@ -153,6 +158,13 @@ class EntityDecorator extends ModelAdminDecorator
 					'help_text' => "If you enter a date in the future, this will be hidden from the site until that date is reached.",
 				])
 				: new HiddenField('currentRevision[published_at]'),
+			$canEditStatus
+				? new DateTimeField('currentRevision[expired_at]', [
+					'label' => 'Expired At',
+					'placeholder' => date('d/m/Y'),
+					'help_text' => "This entity will expire and no longer be visible on the front end when this date is reached.",
+				])
+				: new HiddenField('currentRevision[expired_at]'),
 		]));
 
 		return $fields->merge($this->getTemplateFields($instance))->all();
