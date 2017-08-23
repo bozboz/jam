@@ -43,7 +43,7 @@ class PublishAction extends DropdownAction
 			case Revision::EXPIRED:
 				$label = 'Expired';
 				$icon = 'fa-clock-o';
-				$attributes['class'] = 'btn-warning btn-sm';
+				$attributes['class'] = 'btn-default btn-sm';
 			break;
 
 			default:
