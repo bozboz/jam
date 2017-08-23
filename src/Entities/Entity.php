@@ -217,6 +217,8 @@ class Entity extends Node implements ModelInterface
 		if ( ! config('jam.preview-mode')) {
 			$query->whereHas('currentRevision', function($query) {
 				$query->isPublished();
+			})->whereHas('currentRevision', function($query) {
+				$query->isNotExpired();
 			});
 		}
 	}

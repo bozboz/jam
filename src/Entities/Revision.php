@@ -92,6 +92,14 @@ class Revision extends Model
 		$query->where('published_at', '<', $this->freshTimestamp());
 	}
 
+	public function scopeIsNotExpired($query)
+	{
+		$query->where('expired_at', '>', $this->freshTimestamp())
+			->orWhere(function($query) {
+				$query->whereNull('expired_at');
+			});
+	}
+
 	public function getStatusAttribute()
 	{
 		if ($this->entity->latestRevision()->id !== $this->id) {
