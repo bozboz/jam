@@ -90,8 +90,11 @@ class Revision extends Model
 	public function scopeIsPublished($query)
 	{
 		$query->where(function($query) {
-			$query->orWhere('published_at', '<', $this->freshTimestamp())
-				->orWhere('expired_at', '>', $this->freshTimestamp());
+			$query->where('published_at', '<', $this->freshTimestamp())
+				->orWhere('expired_at', '>', $this->freshTimestamp())
+				->orWhere(function($query) {
+					$query->whereNull('expired_at');
+				});
 		});
 	}
 
