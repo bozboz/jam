@@ -87,16 +87,15 @@ class Revision extends Model
 		return $this->hasMany(Value::class);
 	}
 
-	public function scopeIsPublished($query)
-	{
-		$query->where(function($query) {
-			$query->where('published_at', '<', $this->freshTimestamp())
-				->orWhere('expired_at', '>', $this->freshTimestamp())
-				->orWhere(function($query) {
-					$query->whereNull('expired_at');
-				});
-		});
-	}
+    public function scopeIsPublished($query)
+    {
+        $query->where('published_at', '<', $this->freshTimestamp())->where(function($query) {
+            $query->where('expired_at', '>', $this->freshTimestamp())
+                ->orWhere(function($query) {
+                    $query->whereNull('expired_at');
+                });
+        });
+    }
 
 	public function getStatusAttribute()
 	{
