@@ -18,14 +18,16 @@ class Revision extends Model
 	protected $fillable = [
 		'entity_id',
 		'published_at',
+		'expired_at',
 		'user_id'
 	];
 
-	protected $dates = ['published_at', 'deleted_at'];
+	protected $dates = ['published_at', 'deleted_at', 'expired_at'];
 
 	const PUBLISHED = 1;
 	const SCHEDULED = 2;
 	const PUBLISHED_WITH_DRAFTS = 3;
+	const EXPIRED = 4;
 
 	public static function boot()
 	{
@@ -96,6 +98,8 @@ class Revision extends Model
 			return static::PUBLISHED_WITH_DRAFTS;
 		} elseif ($this->published_at && $this->published_at->isFuture()) {
 			return static::SCHEDULED;
+		} elseif ($this->expired_at && $this->expired_at->isPast()){
+			return static::EXPIRED;
 		} else {
 			return static::PUBLISHED;
 		}
@@ -105,6 +109,13 @@ class Revision extends Model
 	{
 		if ($this->published_at) {
 			return $this->published_at->format($format?:'d-m-Y H:i');
+		}
+	}
+
+	public function getFormattedExpiredAtAttribute($format = null)
+	{
+		if ($this->expired_at) {
+			return $this->expired_at->format($format?:'d-m-Y H:i');
 		}
 	}
 }

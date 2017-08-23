@@ -40,6 +40,12 @@ class PublishAction extends DropdownAction
 				$attributes['class'] = 'btn-warning btn-sm';
 			break;
 
+			case Revision::EXPIRED:
+				$label = 'Expired';
+				$icon = 'fa-times';
+				$attributes['class'] = 'btn-warning btn-sm';
+			break;
+
 			default:
 				$label = 'Hidden';
 				$icon = 'fa-times';

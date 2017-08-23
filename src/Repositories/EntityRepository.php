@@ -104,11 +104,15 @@ class EntityRepository implements EntityRepositoryInterface
 
         if ($input->get('currentRevision')) {
             $publishedAt = $input['currentRevision']['published_at'] ?: $entity->freshTimestamp();
+            $expiredAt = $input['currentRevision']['expired_at'];
         } else {
             $publishedAt = null;
+            $expiredAt = null;
         }
+
         $revision = $entity->revisions()->create(array_filter([
             'published_at' => $publishedAt,
+            'expired_at' => $expiredAt,
             'user_id' => $input['user_id']
         ]));
 

@@ -13,6 +13,10 @@
             <div class="panel panel-warning"><div class="panel-heading">
                 <abbr title="{{ $entity->currentRevision->formatted_published_at }}">Scheduled</abbr>
             </div></div>
+        @elseif ($entity->status === Bozboz\Jam\Entities\Revision::EXPIRED)
+            <div class="panel panel-danger"><div class="panel-heading">
+                <abbr title="{{ $entity->currentRevision->formatted_expired_at }}">Expired</abbr>
+            </div></div>
         @endif
         <a href="{{ route('admin.entity-list.edit', [$entity->id]) }}" class="cards__btn btn btn-info btn-sm">
             <i class="fa-pencil fa"></i> Edit
