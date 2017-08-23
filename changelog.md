@@ -1,12 +1,13 @@
 # Jam Changelog
 
-## Version 1.9.0 (Future)
+## Version 1.9.0 (2017-08-23)
 - Make date fields return carbon object
 - Add `loadRelationFields` method
 - Add abstract tags field
 - Add entity duplication functionality 
 - Add orWhereValue and leftJoinValueByKey scopes to Entity
 - Allow search query to be modified in EntityDecorator
+- Add scheduled expiry dates for entities
 
 ## Version 1.8.1 (2017-07-19)
 - Fix template creation from command line
