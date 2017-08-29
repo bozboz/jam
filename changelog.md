@@ -2,6 +2,7 @@
 
 ## Version 1.10.0 (2017-08-29)
 - Add ability to publish expired entity list items from listing
+- Don't clear entity expired_at dates in the future
 
 ## Version 1.9.0 (2017-08-23)
 - Make date fields return carbon object
