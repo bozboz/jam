@@ -1,5 +1,8 @@
 # Jam Changelog
 
+## Version 1.10.0 (2017-08-23)
+- Add ability to publish expired entity list items from listing
+
 ## Version 1.9.0 (2017-08-23)
 - Make date fields return carbon object
 - Add `loadRelationFields` method
