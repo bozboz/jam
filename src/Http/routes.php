@@ -9,17 +9,34 @@
 Route::group(array('middleware' => 'web', 'namespace' => 'Bozboz\Jam\Http\Controllers\Admin', 'prefix' => 'admin'), function() {
 
 	Route::resource('entities', 'EntityController', ['except' => ['index', 'create']]);
+
 	Route::group(['prefix' => 'entities/{type}/{template}'], function()
 	{
 		Route::get('create', 'EntityController@createOfType');
 		Route::get('create-for-parent/{parent_id}', 'EntityController@createOfTypeForParent');
 	});
+
 	Route::group(['prefix' => 'entities/{id}'], function()
 	{
-		Route::post('publish', 'EntityController@publish');
-		Route::post('unpublish', 'EntityController@unpublish');
-		Route::post('schedule', 'EntityController@schedule');
-		Route::get('duplicate', 'EntityController@duplicate');
+		Route::post('publish', [
+			'as' => 'admin.entities.publish',
+			'uses' => 'EntityController@publish'
+		]);
+
+		Route::post('unpublish', [
+			'as' => 'admin.entities.unpublish',
+			'uses' => 'EntityController@unpublish'
+		]);
+
+		Route::post('schedule', [
+			'as' => 'admin.entities.schedule',
+			'uses' => 'EntityController@schedule'
+		]);
+
+		Route::get('duplicate', [
+			'as' => 'admin.entities.duplicate',
+			'uses' => 'EntityController@duplicate'
+		]);
 	});
 
 	Route::get('entities/{id}/revisions', 'EntityRevisionController@indexForEntity');

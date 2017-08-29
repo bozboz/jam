@@ -354,7 +354,10 @@ class EntityController extends ModelAdminController
 		$newRevision = $revision->duplicate();
 
 		$newRevision->published_at = $publishedAt;
-		$newRevision->expired_at = null;
+
+		$newRevision->expired_at = $newRevision->expired_at > Carbon::now()
+			? $newRevision->expired_at
+			: null;
 
 		$newRevision->user()->associate(Auth::user());
 		$newRevision->save();

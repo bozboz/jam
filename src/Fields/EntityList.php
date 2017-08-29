@@ -136,30 +136,57 @@ class EntityListField extends AdminField
 
     public function getJavascript()
     {
-        $route = route('admin.entities.destroy', ['--id--']);
-        $token = csrf_field();
-        $method = method_field('DELETE');
+        $token = csrf_token();
+        $tokenField = csrf_field();
+
+        $deleteRoute = route('admin.entities.destroy', ['--id--']);
+        $deleteMethodField = method_field('DELETE');
+
+        $publishRoute = route('admin.entities.publish', ['--id--']);
+
         return <<<JAVASCRIPT
             jQuery(function($){
 
                 var jsDeleteEntityForm = $('<form>')
-                    .prop('action', '{$route}')
+                    .prop('action', '{$deleteRoute}')
                     .prop('method', 'POST')
-                    .append('{$token}')
-                    .append('{$method}');
+                    .append('{$tokenField}')
+                    .append('{$deleteMethodField}');
 
-                $('.js-delete-entity-btn').click(function(e){
+                $('.js-delete-entity-btn').click(function(e) {
                     e.preventDefault();
+
+                    var entityId = $(this).closest('[data-id]').data('id');
+
                     if (confirm('Are you sure you want to delete?')) {
-                        var entityId = $(this).closest('[data-id]').data('id');
                         $('body').append(
                             jsDeleteEntityForm.prop(
                                 'action',
                                 jsDeleteEntityForm.prop('action').replace('--id--', entityId)
                             )
                         );
+
                         jsDeleteEntityForm.submit();
                     }
+                });
+
+                $('.js-publish-entity-btn').click(function(e) {
+                    e.preventDefault();
+
+                    var entityId = $(this).closest('[data-id]').data('id'),
+                        route = '${publishRoute}',
+                        uri = route.replace('--id--', entityId);
+
+                    $.ajax({
+                        type: 'POST',
+                        url: uri,
+                        headers: {
+                            'X-CSRF-TOKEN': '${token}'
+                        },
+                        complete: function() {
+                            window.location.reload()
+                        }
+                    });
                 });
 
             });
