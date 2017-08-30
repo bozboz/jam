@@ -161,7 +161,6 @@ class EntityDecorator extends ModelAdminDecorator
 			$canEditStatus
 				? new DateTimeField('currentRevision[expired_at]', [
 					'label' => 'Expired At',
-					'placeholder' => date('d/m/Y'),
 					'help_text' => "This entity will expire and no longer be visible on the front end when this date is reached.",
 				])
 				: new HiddenField('currentRevision[expired_at]'),
