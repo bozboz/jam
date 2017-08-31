@@ -16,6 +16,9 @@ Route::group(array('middleware' => 'web', 'namespace' => 'Bozboz\Jam\Http\Contro
 		Route::get('create-for-parent/{parent_id}', 'EntityController@createOfTypeForParent');
 	});
 
+	Route::resource('entity-archive', 'EntityArchiveController', ['only' => ['edit', 'destroy', 'show']]);
+	Route::post('entity-archive/{entity}/restore', 'EntityArchiveController@restore');
+
 	Route::group(['prefix' => 'entities/{id}'], function()
 	{
 		Route::post('publish', [

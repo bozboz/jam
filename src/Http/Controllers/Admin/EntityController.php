@@ -112,8 +112,16 @@ class EntityController extends ModelAdminController
 			})->all(), 'New', 'fa fa-plus', [
 				'class' => 'btn-success',
 			], [
-				'class' => 'pull-right',
-			])
+				'class' => 'pull-right space-left',
+			]),
+			$this->actions->custom(
+				new Link(
+					['\Bozboz\Jam\Http\Controllers\Admin\EntityArchiveController@show', $this->type->alias],
+					'View Archive', 'fa fa-archive',
+					['class' => 'pull-right space-left btn btn-warning']
+				),
+				new IsValid([$this, 'canViewArchive'])
+			),
 		];
 	}
 
@@ -131,7 +139,7 @@ class EntityController extends ModelAdminController
 	{
 		$entityRevisionController = $this->getRevisionController();
 
-		return array_merge([
+		return [
 			$this->actions->publish([
 				$this->actions->custom(
 					new Link($entityRevisionController->getActionName('indexForEntity'), 'History', 'fa fa-history'),
@@ -164,7 +172,21 @@ class EntityController extends ModelAdminController
 			})->all(), 'New Child', 'fa fa-plus', [
 				'class' => 'btn-default btn-sm',
 			]),
-		], parent::getRowActions());
+			$this->actions->edit(
+				$this->getEditAction(),
+				[$this, 'canEdit']
+			),
+			$this->actions->custom(
+				new Form($this->getActionName('destroy'), 'Archive', 'fa fa-archive', [
+					'class' => 'btn-warning btn-sm',
+					'data-warn' => 'Are you sure you want to archive?'
+				], [
+					'method' => 'DELETE'
+				]),
+
+				new IsValid([$this, 'canDestroy'])
+			),
+		];
 	}
 
 	public function getFormActions($instance)
@@ -443,6 +465,11 @@ class EntityController extends ModelAdminController
 	public function canPreview($instance)
 	{
 		return $instance->exists && $instance->template->type()->isVisible();
+	}
+
+	public function canViewArchive()
+	{
+		return RuleStack::with('view_entity_archive')->isAllowed();
 	}
 
 	public function canDuplicate($instance)

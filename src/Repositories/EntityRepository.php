@@ -50,7 +50,11 @@ class EntityRepository implements EntityRepositoryInterface
 
     public function getForPath($path)
     {
-        $path = EntityPath::wherePath($path)->first();
+        $query = EntityPath::wherePath($path);
+        if (config('jam.preview-mode')) {
+            $query->withTrashed();
+        }
+        $path = $query->first();
 
         if (!$path) {
             return false;

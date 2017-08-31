@@ -67,7 +67,7 @@ class Revision extends Model
 
 	public function entity()
 	{
-		return $this->belongsTo(Entity::class);
+		return $this->belongsTo(Entity::class)->withTrashed();
 	}
 
 	public function user()

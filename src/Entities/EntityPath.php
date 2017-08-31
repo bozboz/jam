@@ -15,7 +15,13 @@ class EntityPath extends Model
 
 	public function entity()
 	{
-		return $this->belongsTo(Entity::class);
+		$relation = $this->belongsTo(Entity::class);
+
+		if (config('jam.preview-mode')) {
+			$relation->withTrashed();
+		}
+
+		return $relation;
 	}
 
 	public function scopeForEntity($query, Entity $entity)

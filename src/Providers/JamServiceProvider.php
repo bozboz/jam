@@ -130,6 +130,9 @@ class JamServiceProvider extends ServiceProvider
             'delete_entity_type' => 'Bozboz\Permissions\Rules\Rule',
             'edit_entity_type' => 'Bozboz\Permissions\Rules\Rule',
 
+            'view_entity_archive' => 'Bozboz\Permissions\Rules\Rule',
+            'delete_entity_forever' => 'Bozboz\Permissions\Rules\Rule',
+
             'view_entity_history' => 'Bozboz\Permissions\Rules\Rule',
             'edit_entity_history' => 'Bozboz\Permissions\Rules\Rule',
 

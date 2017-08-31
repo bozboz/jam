@@ -1,5 +1,8 @@
 # Jam Changelog
 
+## Version 1.11.0 (Future)
+- Add entity archive
+
 ## Version 1.10.1 (Future)
 - Remove placeholder from expiry date field
 

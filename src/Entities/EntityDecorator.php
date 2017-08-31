@@ -2,27 +2,27 @@
 
 namespace Bozboz\Jam\Entities;
 
-use Bozboz\Admin\Base\ModelAdminDecorator;
-use Bozboz\Admin\Fields\AddonTextField;
-use Bozboz\Admin\Fields\BelongsToManyField;
-use Bozboz\Admin\Fields\DateTimeField;
-use Bozboz\Admin\Fields\HiddenField;
-use Bozboz\Admin\Fields\TextField;
-use Bozboz\Admin\Fields\URLField;
-use Bozboz\Admin\Reports\Filters\ArrayListingFilter;
-use Bozboz\Admin\Reports\Filters\SearchListingFilter;
-use Bozboz\Admin\Users\RoleAdminDecorator;
-use Bozboz\Jam\Entities\Entity;
-use Bozboz\Jam\Entities\Fields\PublishField;
-use Bozboz\Jam\Entities\Revision;
-use Bozboz\Jam\Templates\Template;
-use Bozboz\Jam\Templates\TemplateDecorator;
 use Bozboz\Jam\Types\Type;
-use Bozboz\Permissions\Facades\Gate;
-use Illuminate\Database\Eloquent\Builder;
+use Bozboz\Jam\Entities\Entity;
+use Bozboz\Admin\Fields\URLField;
+use Bozboz\Jam\Entities\Revision;
+use Bozboz\Admin\Fields\TextField;
+use Bozboz\Jam\Templates\Template;
 use Illuminate\Support\Collection;
+use Bozboz\Admin\Fields\HiddenField;
+use Bozboz\Permissions\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
+use Bozboz\Admin\Fields\DateTimeField;
+use Bozboz\Admin\Fields\AddonTextField;
+use Illuminate\Database\Eloquent\Builder;
+use Bozboz\Admin\Base\ModelAdminDecorator;
+use Bozboz\Admin\Users\RoleAdminDecorator;
+use Bozboz\Admin\Fields\BelongsToManyField;
+use Bozboz\Jam\Templates\TemplateDecorator;
+use Bozboz\Jam\Entities\Fields\PublishField;
+use Bozboz\Admin\Reports\Filters\ArrayListingFilter;
+use Bozboz\Admin\Reports\Filters\SearchListingFilter;
 
 class EntityDecorator extends ModelAdminDecorator
 {
@@ -48,8 +48,7 @@ class EntityDecorator extends ModelAdminDecorator
 
 		$columns->prepend($this->getPreviewLink($instance), 'Name');
 
-		$linkText = '<i class="fa fa-external-link"></i>';
-		$path = $instance->canonical_path;
+		$preview = false;
 
 		switch ($instance->status) {
 			case Revision::PUBLISHED:
@@ -68,9 +67,7 @@ class EntityDecorator extends ModelAdminDecorator
 				$publishedAt = $instance->latestRevision()->created_at->format('d-m-Y H:i');
 				$user = $instance->latestRevision()->username;
 				$statusLabel = "<small><abbr title='{$publishedAt} by {$user}'>Has Draft</abbr></small>";
-
-				$linkText = 'preview <i class="fa fa-external-link"></i>';
-				$path = $path ? $path . '?p=' . md5(date('ymd')) : null;
+				$preview = true;
 			break;
 
 			case Revision::EXPIRED:
@@ -80,9 +77,17 @@ class EntityDecorator extends ModelAdminDecorator
 
 			default:
 				$statusLabel = null;
-				$linkText = 'preview <i class="fa fa-external-link"></i>';
-				$path = $path ? $path . '?p=' . md5(date('ymd')) : null;
+				$preview = true;
 			break;
+		}
+
+		$path = $instance->canonical_path;
+
+		if ($preview || $instance->deleted_at) {
+			$path = $path ? $path . '?p=' . md5(date('ymd')) : null;
+			$linkText = 'preview <i class="fa fa-external-link"></i>';
+		} else {
+			$linkText = '<i class="fa fa-external-link"></i>';
 		}
 
 		$columns->prepend(
@@ -232,7 +237,7 @@ class EntityDecorator extends ModelAdminDecorator
                     $query->orWhere('name', 'LIKE', '%' . $value . '%');
                     $this->customSearchFilters($query, $value);
                 });
-            })
+            }),
 		]);
 	}
 

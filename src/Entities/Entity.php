@@ -218,6 +218,8 @@ class Entity extends Node implements ModelInterface
 			$query->whereHas('currentRevision', function($query) {
 				$query->isPublished();
 			});
+		} else {
+			$query->withTrashed();
 		}
 	}
 
