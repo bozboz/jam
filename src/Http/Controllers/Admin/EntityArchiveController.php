@@ -2,6 +2,7 @@
 
 namespace Bozboz\Jam\Http\Controllers\Admin;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
@@ -92,11 +93,17 @@ class EntityArchiveController extends EntityController
 
     public function restore($id)
     {
+        DB::beginTransaction();
+
         $instance = $this->decorator->findInstance($id);
 
         if ( ! $this->canView($instance)) App::abort(403);
 
+        $instance->children()->withTrashed()->where('deleted_at', $instance->deleted_at)->restore();
+
         $instance->restore();
+
+        DB::commit();
 
         return Redirect::back()->with('model.updated', sprintf(
             'Successfully restored "%s"',
