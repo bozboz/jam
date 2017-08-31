@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
 use Bozboz\Admin\Reports\PaginatedReport;
+use Bozboz\Jam\Entities\Events\EntitySaved;
+use Illuminate\Contracts\Events\Dispatcher;
 use Bozboz\Jam\Entities\EntityArchiveDecorator;
 use Bozboz\Admin\Reports\Actions\Presenters\Form;
 use Bozboz\Admin\Reports\Actions\Presenters\Link;
@@ -91,7 +93,7 @@ class EntityArchiveController extends EntityController
         ];
     }
 
-    public function restore($id)
+    public function restore(Dispatcher $events, $id)
     {
         DB::beginTransaction();
 
@@ -102,6 +104,8 @@ class EntityArchiveController extends EntityController
         $instance->children()->withTrashed()->where('deleted_at', $instance->deleted_at)->restore();
 
         $instance->restore();
+
+        $events->fire(new EntitySaved($instance));
 
         DB::commit();
 

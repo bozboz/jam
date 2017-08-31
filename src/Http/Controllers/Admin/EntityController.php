@@ -178,7 +178,7 @@ class EntityController extends ModelAdminController
 			),
 			$this->actions->custom(
 				new Form($this->getActionName('destroy'), 'Archive', 'fa fa-archive', [
-					'class' => 'btn-warning btn-sm',
+					'class' => 'btn-danger btn-sm',
 					'data-warn' => 'Are you sure you want to archive?'
 				], [
 					'method' => 'DELETE'
