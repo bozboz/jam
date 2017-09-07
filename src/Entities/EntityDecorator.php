@@ -8,7 +8,7 @@ use Bozboz\Admin\Fields\URLField;
 use Bozboz\Jam\Entities\Revision;
 use Bozboz\Admin\Fields\TextField;
 use Bozboz\Jam\Templates\Template;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Collection as LaravelCollection;
 use Bozboz\Admin\Fields\HiddenField;
 use Bozboz\Permissions\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
@@ -143,7 +143,7 @@ class EntityDecorator extends ModelAdminDecorator
 		$canEditStatus = Gate::allows('hide_entity') || Gate::allows('publish_entity') || Gate::allows('schedule_entity');
 		$canRestrictAccess = Gate::allows('gate_entities') && $instance->template->type()->canRestrictAccess();
 
-		$fields = new Collection(array_filter([
+		$fields = new LaravelCollection(array_filter([
 			new TextField('name', ['label' => 'Name *']),
 			($instance->exists || request()->old()) && $instance->template->type()->isVisible() ? new AddonTextField('slug', [
 				'label' => 'URL *',
