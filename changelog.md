@@ -5,6 +5,7 @@
 
 ## Version 1.10.1 (Future)
 - Remove placeholder from expiry date field
+- Fix entity gating
 
 ## Version 1.10.0 (2017-08-29)
 - Add ability to publish expired entity list items from listing

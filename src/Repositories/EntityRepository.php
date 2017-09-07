@@ -162,12 +162,13 @@ class EntityRepository implements EntityRepositoryInterface
 
     protected function isAuthorisedForEntity($entity)
     {
-        return $entity->roles->isEmpty()
+        return (
+            $entity->roles->isEmpty()
             || (
                 $this->auth->user()
                 && $entity->roles->contains($this->auth->user()->role)
-            )
-            || $this->isAuthorisedForEntityAncestors($entity);
+            ))
+            && $this->isAuthorisedForEntityAncestors($entity);
     }
 
     protected function isAuthorisedForEntityAncestors($entity)
