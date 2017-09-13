@@ -71,4 +71,10 @@ class Gallery extends Field
 	{
 		return Media::forModel($value);
 	}
+
+    public function duplicateValue(Value $oldValue, Value $newValue)
+    {
+        $syncData = $this->relation($oldValue)->pluck('media_id')->toArray();
+        $this->relation($newValue)->sync($syncData);
+    }
 }
