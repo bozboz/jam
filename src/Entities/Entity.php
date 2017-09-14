@@ -439,7 +439,7 @@ class Entity extends Node implements ModelInterface
 		$attributes = (array) $attributes;
 
 		$newInstanceAttributes = [];
-		if (array_key_exists('type_alias', $attributes)) {
+		if (array_key_exists('template_id', $attributes)) {
 			$template = Template::find($attributes['template_id']);
 			$newInstanceAttributes['type_alias'] = $template->type_alias;
 		}
