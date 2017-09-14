@@ -20,6 +20,10 @@ class PreviewMode
             Config::set('jam.preview-mode', true);
         }
 
+        if ($request->get('d') === md5(date('ymd'))) {
+            Config::set('jam.deleted-mode', true);
+        }
+
         return $next($request);
     }
 }

@@ -214,11 +214,13 @@ class Entity extends Node implements ModelInterface
 
 	public function scopeActive($query)
 	{
-		if ( ! config('jam.preview-mode')) {
+		if ( ! config('jam.preview-mode') && ! config('jam.deleted-mode')) {
 			$query->whereHas('currentRevision', function($query) {
 				$query->isPublished();
 			});
-		} else {
+		}
+
+		if (config('jam.deleted-mode')) {
 			$query->withTrashed();
 		}
 	}
@@ -320,7 +322,7 @@ class Entity extends Node implements ModelInterface
 
 	public function currentValues()
 	{
-		if (config('jam.preview-mode')) {
+		if (config('jam.preview-mode') || config('jam.deleted-mode')) {
 			// This isn't an especially good way of going about things... needs revisiting
 			$latestRevisions = Revision::groupBy(\DB::raw('entity_id DESC'))->orderBy('created_at', 'DESC')->pluck('id');
 			return $this->hasManyThrough(CurrentValue::class, Revision::class)->whereIn('entity_revisions.id', $latestRevisions);

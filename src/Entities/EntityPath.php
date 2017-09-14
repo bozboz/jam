@@ -17,7 +17,7 @@ class EntityPath extends Model
 	{
 		$relation = $this->belongsTo(Entity::class);
 
-		if (config('jam.preview-mode')) {
+		if (config('jam.deleted-mode')) {
 			$relation->withTrashed();
 		}
 

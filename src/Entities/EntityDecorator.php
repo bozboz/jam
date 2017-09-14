@@ -84,7 +84,8 @@ class EntityDecorator extends ModelAdminDecorator
 		$path = $instance->canonical_path;
 
 		if ($preview || $instance->deleted_at) {
-			$path = $path ? $path . '?p=' . md5(date('ymd')) : null;
+			$queryParam = $instance->deleted_at ? 'd' : 'p';
+			$path = $path ? $path . '?'.$queryParam.'=' . md5(date('ymd')) : null;
 			$linkText = 'preview <i class="fa fa-external-link"></i>';
 		} else {
 			$linkText = '<i class="fa fa-external-link"></i>';
