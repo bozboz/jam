@@ -117,17 +117,19 @@ class EntityArchiveController extends EntityController
 
     public function destroy($id)
     {
+        DB::beginTransaction();
         $instance = $this->decorator->findInstance($id);
 
         if ( ! $this->canDestroy($instance)) App::abort(403);
 
         $instance->currentRevision()->dissociate();
-        $instance->children()->withTrashed()->each(function($child) {
+        $instance->descendants()->orderBy('_lft')->withTrashed()->each(function($child) {
             $child->currentRevision()->dissociate();
             $child->save();
         });
         $instance->save();
         $instance->forceDelete();
+        DB::commit();
 
         return Redirect::back()->with('model.deleted', sprintf(
             'Successfully deleted "%s"',
