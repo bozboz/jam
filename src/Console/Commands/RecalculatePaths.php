@@ -45,14 +45,18 @@ class RecalculatePaths extends Command
     {
         $type = $this->argument('type');
 
-        $entities = $this->repo->forType($type)->with('template')->get();
+        $entities = $this->repo->forType($type)->with('template')->active()->get();
 
         $type = $entities->first()->template->type();
 
         $bar = $this->output->createProgressBar($entities->count());
 
         $entities->each(function($entity) use ($bar, $type) {
-            $type->updatePaths($entity);
+            try {
+                $type->updatePaths($entity);
+            } catch (\Exception $e) {
+                echo 'Possible duplicate...';
+            }
 
             $bar->advance();
         });
