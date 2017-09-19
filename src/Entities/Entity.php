@@ -440,7 +440,10 @@ class Entity extends Node implements ModelInterface
 
 		$newInstanceAttributes = [];
 		if (array_key_exists('template_id', $attributes)) {
-			$template = Template::find($attributes['template_id']);
+			if ( ! $this->allTemplates) {
+				$this->allTemplates = Template::all();
+			}
+			$template = $this->allTemplates->where('id', $attributes['template_id'])->first();
 			$newInstanceAttributes['type_alias'] = $template->type_alias;
 		}
 
