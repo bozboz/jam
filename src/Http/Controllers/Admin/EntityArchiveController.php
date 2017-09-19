@@ -122,6 +122,10 @@ class EntityArchiveController extends EntityController
         if ( ! $this->canDestroy($instance)) App::abort(403);
 
         $instance->currentRevision()->dissociate();
+        $instance->children()->withTrashed()->each(function($child) {
+            $child->currentRevision()->dissociate();
+            $child->save();
+        });
         $instance->save();
         $instance->forceDelete();
 
