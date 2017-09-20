@@ -8,6 +8,7 @@
 - Fix entity gating
 - Fix gallery duplication
 - Fix `newFromBuilder` method in Entity
+- Only calculate paths for active descendants on save
 
 ## Version 1.10.0 (2017-08-29)
 - Add ability to publish expired entity list items from listing

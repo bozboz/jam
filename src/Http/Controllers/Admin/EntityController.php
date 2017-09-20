@@ -404,6 +404,7 @@ class EntityController extends ModelAdminController
 
 		$newEntity = $entity->replicate();
 		$newEntity->name = 'Copy of - ' . $newEntity->name;
+		$newEntity->slug = 'copy-of-' . $newEntity->slug;
 		$newEntity->currentRevision()->dissociate();
 		$newEntity->save();
 

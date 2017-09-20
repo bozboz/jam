@@ -31,7 +31,7 @@ class LinkBuilder implements Contract
 
 		if ( ! $instance->trashed()) {
 			$this->addPaths($instance);
-			$instance->getDescendants()->map(function($instance) {
+			$instance->descendants()->active()->get()->map(function($instance) {
 				$instance->template->type()->updatePaths($instance);
 			});
 		}
