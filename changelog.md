@@ -1,9 +1,7 @@
 # Jam Changelog
 
-## Version 1.11.0 (Future)
+## Version 1.11.0 (2017-09-25)
 - Add entity archive
-
-## Version 1.10.1 (Future)
 - Remove placeholder from expiry date field
 - Fix entity gating
 - Fix gallery duplication
