@@ -1,5 +1,8 @@
 # Jam Changelog
 
+## Version 1.11.1 (2017-10-05)
+- Fix canCreateForParent method
+
 ## Version 1.11.0 (2017-09-25)
 - Add entity archive
 - Remove placeholder from expiry date field

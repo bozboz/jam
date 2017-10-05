@@ -460,7 +460,9 @@ class EntityController extends ModelAdminController
 
 	public function canCreateForParent($instance)
 	{
-		return $this->canCreate() && $instance;
+		return $this->canCreate() && $instance
+		    && $instance->template
+		    && app('EntityMapper')->getAll(NestedType::class)->keys()->contains($instance->template->type_alias);
 	}
 
 	public function canPreview($instance)
