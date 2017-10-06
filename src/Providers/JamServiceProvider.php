@@ -82,6 +82,8 @@ class JamServiceProvider extends ServiceProvider
             require "{$packageRoot}src/Http/routes.php";
         }
 
+        $this->app['events']->listen(EntitySorted::class, UpdatePaths::class);
+
         $this->app['events']->listen(EntitySaved::class, UpdatePaths::class);
         $this->app['events']->listen(EntitySaved::class, UpdateSearchIndex::class);
 

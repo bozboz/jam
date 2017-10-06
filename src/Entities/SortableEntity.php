@@ -30,7 +30,6 @@ class SortableEntity extends Entity implements Sortable
         $original = $this->original;
 
         $this->traitSort($before, $after, $parent);
-        $this->template->type()->updatePaths($this);
 
         $this->original = $original;
 
