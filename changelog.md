@@ -2,6 +2,7 @@
 
 ## Version 1.12.0 (Future)
 - Make path calculation happen in a queued job
+- Add `loadRelationCanonicalPath` method to entity collection
 
 ## Version 1.11.1 (2017-10-05)
 - Fix canCreateForParent method
