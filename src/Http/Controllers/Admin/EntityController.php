@@ -31,6 +31,8 @@ class EntityController extends ModelAdminController
 	protected $repository;
 	protected $type;
 
+	protected $formBackActionLabel = 'Back to listing';
+
 	public function __construct(EntityDecorator $decorator, EntityRepository $repository)
 	{
 		parent::__construct($decorator);
@@ -278,7 +280,7 @@ class EntityController extends ModelAdminController
 				new IsValid([$this, 'canDuplicate'])
 			),
 			$this->actions->custom(
-				new Link(new Url($this->getListingUrl($instance)), 'Back to listing', 'fa fa-list-alt', [
+				new Link(new Url($this->getListingUrl($instance)), $this->formBackActionLabel, 'fa fa-list-alt', [
 					'class' => 'btn-default pull-right space-left',
 				]),
 				new IsValid([$this, 'canView'])

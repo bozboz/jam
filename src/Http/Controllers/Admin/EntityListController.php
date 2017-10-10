@@ -11,6 +11,8 @@ use Redirect;
 
 class EntityListController extends EntityController
 {
+    protected $formBackActionLabel = 'Back to parent';
+
     public function createForEntityListField($typeAlias, $templateAlias, $parentEntity)
     {
         $template = Template::with('fields')->whereTypeAlias($typeAlias)->whereAlias($templateAlias)->first();
