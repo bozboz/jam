@@ -25,6 +25,8 @@ class Entity extends Node implements ModelInterface
 	use SoftDeletes;
 	use DynamicSlugTrait;
 
+	protected static $allTemplates = [];
+
 	protected $table = 'entities';
 
 	protected $nullable = [];
@@ -440,10 +442,10 @@ class Entity extends Node implements ModelInterface
 
 		$newInstanceAttributes = [];
 		if (array_key_exists('template_id', $attributes)) {
-			if ( ! $this->allTemplates) {
-				$this->allTemplates = Template::all();
+			if ( ! self::$allTemplates) {
+				self::$allTemplates = Template::all();
 			}
-			$template = $this->allTemplates->where('id', $attributes['template_id'])->first();
+			$template = self::$allTemplates->where('id', $attributes['template_id'])->first();
 			$newInstanceAttributes['type_alias'] = $template->type_alias;
 		}
 
