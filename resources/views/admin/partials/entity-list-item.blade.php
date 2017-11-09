@@ -25,13 +25,13 @@
             </a>
 
             @if ($entity->status === Bozboz\Jam\Entities\Revision::EXPIRED)
-                <a href="{{ route('admin.entities.publish', [$entity->id]) }}" class="btn btn-success btn-sm js-publish-entity-btn">
+                <a href="{{ route('admin.entities.publish', [$entity->id]) }}" class="btn btn-success btn-sm js-publish-entity-{{ $field->name }}">
                     <i class="fa-save fa"></i> Publish
                 </a>
             @endif
         </div>
 
-        <a class="cards__btn--delete js-delete-entity-btn btn btn-sm btn-danger" type="submit" href="#">
+        <a class="cards__btn--delete js-delete-entity-{{ $field->name }} btn btn-sm btn-danger" type="submit" href="#">
             <i class="fa-trash fa"></i> Delete
         </a>
     </div>

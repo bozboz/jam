@@ -4,6 +4,7 @@
 - Make path calculation happen in a queued job
 - Add `loadRelationCanonicalPath` method to entity collection
 - Change back button label on entity list edit form
+- Prevent entity list delete button from spamming confirm popups
 
 ## Version 1.11.1 (2017-10-05)
 - Fix canCreateForParent method

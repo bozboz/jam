@@ -153,7 +153,7 @@ class EntityListField extends AdminField
                     .append('{$tokenField}')
                     .append('{$deleteMethodField}');
 
-                $('.js-delete-entity-btn').click(function(e) {
+                $('.js-delete-entity-{$this->name}').click(function(e) {
                     e.preventDefault();
 
                     var entityId = $(this).closest('[data-id]').data('id');
@@ -170,7 +170,7 @@ class EntityListField extends AdminField
                     }
                 });
 
-                $('.js-publish-entity-btn').click(function(e) {
+                $('.js-publish-entity-{$this->name}').click(function(e) {
                     e.preventDefault();
 
                     var entityId = $(this).closest('[data-id]').data('id'),
