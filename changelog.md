@@ -1,6 +1,6 @@
 # Jam Changelog
 
-## Version 1.12.0 (Future)
+## Version 1.12.0 (2017-11-09)
 - Make path calculation happen in a queued job
 - Add `loadRelationCanonicalPath` method to entity collection
 - Change back button label on entity list edit form
