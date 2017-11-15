@@ -141,6 +141,8 @@ class JamServiceProvider extends ServiceProvider
             'view_gated_entities' => 'Bozboz\Permissions\Rules\GlobalRule',
             'gate_entities' => 'Bozboz\Permissions\Rules\Rule',
 
+            'expire_entity' => 'Bozboz\Permissions\Rules\Rule',
+
             'view_gated_entity_type' => 'Bozboz\Permissions\Rules\Rule',
 
         ]);

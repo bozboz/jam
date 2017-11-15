@@ -141,7 +141,8 @@ class EntityDecorator extends ModelAdminDecorator
 
 	public function getFields($instance)
 	{
-		$canEditStatus = Gate::allows('hide_entity') || Gate::allows('publish_entity') || Gate::allows('schedule_entity');
+		$canEditStatus = Gate::allows('hide_entity', $instance) || Gate::allows('publish_entity', $instance) || Gate::allows('schedule_entity', $instance);
+		$canExpire = Gate::allows('expire_entity', $instance);
 		$canRestrictAccess = Gate::allows('gate_entities') && $instance->template->type()->canRestrictAccess();
 
 		$fields = new LaravelCollection(array_filter([
@@ -164,7 +165,7 @@ class EntityDecorator extends ModelAdminDecorator
 					'help_text' => "If you enter a date in the future, this will be hidden from the site until that date is reached.",
 				])
 				: new HiddenField('currentRevision[published_at]'),
-			$canEditStatus
+			$canExpire
 				? new DateTimeField('currentRevision[expired_at]', [
 					'label' => 'Expired At',
 					'help_text' => "This entity will expire and no longer be visible on the front end when this date is reached.",
