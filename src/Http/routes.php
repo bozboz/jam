@@ -6,7 +6,7 @@
 |--------------------------------------------------------------------------
 */
 
-Route::group(array('middleware' => 'web', 'namespace' => 'Bozboz\Jam\Http\Controllers\Admin', 'prefix' => 'admin'), function() {
+Route::group(array('middleware' => ['web', 'force-preview-mode'], 'namespace' => 'Bozboz\Jam\Http\Controllers\Admin', 'prefix' => 'admin'), function() {
 
 	Route::resource('entities', 'EntityController', ['except' => ['index', 'create']]);
 

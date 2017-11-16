@@ -2,22 +2,23 @@
 
 namespace Bozboz\Jam\Entities;
 
-use Bozboz\Admin\Base\DynamicSlugTrait;
-use Bozboz\Admin\Base\ModelInterface;
-use Bozboz\Admin\Base\SanitisesInputTrait;
-use Bozboz\Admin\Base\Sorting\NestedSortableTrait;
-use Bozboz\Jam\Entities\Events\EntityDeleted;
-use Bozboz\Jam\Entities\Events\EntitySaved;
-use Bozboz\Jam\Entities\LinkBuilder;
-use Bozboz\Jam\Entities\Value;
 use Bozboz\Jam\Field;
 use Bozboz\Jam\Mapper;
-use Bozboz\Jam\Templates\Template;
 use Bozboz\Jam\Types\Type;
-use Bozboz\Permissions\Facades\Gate;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Request;
 use Kalnoy\Nestedset\Node;
+use Bozboz\Jam\Entities\Value;
+use Bozboz\Jam\Templates\Template;
+use Illuminate\Support\Facades\DB;
+use Bozboz\Jam\Entities\LinkBuilder;
+use Bozboz\Permissions\Facades\Gate;
+use Bozboz\Admin\Base\ModelInterface;
+use Bozboz\Admin\Base\DynamicSlugTrait;
+use Illuminate\Support\Facades\Request;
+use Bozboz\Admin\Base\SanitisesInputTrait;
+use Bozboz\Jam\Entities\Events\EntitySaved;
+use Bozboz\Jam\Entities\Events\EntityDeleted;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Bozboz\Admin\Base\Sorting\NestedSortableTrait;
 
 class Entity extends Node implements ModelInterface
 {
@@ -246,20 +247,50 @@ class Entity extends Node implements ModelInterface
 
 	public function scopeJoinValueByKey($query, $key, $alias = 'entity_values')
 	{
-		$query->select('entities.*');
-		$query->join("entity_values as {$alias}", function($join) use ($alias, $key) {
-			$join->on('entities.revision_id', '=', "{$alias}.revision_id");
-			$join->where("{$alias}.key", '=', $key);
-		});
+		if (config('jam.preview-mode') || config('jam.deleted-mode')) {
+			$query->select('entities.*');
+			$query->join(DB::raw("(
+				SELECT MAX(id) as id, entity_id
+				FROM entity_revisions
+				GROUP BY entity_id
+			) as {$alias}_revision"), function($join) use ($alias) {
+				$join->on("{$alias}_revision.entity_id", '=', 'entities.id');
+			});
+			$query->join("entity_values as {$alias}", function($join) use ($alias, $key) {
+				$join->on("{$alias}_revision.id", '=', "{$alias}.revision_id");
+				$join->where("{$alias}.key", '=', $key);
+			});
+		} else {
+			$query->select('entities.*');
+			$query->join("entity_values as {$alias}", function($join) use ($alias, $key) {
+				$join->on('entities.revision_id', '=', "{$alias}.revision_id");
+				$join->where("{$alias}.key", '=', $key);
+			});
+		}
 	}
 
 	public function scopeLeftJoinValueByKey($query, $key, $alias = 'entity_values')
 	{
-		$query->select('entities.*');
-		$query->leftJoin("entity_values as {$alias}", function($join) use ($alias, $key) {
-			$join->on('entities.revision_id', '=', "{$alias}.revision_id");
-			$join->where("{$alias}.key", '=', $key);
-		});
+		if (config('jam.preview-mode') || config('jam.deleted-mode')) {
+			$query->select('entities.*');
+			$query->join(DB::raw("(
+				SELECT MAX(id) as id, entity_id
+				FROM entity_revisions
+				GROUP BY entity_id
+			) as {$alias}_revision"), function($join) use ($alias) {
+				$join->on("{$alias}_revision.entity_id", '=', 'entities.id');
+			});
+			$query->leftJoin("entity_values as {$alias}", function($join) use ($alias, $key) {
+				$join->on("{$alias}_revision.id", '=', "{$alias}.revision_id");
+				$join->where("{$alias}.key", '=', $key);
+			});
+		} else {
+			$query->select('entities.*');
+			$query->leftJoin("entity_values as {$alias}", function($join) use ($alias, $key) {
+				$join->on('entities.revision_id', '=', "{$alias}.revision_id");
+				$join->where("{$alias}.key", '=', $key);
+			});
+		}
 	}
 
 	public function scopeWhereValue($query, $key, $operator, $value = null)
@@ -325,9 +356,13 @@ class Entity extends Node implements ModelInterface
 	public function currentValues()
 	{
 		if (config('jam.preview-mode') || config('jam.deleted-mode')) {
-			// This isn't an especially good way of going about things... needs revisiting
-			$latestRevisions = Revision::groupBy(\DB::raw('entity_id DESC'))->orderBy('created_at', 'DESC')->pluck('id');
-			return $this->hasManyThrough(CurrentValue::class, Revision::class)->whereIn('entity_revisions.id', $latestRevisions);
+			return $this->hasManyThrough(CurrentValue::class, Revision::class)->join(DB::raw("(
+				SELECT MAX(id) as latest_revision_ids, entity_id
+				FROM entity_revisions
+				GROUP BY entity_id
+			) as latest_revisions"), function($join) {
+				$join->on("latest_revisions.latest_revision_ids", '=', 'entity_revisions.id');
+			});
 		} else {
 			return $this->hasMany(CurrentValue::class, 'revision_id', 'revision_id');
 		}

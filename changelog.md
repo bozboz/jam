@@ -1,5 +1,8 @@
 # Jam Changelog
 
+## Version 1.14.0 (2017-11-16)
+- Always view entities in preview mode in admin so filters can work for unpublished content
+
 ## Version 1.13.1 (2017-11-16)
 - Fix published at date logic
 

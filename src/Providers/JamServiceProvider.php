@@ -91,6 +91,7 @@ class JamServiceProvider extends ServiceProvider
         $this->app['events']->listen(EntityDeleted::class, UpdateSearchIndex::class);
 
         $this->app['router']->pushMiddlewareToGroup('web', \Bozboz\Jam\Http\Middleware\PreviewMode::class);
+        $this->app['router']->middleware('force-preview-mode', \Bozboz\Jam\Http\Middleware\ForcePreviewMode::class);
     }
 
     protected function buildAdminMenu()

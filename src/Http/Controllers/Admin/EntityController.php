@@ -39,8 +39,6 @@ class EntityController extends ModelAdminController
 	{
 		parent::__construct($decorator);
 		$this->repository = $repository;
-
-		\Config::set('jam.preview-mode', true);
 	}
 
 	public function show($type)
