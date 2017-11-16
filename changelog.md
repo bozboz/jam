@@ -1,5 +1,8 @@
 # Jam Changelog
 
+## Version 1.13.1 (2017-11-16)
+- Fix published at date logic
+
 ## Version 1.13.0 (2017-11-16) 
 - Prevent new revision method failing when fields don't exist in input
 - Add expire_entity permission
