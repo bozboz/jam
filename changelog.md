@@ -1,8 +1,9 @@
 # Jam Changelog
 
-## Version 1.13.0 (Future) 
+## Version 1.13.0 (2017-11-16) 
 - Prevent new revision method failing when fields don't exist in input
 - Add expire_entity permission
+- Fire entity saved event on hide/publish from listing
 
 ## Version 1.12.0 (2017-11-09)
 - Make path calculation happen in a queued job

@@ -2,26 +2,27 @@
 
 namespace Bozboz\Jam\Http\Controllers\Admin;
 
-use Bozboz\Admin\Http\Controllers\ModelAdminController;
-use Bozboz\Admin\Reports\Actions\Permissions\IsValid;
-use Bozboz\Admin\Reports\Actions\Presenters\Button;
-use Bozboz\Admin\Reports\Actions\Presenters\Form;
-use Bozboz\Admin\Reports\Actions\Presenters\Link;
-use Bozboz\Admin\Reports\Actions\Presenters\Urls\Url;
-use Bozboz\Jam\Entities\EntityDecorator;
-use Bozboz\Jam\Entities\Revision;
-use Bozboz\Jam\Repositories\Contracts\EntityRepository;
-use Bozboz\Jam\Templates\Template;
-use Bozboz\Jam\Types\NestedType;
-use Bozboz\Permissions\RuleStack;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Bozboz\Jam\Types\NestedType;
+use Bozboz\Jam\Entities\Revision;
+use Bozboz\Permissions\RuleStack;
+use Bozboz\Jam\Templates\Template;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Config;
+use Bozboz\Jam\Entities\EntityDecorator;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Contracts\Events\Dispatcher;
+use Bozboz\Admin\Reports\Actions\Presenters\Form;
+use Bozboz\Admin\Reports\Actions\Presenters\Link;
+use Bozboz\Admin\Reports\Actions\Presenters\Button;
+use Bozboz\Admin\Reports\Actions\Permissions\IsValid;
+use Bozboz\Admin\Reports\Actions\Presenters\Urls\Url;
+use Bozboz\Admin\Http\Controllers\ModelAdminController;
+use Bozboz\Jam\Repositories\Contracts\EntityRepository;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class EntityController extends ModelAdminController
@@ -321,9 +322,11 @@ class EntityController extends ModelAdminController
 		$this->repository->newRevision($modelInstance, $input);
 	}
 
-	public function publish($id)
+	public function publish(Dispatcher $event, $id)
 	{
 		$modelInstance = $this->_changeState($id, new Carbon);
+
+        $event->fire(new EntitySaved($entity));
 
 		$response = $this->getUpdateResponse($modelInstance);
 		$response->with('model.updated', sprintf(
@@ -334,11 +337,13 @@ class EntityController extends ModelAdminController
 		return $response;
 	}
 
-	public function unpublish($id)
+	public function unpublish(Dispatcher $event, $id)
 	{
 		$modelInstance = $this->decorator->findInstance($id);
 		$modelInstance->revision_id = null;
 		$modelInstance->save();
+
+        $event->fire(new EntitySaved($entity));
 
 		$response = $this->getUpdateResponse($modelInstance);
 		$response->with('model.updated', sprintf(
@@ -349,7 +354,7 @@ class EntityController extends ModelAdminController
 		return $response;
 	}
 
-	public function schedule(Request $request, $id)
+	public function schedule(Dispatcher $event, Request $request, $id)
 	{
 		try {
 			$scheduleDate = new Carbon($request->get('date'));
@@ -358,6 +363,8 @@ class EntityController extends ModelAdminController
 		}
 
 		$modelInstance = $this->_changeState($id, $scheduleDate);
+
+        $event->fire(new EntitySaved($entity));
 
 		$response = $this->getUpdateResponse($modelInstance);
 		$response->with('model.updated', sprintf(
