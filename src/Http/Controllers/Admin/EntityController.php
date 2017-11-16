@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Config;
 use Bozboz\Jam\Entities\EntityDecorator;
 use Illuminate\Support\Facades\Redirect;
+use Bozboz\Jam\Entities\Events\EntitySaved;
 use Illuminate\Contracts\Events\Dispatcher;
 use Bozboz\Admin\Reports\Actions\Presenters\Form;
 use Bozboz\Admin\Reports\Actions\Presenters\Link;
@@ -326,7 +327,7 @@ class EntityController extends ModelAdminController
 	{
 		$modelInstance = $this->_changeState($id, new Carbon);
 
-        $event->fire(new EntitySaved($entity));
+        $event->fire(new EntitySaved($modelInstance));
 
 		$response = $this->getUpdateResponse($modelInstance);
 		$response->with('model.updated', sprintf(
@@ -343,7 +344,7 @@ class EntityController extends ModelAdminController
 		$modelInstance->revision_id = null;
 		$modelInstance->save();
 
-        $event->fire(new EntitySaved($entity));
+        $event->fire(new EntitySaved($modelInstance));
 
 		$response = $this->getUpdateResponse($modelInstance);
 		$response->with('model.updated', sprintf(
