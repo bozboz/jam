@@ -158,9 +158,17 @@ Generally you'll want to add a catchall route right at the end of your routes fi
 
 ```php
 <?php
+/**
+ * Jam Catch All
+ */
+Route::get('{entityId}{slug?}', [
+    'as' => 'entity-by-id',
+    'uses' => '\Bozboz\Jam\Http\Controllers\EntityController@forId'
+])->where('entityId', '(\d+)')->where('slug', '(/.+)?');
+
 Route::get('{entityPath}', [
     'as' => 'entity',
-    'uses' => '\Bozboz\Jam\Http\Controllers\EntityController@forPath'
+    'uses' => '\Bozboz\Jam\Http\Controllers\EntityController@forPath',
 ])->where('entityPath', '(.+)?');
 ```
 
