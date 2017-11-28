@@ -447,6 +447,7 @@ class Entity extends Node implements ModelInterface
 		if (array_key_exists('type_alias', $attributes)) {
 			$mapper = static::getMapper();
 			$model = $mapper->get($attributes['type_alias'])->getEntity((array) $attributes);
+			unset($model->type_alias);
 		} else {
 			$model = new static((array) $attributes);
 		}

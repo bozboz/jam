@@ -1,5 +1,8 @@
 # Jam Changelog
 
+## Version 1.14.1 (2017-11-28)
+- Unset type alias property when generating new entity instance
+
 ## Version 1.14.0 (2017-11-16)
 - Always view entities in preview mode in admin so filters can work for unpublished content
 
