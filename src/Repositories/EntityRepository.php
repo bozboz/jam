@@ -164,31 +164,26 @@ class EntityRepository implements EntityRepositoryInterface
             );
     }
 
-    protected function isAuthorisedForEntity($entity)
+    protected function isAuthorisedForEntity($entity, $checkAncestors = true)
     {
         return (
             $entity->roles->isEmpty()
             || (
                 $this->auth->user()
-                && $entity->roles->contains($this->auth->user()->role)
+                && $entity->roles->pluck('name')->contains($this->auth->user()->role->name)
             ))
-            && $this->isAuthorisedForEntityAncestors($entity);
+            && ($checkAncestors ? $this->isAuthorisedForEntityAncestors($entity) : true);
     }
 
     protected function isAuthorisedForEntityAncestors($entity)
     {
-        $ancestorRoles = collect();
-        $entity->ancestors()->with('roles')->get()->each(function($ancestor) use ($ancestorRoles) {
-            $ancestor->roles->each(function($role) use ($ancestorRoles) {
-                $ancestorRoles->push($role);
-            });
+        $disallowedAncestors = $entity->ancestors()->with('roles')->get()->map(function($ancestor) {
+            return $this->isAuthorisedForEntity($ancestor, false);
+        })->filter(function($isAllowed) {
+            return ! $isAllowed;
         });
 
-        return $ancestorRoles->isEmpty()
-            || (
-                $this->auth->user()
-                && $ancestorRoles->contains($this->auth->user()->role)
-            );
+        return $disallowedAncestors->isEmpty();
     }
 
     protected function isAuthorisedForType($entity)
