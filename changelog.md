@@ -1,5 +1,8 @@
 # Jam Changelog
 
+## Version 1.14.2 (2018-01-04)
+- Fix entyity gating permissions
+
 ## Version 1.14.1 (2017-11-28)
 - Unset type alias property when generating new entity instance
 
