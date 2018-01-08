@@ -1,5 +1,8 @@
 # Jam Changelog
 
+## Version 1.14.3 (2018-01-08)
+- Make user field fetch trashed users
+
 ## Version 1.14.2 (2018-01-04)
 - Fix entyity gating permissions
 
