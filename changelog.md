@@ -1,5 +1,8 @@
 # Jam Changelog
 
+## Version 1.14.4 (2018-01-09)
+- Fix update paths job when deleting an entity
+
 ## Version 1.14.3 (2018-01-08)
 - Make user field fetch trashed users
 
