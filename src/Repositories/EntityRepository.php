@@ -106,13 +106,9 @@ class EntityRepository implements EntityRepositoryInterface
     {
         $input = collect($input);
 
-        if ($input->get('currentRevision')) {
-            $publishedAt = key_exists('published_at', $input['currentRevision']) && $input['currentRevision']['published_at']
-                ? $input['currentRevision']['published_at']
-                : $entity->freshTimestamp();
-            $expiredAt = key_exists('expired_at', $input['currentRevision'])
-                ? $input['currentRevision']['expired_at']
-                : null;
+        if ($input->has('currentRevision')) {
+            $publishedAt = data_get($input['currentRevision'], 'published_at', $entity->freshTimestamp());
+            $expiredAt = data_get($input['currentRevision'], 'expired_at');
         } else {
             $publishedAt = $input->get('published_at');
             $expiredAt = $input->get('expired_at');
