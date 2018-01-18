@@ -66,7 +66,11 @@ class User extends Field
     public function getValue(Value $value)
     {
         if ($value->value) {
-            return Auth::getProvider()->createModel()->newQuery()->withTrashed()->whereId($value->value)->first();
+            $query = Auth::getProvider()->createModel()->newQuery();
+            if (method_exists(Auth::getProvider()->createModel(), 'bootSoftDeletes')) {
+                $query->withTrashed();
+            }
+            return $query->whereId($value->value)->first();
         }
     }
 }

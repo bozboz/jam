@@ -1,5 +1,8 @@
 # Jam Changelog
 
+## Version 1.14.5 (2018-01-18)
+- Test that user model actually supports soft deleteing before fetching trashed
+
 ## Version 1.14.4 (2018-01-09)
 - Fix update paths job when deleting an entity
 
