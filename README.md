@@ -23,7 +23,7 @@
 ## 1. Installation
 
 1. Require the package in Composer, by running `composer require bozboz/jam`
-2. Add `Bozboz\Jam\Providers\JamServiceProvider::class` to the providers array config/app.php
+2. Add `Bozboz\Jam\Providers\JamServiceProvider::class` to the providers array config/app.php - NOTE: This must be above the RouteServiceProvider or routes will not sequence correctly. Add it to the pre-existing bozboz serviceproviders.
 3. Run `php artisan vendor:publish && php artisan migrate` 
 4. Jump to [3. Usage](#3-usage) for the default catchall route
 
