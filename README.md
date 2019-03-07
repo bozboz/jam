@@ -36,7 +36,10 @@
 Entity types (a.k.a Types) are the top level of the jam schema. 
 They can essentially be thought of as models, or a logical grouping of models (todo:clarify), since the templates actually have the fields. 
 Types are registered in an app's service providers, eg
-(todo: specify convention)
+```php
+<?php
+// todo: specify convention
+[
     'default_everything_entities' => // key used where?
         new Type([
             'menu_title' => 'Default Everything Entities',
@@ -56,6 +59,8 @@ Types are registered in an app's service providers, eg
             'gated' => true, // used where?
             'custom_attribute' => ''
         ])
+];
+```
 
 Jam has a preregistered "pages" NestedType, since most apps are going to need one (NestedType is for entities requiring nested sort).
  
