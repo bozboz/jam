@@ -33,9 +33,11 @@
 
 ### 2.1. Types
 
-Entity types are the top level of the jam schema. They can essentially be thought of as models, or a logical grouping of models since the templates actually have the fields. Types are defined in service providers. Jam comes with a "Pages" type out of the box since most apps are going to need one.
+Entity types are the top level of the jam schema. 
+They can essentially be thought of as models, or a logical grouping of models (todo:clarify), since the templates actually have the fields. 
+Types are defined in service providers. Jam comes with a "Pages" type out of the box since most apps are going to need one.
 
-When you register a type you can give it a report, link builder, menu builder, search handler and entity. If any are left blank the default will be used. 
+When you register a type (todo:clarify) you can give it (todo:clarify) a report, link builder, menu builder, search handler and entity. If any are left blank the default will be used. 
 
 If you require nested sorting you should use the NestedType.
 
@@ -67,9 +69,9 @@ If you require nested sorting you should use the NestedType.
 
 ### 2.2. Templates
 
-Once you've got some types you need to give them some templates. A template dictates what data the entity has. Types can have as many templates as you like. To add a template log in to the admin, click on "Jam" then pick a type to edit. 
+Data fields for entity types are defined by adding/creating templates. Types can have multiple templates. To add a template, log in to the admin, click on "Jam" then pick a type to edit. 
 
-When adding a template you must give it a `name` and `view` but the `listing view` and `max_uses` values are optional. The view field will be used in the default render method to pick what view to actually render. The implementation of listing_view is largely down to the requirements but its intention is that you could have multiple templates in a type that require different views in a listing. Once you've created a template the admin menu will acknowledge the type and display it in the the menu wherever the configured menu_builder dictates. `max_uses` allows you to limit the number of times a template may be used e.g. setting it to 1 will hide the option to create a new entity with that template after 1 is created.
+When adding a template you must give it a `name` and `view` but the `listing view` and `max_uses` values are optional. The view field will be used in the default render method to pick what view to actually render. The implementation of listing_view is largely down to the requirements but its intention is that you could have multiple templates in a type that require different views in a listing. Once you've created a template the admin menu will acknowledge the type and display it in the the menu wherever the configured menu_builder dictates. `max_uses` allows you to limit the number of times a template may be used e.g. setting it to 1 will hide the option to create a new entity with that template after 1 is created (todo:example use case).
 
 #### 2.2.1. Migrating Templates
 
