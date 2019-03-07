@@ -33,14 +33,33 @@
 
 ### 2.1. Types
 
-Entity types are the top level of the jam schema. 
+Entity types (a.k.a Types) are the top level of the jam schema. 
 They can essentially be thought of as models, or a logical grouping of models (todo:clarify), since the templates actually have the fields. 
-Types are defined in service providers. Jam comes with a "Pages" type out of the box since most apps are going to need one.
+Types are registered in an app's service providers, eg
+(todo: specify convention)
+    'default_everything_entities' => // key used where?
+        new Type([
+            'menu_title' => 'Default Everything Entities',
+            'name' => 'Default Everything Entities', // used where?
+    ]),
+    'custom_everything_entities' => 
+        new CustomType([
+            'menu_title' => 'Custom Everything Entities',
+            'name' => 'Custom Entities',
+            'report' => MyReport::class, 
+            'link_builder' => MyLinkBuilder::class,
+            'menu_builder' => MyMenuBuilder::class,
+            'entity' => MyEntity::class,
+            'search_handler' => MySearchHandler::class,
+            'decorator' => MyDecorator::class
+            'can_restrict_access' => true, // used where?
+            'gated' => true, // used where?
+            'custom_attribute' => ''
+        ])
 
-When you register a type (todo:clarify) you can give it (todo:clarify) a report, link builder, menu builder, search handler and entity. If any are left blank the default will be used. 
-
-If you require nested sorting you should use the NestedType.
-
+Jam has a preregistered "pages" NestedType, since most apps are going to need one (NestedType is for entities requiring nested sort).
+ 
+Type attributes
 -   `report`
     Admin report class for listing. Generally this won't ever need to be changed unless you're going for something completely custom. The NestedType automatically switches the default to NestedReport.
 
