@@ -470,7 +470,19 @@ class EntityController extends ModelAdminController
 
 	public function canCreateForParent($instance)
 	{
-		return $this->canCreate() && $instance
+		$stack = RuleStack::with(
+			'create_under_specific_entity',
+			$instance->id
+		);
+		if ($instance->parent) {
+			$stack->then(
+				'create_under_specific_entity',
+				$instance->parent->id
+			);
+		}
+
+		return ($this->canCreate() || $stack->isAllowed())
+			&& $instance
 		    && $instance->template
 		    && app('EntityMapper')->getAll(NestedType::class)->keys()->contains($instance->template->type_alias);
 	}
@@ -492,17 +504,40 @@ class EntityController extends ModelAdminController
 
 	public function canPublish($instance)
 	{
-		return RuleStack::with('publish_entity', $instance->template->type_alias)->isAllowed();
+		$stack = RuleStack::with('publish_entity', $instance->template->type_alias);
+		$stack->add(
+			'publish_specific_entity',
+			$instance->id
+		);
+		$instance->ancestors()->pluck('id')->map(function ($id) use ($stack) {
+			$stack->add(
+				'publish_specific_entity',
+				$id
+			);
+		});
+
+		return $stack->isAllowed();
 	}
 
 	public function canPublishFromRow($instance)
 	{
-		return $instance->canPublish() && RuleStack::with('publish_entity', $instance->template->type_alias)->isAllowed();
+		return $instance->canPublish() && $this->canPublish($instance);
 	}
 
 	public function canHide($instance)
 	{
-		return $instance->canHide() && RuleStack::with('hide_entity', $instance->template->type_alias)->isAllowed();
+		$stack = RuleStack::with('hide_entity', $instance->template->type_alias);
+		$stack->add(
+			'hide_specific_entity',
+			$instance->id
+		);
+		$instance->ancestors()->pluck('id')->map(function ($id) use ($stack) {
+			$stack->add(
+				'hide_specific_entity',
+				$id
+			);
+		});
+		return $instance->canHide() && $stack->isAllowed();
 	}
 
 	public function canSchedule($instance)
@@ -518,11 +553,35 @@ class EntityController extends ModelAdminController
 	protected function editPermissions($stack, $instance)
 	{
 		$stack->add('edit_entity_type', $instance ? $instance->template->type_alias : null);
+		if ($instance) {
+			$stack->add(
+				'edit_specific_entity',
+				$instance->id
+			);
+			$instance->ancestors()->pluck('id')->map(function ($id) use ($stack) {
+				$stack->add(
+					'edit_specific_entity',
+					$id
+				);
+			});
+		}
 	}
 
 	protected function deletePermissions($stack, $instance)
 	{
 		$stack->add('delete_entity_type', $instance ? $instance->template->type_alias : null);
+		if ($instance) {
+			$stack->add(
+				'delete_specific_entity',
+				$instance->id
+			);
+			$instance->ancestors()->pluck('id')->map(function ($id) use ($stack) {
+				$stack->add(
+					'delete_specific_entity',
+					$id
+				);
+			});
+		}
 	}
 
 	protected function viewPermissions($stack)
