@@ -1,5 +1,8 @@
 # Jam Changelog
 
+## Version 1.15.0 (2019-06-11)
+- Add permissions for per entity editing
+
 ## Version 1.14.5 (2018-01-18)
 - Test that user model actually supports soft deleteing before fetching trashed
 
@@ -21,7 +24,7 @@
 ## Version 1.13.1 (2017-11-16)
 - Fix published at date logic
 
-## Version 1.13.0 (2017-11-16) 
+## Version 1.13.0 (2017-11-16)
 - Prevent new revision method failing when fields don't exist in input
 - Add expire_entity permission
 - Fire entity saved event on hide/publish from listing
@@ -51,7 +54,7 @@
 - Make date fields return carbon object
 - Add `loadRelationFields` method
 - Add abstract tags field
-- Add entity duplication functionality 
+- Add entity duplication functionality
 - Add orWhereValue and leftJoinValueByKey scopes to Entity
 - Allow search query to be modified in EntityDecorator
 - Add scheduled expiry dates for entities
@@ -91,7 +94,7 @@
 - Show type name in jam template listing
 - Add accessor method for pulished date in entity
 - Add type menu title to type listing for better sparation
-- Allow BelongsTo field to be extended 
+- Allow BelongsTo field to be extended
 - Allow operator to be changed for `whereValue` entity scope
 - Change EntityPath fillable to guarded
 - Move history link to published dropdown on entity report
@@ -176,11 +179,11 @@
 
 -   Make repo in front end controller protected rather than private
 -   Fix user field default value and make defaulting to logged in user optional
--   Automatically inject values on new collection of entities if values have been eager loaded 
+-   Automatically inject values on new collection of entities if values have been eager loaded
 
 ## Version 1.0.2 (2016-12-21)
 
--   Fix nested entity list redirect 
+-   Fix nested entity list redirect
 
 ## Version 1.0.1 (2016-12-16)
 
