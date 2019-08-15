@@ -1,4 +1,4 @@
-<fieldset{{ HTML::attributes($attributes) }}>
+<fieldset{!! HTML::attributes($attributes) !!}>
 	@if (isset($legend))
 		<legend>{{ $legend }}</legend>
 	@endif
