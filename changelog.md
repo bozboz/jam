@@ -1,5 +1,8 @@
 # Jam Changelog
 
+## Version 1.15.1 (2019-08-15)
+- Fix link field fieldset attributes
+
 ## Version 1.15.0 (2019-06-11)
 - Add permissions for per entity editing
 
