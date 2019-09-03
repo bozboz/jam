@@ -1,5 +1,8 @@
 # Jam Changelog
 
+## Version 1.16.0 (2019-09-03)
+- Allow entity paths to be edited
+
 ## Version 1.15.1 (2019-08-15)
 - Fix link field fieldset attributes
 
