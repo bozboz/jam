@@ -24,6 +24,7 @@ use Bozboz\Admin\Reports\Actions\Permissions\IsValid;
 use Bozboz\Admin\Reports\Actions\Presenters\Urls\Url;
 use Bozboz\Admin\Http\Controllers\ModelAdminController;
 use Bozboz\Jam\Repositories\Contracts\EntityRepository;
+use Bozboz\Jam\Http\Controllers\Admin\EntityPathController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class EntityController extends ModelAdminController
@@ -145,6 +146,10 @@ class EntityController extends ModelAdminController
 
 		return [
 			$this->actions->publish([
+				$this->actions->custom(
+					new Link(app(EntityPathController::class)->getActionName('indexForEntity'), 'URLs', 'fa fa-link'),
+					new IsValid([$this, 'canEditPaths'])
+				),
 				$this->actions->custom(
 					new Link($entityRevisionController->getActionName('indexForEntity'), 'History', 'fa fa-history'),
 					new IsValid([$entityRevisionController, 'canView'])
@@ -470,19 +475,7 @@ class EntityController extends ModelAdminController
 
 	public function canCreateForParent($instance)
 	{
-		$stack = RuleStack::with(
-			'create_under_specific_entity',
-			$instance->id
-		);
-		if ($instance->parent) {
-			$stack->then(
-				'create_under_specific_entity',
-				$instance->parent->id
-			);
-		}
-
-		return ($this->canCreate() || $stack->isAllowed())
-			&& $instance
+		return $this->canCreate() && $instance
 		    && $instance->template
 		    && app('EntityMapper')->getAll(NestedType::class)->keys()->contains($instance->template->type_alias);
 	}
@@ -502,42 +495,24 @@ class EntityController extends ModelAdminController
 		return $instance->exists && $this->canCreate($instance);
 	}
 
+	public function canEditPaths($instance)
+	{
+		return $instance->exists && $instance->template->type()->isVisible();
+	}
+
 	public function canPublish($instance)
 	{
-		$stack = RuleStack::with('publish_entity', $instance->template->type_alias);
-		$stack->add(
-			'publish_specific_entity',
-			$instance->id
-		);
-		$instance->ancestors()->pluck('id')->map(function ($id) use ($stack) {
-			$stack->add(
-				'publish_specific_entity',
-				$id
-			);
-		});
-
-		return $stack->isAllowed();
+		return RuleStack::with('publish_entity', $instance->template->type_alias)->isAllowed();
 	}
 
 	public function canPublishFromRow($instance)
 	{
-		return $instance->canPublish() && $this->canPublish($instance);
+		return $instance->canPublish() && RuleStack::with('publish_entity', $instance->template->type_alias)->isAllowed();
 	}
 
 	public function canHide($instance)
 	{
-		$stack = RuleStack::with('hide_entity', $instance->template->type_alias);
-		$stack->add(
-			'hide_specific_entity',
-			$instance->id
-		);
-		$instance->ancestors()->pluck('id')->map(function ($id) use ($stack) {
-			$stack->add(
-				'hide_specific_entity',
-				$id
-			);
-		});
-		return $instance->canHide() && $stack->isAllowed();
+		return $instance->canHide() && RuleStack::with('hide_entity', $instance->template->type_alias)->isAllowed();
 	}
 
 	public function canSchedule($instance)
@@ -553,35 +528,11 @@ class EntityController extends ModelAdminController
 	protected function editPermissions($stack, $instance)
 	{
 		$stack->add('edit_entity_type', $instance ? $instance->template->type_alias : null);
-		if ($instance) {
-			$stack->add(
-				'edit_specific_entity',
-				$instance->id
-			);
-			$instance->ancestors()->pluck('id')->map(function ($id) use ($stack) {
-				$stack->add(
-					'edit_specific_entity',
-					$id
-				);
-			});
-		}
 	}
 
 	protected function deletePermissions($stack, $instance)
 	{
 		$stack->add('delete_entity_type', $instance ? $instance->template->type_alias : null);
-		if ($instance) {
-			$stack->add(
-				'delete_specific_entity',
-				$instance->id
-			);
-			$instance->ancestors()->pluck('id')->map(function ($id) use ($stack) {
-				$stack->add(
-					'delete_specific_entity',
-					$id
-				);
-			});
-		}
 	}
 
 	protected function viewPermissions($stack)

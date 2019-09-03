@@ -10,6 +10,11 @@ Route::group(array('middleware' => ['web', 'force-preview-mode'], 'namespace' =>
 
 	Route::resource('entities', 'EntityController', ['except' => ['index', 'create']]);
 
+	Route::resource('entity-paths', 'EntityPathController', ['except' => ['create', 'index', 'show']]);
+	Route::get('entities/{entityId}/entity-paths/create', 'EntityPathController@createForEntity');
+	Route::get('entities/{entityId}/entity-paths', 'EntityPathController@indexForEntity');
+
+
 	Route::group(['prefix' => 'entities/{type}/{template}'], function()
 	{
 		Route::get('create', 'EntityController@createOfType');

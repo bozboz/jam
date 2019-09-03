@@ -2,7 +2,7 @@
 
 namespace Bozboz\Jam\Entities;
 
-use Illuminate\Database\Eloquent\Model;
+use Bozboz\Admin\Base\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class EntityPath extends Model
@@ -43,5 +43,10 @@ class EntityPath extends Model
 		if ($this->canonical_id) {
 			return $this->canonical->path;
 		}
+	}
+
+	public function getValidator()
+	{
+		return new EntityPathValidator;
 	}
 }
