@@ -24,6 +24,10 @@ class EntityController extends Controller
             throw new NotFoundHttpException("No entity for ID '{$id}'");
         }
 
+        if ($entity->paths->where('canonical_id', null)->pluck('path')->first()) {
+            return redirect()->to($entity->paths->where('canonical_id', null)->pluck('path')->first());
+        }
+
         return $this->render($entity);
     }
 

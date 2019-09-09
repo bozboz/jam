@@ -1,7 +1,13 @@
 # Jam Changelog
 
-## Version 1.16.0 (2019-09-03)
+## Version 1.16.2 (2019-09-09)
+- Add redirect to canonical path for urls by ID
+
+## Version 1.16.1 (2019-09-03)
 - Allow entity paths to be edited
+
+## Version 1.16.0 (???)
+__Skipped__
 
 ## Version 1.15.1 (2019-08-15)
 - Fix link field fieldset attributes
