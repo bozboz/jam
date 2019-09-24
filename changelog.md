@@ -1,5 +1,8 @@
 # Jam Changelog
 
+## Version 1.16.3 (2019-09-24)
+- Fix save and edit action when creating a new entity path
+
 ## Version 1.16.2 (2019-09-09)
 - Add redirect to canonical path for urls by ID
 
