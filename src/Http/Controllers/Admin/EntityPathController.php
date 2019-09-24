@@ -50,9 +50,10 @@ class EntityPathController extends ModelAdminController
         $entity = Entity::find($instance->entity_id);
         try{
             EntityPath::onlyTrashed()->where('entity_id', '<>', $entity->id)->wherePath($input['path'])->forceDelete();
-            $path = $entity->paths()->onlyTrashed()->firstOrNew(['path' => $input['path'], 'canonical_id' => $entity->paths()->first()->id]);
+            $path = $entity->paths()->onlyTrashed()->firstOrNew(['path' => $input['path']]);
             $path->deleted_at = $input['deleted_at'];
             $path->save();
+            $instance->id = $path->id;
         } catch (QueryException $e) {
             $message = 'There is already a page with the url ' . url(str_replace_array('\?', $e->getBindings(), '?'));
             if (App::runningInConsole()) {
