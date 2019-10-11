@@ -1,5 +1,8 @@
 # Jam Changelog
 
+## Version 1.16.4 (2019-10-11)
+- Fix specific entity permissions
+
 ## Version 1.16.3 (2019-09-24)
 - Fix save and edit action when creating a new entity path
 
