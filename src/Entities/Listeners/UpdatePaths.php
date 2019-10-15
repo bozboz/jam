@@ -11,6 +11,6 @@ class UpdatePaths
 
     public function handle($event)
     {
-        $this->dispatch(new Job($event->entity));
+        $this->dispatchNow(new Job($event->entity));
     }
 }
