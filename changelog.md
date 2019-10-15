@@ -1,5 +1,8 @@
 # Jam Changelog
 
+## Version 1.16.5 (2019-10-15)
+- Don't queue path update because it breaks validation
+
 ## Version 1.16.4 (2019-10-11)
 - Fix specific entity permissions
 
