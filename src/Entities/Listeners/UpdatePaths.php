@@ -11,6 +11,10 @@ class UpdatePaths
 
     public function handle($event)
     {
-        $this->dispatchNow(new Job($event->entity));
+        if (config('jam.queue-recalculate-paths')) {
+            $this->dispatch(new Job($event->entity));
+        } else {
+            $this->dispatchNow(new Job($event->entity));
+        }
     }
 }

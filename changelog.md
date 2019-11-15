@@ -1,5 +1,8 @@
 # Jam Changelog
 
+## Version 1.17.0 (2019-11-15)
+- Allow config to enable queued path updating
+
 ## Version 1.16.5 (2019-10-15)
 - Don't queue path update because it breaks validation
 
