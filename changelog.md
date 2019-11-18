@@ -1,5 +1,8 @@
 # Jam Changelog
 
+## Version 1.18.0 (2019-11-18)
+- Throw 404 if entity view not found on frontend
+
 ## Version 1.17.0 (2019-11-15)
 - Allow config to enable queued path updating
 

@@ -60,7 +60,9 @@ class EntityController extends Controller
     protected function render($entity)
     {
         $this->repository->hydrate($entity);
-
+        if (!view()->exists($entity->template->view)) {
+            return abort(404);
+        }
         return view($entity->template->view)->withEntity($entity);
     }
 }
