@@ -1,5 +1,8 @@
 # Jam Changelog
 
+## Version 1.19.0 (2020-03-09)
+- Set foreign key to null in DB if empty string provided
+
 ## Version 1.18.0 (2019-11-18)
 - Throw 404 if entity view not found on frontend
 
