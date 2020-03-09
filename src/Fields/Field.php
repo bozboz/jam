@@ -155,7 +155,7 @@ class Field extends Model implements FieldInterface, Sortable
             'field_id' => $this->id,
             'key' => $this->name,
             'value' => !is_array($value) ? $value : null,
-            'foreign_key' => $this->usesForeignKey() ? $value : null
+            'foreign_key' => $this->usesForeignKey() ? ($value ?: null) : null
         ];
         $valueObj = $revision->fieldValues()->create($fieldValue);
 
