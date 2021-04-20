@@ -1,5 +1,8 @@
 # Jam Changelog
 
+## Version 1.20.0 (2021-04-20)
+- Custom youtube handling in embed field
+
 ## Version 1.19.0 (2020-03-09)
 - Set foreign key to null in DB if empty string provided
 

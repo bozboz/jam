@@ -11,17 +11,35 @@ use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Entities\EntityDecorator;
 use Bozboz\Jam\Entities\Revision;
 use Bozboz\Jam\Entities\Value;
-use Illuminate\Support\Facades\Cache;
-use Netcarver\Textile\Parser;
 use Embed\Embed;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
+use Netcarver\Textile\Parser;
 
 class Oembed extends Text
 {
     public function getValue(Value $value)
     {
         return $value->value ? Cache::rememberForever($this->getCacheKey($value), function() use ($value) {
-            return Embed::create($value->value);
+            return $this->youtube($value->value) ?: Embed::create($value->value);
         }) : null;
+    }
+
+    private function youtube($url)
+    {
+        preg_match('/^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/', $url, $matches);
+        if (! $videoId = Arr::get($matches, 5)) {
+            return false;
+        }
+
+        $embed = <<<HTML
+        <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/{$videoId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+HTML;
+
+        return (object)[
+            'code' => $embed,
+        ];
     }
 
     protected function getCacheKey($value)
