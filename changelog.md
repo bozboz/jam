@@ -1,5 +1,8 @@
 # Jam Changelog
 
+## Version 1.21.0 (2021-06-09)
+- Update seeder generation so that the seeds can be run multiple times and just update what's not there
+
 ## Version 1.20.0 (2021-04-20)
 - Custom youtube handling in embed field
 

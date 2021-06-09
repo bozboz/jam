@@ -11,4 +11,46 @@ class DummyClass extends Seeder
     {
         {seed}
     }
+
+    private function makeTemplate($attributes)
+    {
+        $template = Template::firstOrCreate([
+            'alias' => $attributes['alias'],
+            'type_alias' => $attributes['type_alias'],
+        ]);
+        $template->fill($attributes)->save();
+        return $template;
+    }
+
+    private function makeField($attributes)
+    {
+        $field = Field::firstOrCreate([
+            'template_id' => $attributes['template_id'],
+            'name' => $attributes['name'],
+        ]);
+
+        $field->fill($attributes)->save();
+
+        Entity::with('currentRevision')->has('currentRevision')->whereHas('template', function ($query) use ($field) {
+            $query->whereId($field->template_id);
+        })->get()->pluck('currentRevision')->each(function ($revision) use ($field, $attributes) {
+            $revision->fieldValues()->firstOrCreate([
+                'key' => $field->name,
+                'field_id' => $field->id,
+                'type_alias' => $field->type_alias,
+            ]);
+        });
+
+        return $field;
+    }
+
+    private function makeOption($attributes)
+    {
+        $option = Option::firstOrCreate([
+            'field_id' => $attributes['field_id'],
+            'key' => $attributes['key'],
+        ]);
+
+        $option->fill($attributes)->save();
+    }
 }

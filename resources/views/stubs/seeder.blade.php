@@ -1,16 +1,9 @@
 
-        if (Template::whereTypeAlias('{{$template->type_alias}}')
-            ->whereAlias('{{$template->alias}}')
-            ->with('fields.options')
-            ->exists()) {
-            throw new \Exception('Template already exists! type: {{$template->type_alias}}, template: {{$template->alias}}');
-        }
-
         /**
          * Create template
          * type: {{$template->type_alias}}, template: {{$template->alias}}
          */
-        $template = Template::create([
+        $template = $this->makeTemplate([
             'name' => '{{$template->name}}',
             'view' => '{{$template->view}}',
             'listing_view' => '{{$template->listing_view}}',
@@ -33,7 +26,7 @@
              * Create field
              * name: {{ $field->name }}
              */
-            $field = Field::create([
+            $field = $this->makeField([
                 'template_id' => $template->id,
 
                 'name' => '{{ $field->name }}',
@@ -49,7 +42,7 @@
              */
             @foreach ($field->options as $option)
 
-                Option::create([
+                $this->makeOption([
                     'field_id' => $field->id,
 
                     'key' => '{{$option->key}}',
