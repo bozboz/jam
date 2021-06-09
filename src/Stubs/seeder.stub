@@ -1,5 +1,6 @@
 <?php
 
+use Bozboz\Jam\Entities\Entity;
 use Bozboz\Jam\Fields\Field;
 use Bozboz\Jam\Fields\Options\Option;
 use Bozboz\Jam\Templates\Template;

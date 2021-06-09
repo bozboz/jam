@@ -1,5 +1,8 @@
 # Jam Changelog
 
+## Version 1.21.1 (2021-06-09)
+- Fix seeder stud
+
 ## Version 1.21.0 (2021-06-09)
 - Update seeder generation so that the seeds can be run multiple times and just update what's not there
 
