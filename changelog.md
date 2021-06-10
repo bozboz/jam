@@ -1,5 +1,8 @@
 # Jam Changelog
 
+## Version 1.21.2 (2021-06-10)
+- Fix field options in seeder
+
 ## Version 1.21.1 (2021-06-09)
 - Fix seeder stud
 

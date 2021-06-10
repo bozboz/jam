@@ -46,7 +46,7 @@
                     'field_id' => $field->id,
 
                     'key' => '{{$option->key}}',
-                    'value' => '{{$option->value}}',
+                    'value' => '{!!$option->value!!}',
                 ]);
             @endforeach
 
