@@ -23,11 +23,12 @@ class JamServiceProvider extends ServiceProvider
     ];
 
     protected $commands = [
-        'Bozboz\Jam\Console\Commands\AddOldUrl',
-        'Bozboz\Jam\Console\Commands\CountErrors',
-        'Bozboz\Jam\Console\Commands\FixTree',
-        'Bozboz\Jam\Console\Commands\RecalculatePaths',
-        'Bozboz\Jam\Console\Commands\SeederMake',
+        \Bozboz\Jam\Console\Commands\AddOldUrl::class,
+        \Bozboz\Jam\Console\Commands\CountErrors::class,
+        \Bozboz\Jam\Console\Commands\FixTree::class,
+        \Bozboz\Jam\Console\Commands\RecalculatePaths::class,
+        \Bozboz\Jam\Console\Commands\SeederMake::class,
+        \Bozboz\Jam\Console\Commands\MakeAllSeeders::class,
     ];
 
     public function register()
@@ -122,37 +123,37 @@ class JamServiceProvider extends ServiceProvider
         $this->app['permission.handler']->define([
 
             // Allows access to edit jam templates, clients should never be given this
-            'manage_entities' => 'Bozboz\Permissions\Rules\Rule',
+            'manage_entities' => \Bozboz\Permissions\Rules\Rule::class,
 
-            'publish_entity' => 'Bozboz\Permissions\Rules\Rule',
-            'hide_entity' => 'Bozboz\Permissions\Rules\Rule',
-            'schedule_entity' => 'Bozboz\Permissions\Rules\Rule',
+            'publish_entity' => \Bozboz\Permissions\Rules\Rule::class,
+            'hide_entity' => \Bozboz\Permissions\Rules\Rule::class,
+            'schedule_entity' => \Bozboz\Permissions\Rules\Rule::class,
 
-            'view_entity_type' => 'Bozboz\Permissions\Rules\Rule',
-            'create_entity_type' => 'Bozboz\Permissions\Rules\Rule',
-            'delete_entity_type' => 'Bozboz\Permissions\Rules\Rule',
-            'edit_entity_type' => 'Bozboz\Permissions\Rules\Rule',
+            'view_entity_type' => \Bozboz\Permissions\Rules\Rule::class,
+            'create_entity_type' => \Bozboz\Permissions\Rules\Rule::class,
+            'delete_entity_type' => \Bozboz\Permissions\Rules\Rule::class,
+            'edit_entity_type' => \Bozboz\Permissions\Rules\Rule::class,
 
-            'create_under_specific_entity' => 'Bozboz\Permissions\Rules\Rule',
-            'edit_specific_entity' => 'Bozboz\Permissions\Rules\Rule',
-            'delete_specific_entity' => 'Bozboz\Permissions\Rules\Rule',
-            'view_specific_entity' => 'Bozboz\Permissions\Rules\Rule',
-            'publish_specific_entity' => 'Bozboz\Permissions\Rules\Rule',
-            'hide_specific_entity' => 'Bozboz\Permissions\Rules\Rule',
-            'schedule_specific_entity' => 'Bozboz\Permissions\Rules\Rule',
+            'create_under_specific_entity' => \Bozboz\Permissions\Rules\Rule::class,
+            'edit_specific_entity' => \Bozboz\Permissions\Rules\Rule::class,
+            'delete_specific_entity' => \Bozboz\Permissions\Rules\Rule::class,
+            'view_specific_entity' => \Bozboz\Permissions\Rules\Rule::class,
+            'publish_specific_entity' => \Bozboz\Permissions\Rules\Rule::class,
+            'hide_specific_entity' => \Bozboz\Permissions\Rules\Rule::class,
+            'schedule_specific_entity' => \Bozboz\Permissions\Rules\Rule::class,
 
-            'view_entity_archive' => 'Bozboz\Permissions\Rules\Rule',
-            'delete_entity_forever' => 'Bozboz\Permissions\Rules\Rule',
+            'view_entity_archive' => \Bozboz\Permissions\Rules\Rule::class,
+            'delete_entity_forever' => \Bozboz\Permissions\Rules\Rule::class,
 
-            'view_entity_history' => 'Bozboz\Permissions\Rules\Rule',
-            'edit_entity_history' => 'Bozboz\Permissions\Rules\Rule',
+            'view_entity_history' => \Bozboz\Permissions\Rules\Rule::class,
+            'edit_entity_history' => \Bozboz\Permissions\Rules\Rule::class,
 
-            'view_gated_entities' => 'Bozboz\Permissions\Rules\GlobalRule',
-            'gate_entities' => 'Bozboz\Permissions\Rules\Rule',
+            'view_gated_entities' => \Bozboz\Permissions\Rules\GlobalRule::class,
+            'gate_entities' => \Bozboz\Permissions\Rules\Rule::class,
 
-            'expire_entity' => 'Bozboz\Permissions\Rules\Rule',
+            'expire_entity' => \Bozboz\Permissions\Rules\Rule::class,
 
-            'view_gated_entity_type' => 'Bozboz\Permissions\Rules\Rule',
+            'view_gated_entity_type' => \Bozboz\Permissions\Rules\Rule::class,
 
         ]);
     }
