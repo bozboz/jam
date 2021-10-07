@@ -1,5 +1,8 @@
 # Jam Changelog
 
+## Version 1.22.0 (2021-10-07)
+- Add generator to seed all templates
+
 ## Version 1.21.2 (2021-06-10)
 - Fix field options in seeder
 

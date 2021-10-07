@@ -12,7 +12,8 @@
     ],
     "autoload": {
         "psr-4": {
-            "Bozboz\\Jam\\": "src/"
+            "Bozboz\\Jam\\": "src/",
+            "Bozboz\\Jam\\Seeds\\": "database/seeds/"
         }
     },
     "require": {

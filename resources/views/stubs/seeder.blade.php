@@ -32,8 +32,8 @@
                 'name' => '{{ $field->name }}',
                 'type_alias' => '{{ $field->type_alias }}',
                 'validation' => {!! $field->validation ? "'{$field->validation}'" : 'NULL' !!},
-                'help_text_title' => {!! $field->help_text_title ? "'{$field->help_text_title}'" : 'NULL' !!},
-                'help_text' => {!! $field->help_text ? "'{$field->help_text}'" : 'NULL' !!},
+                'help_text_title' => {!! $field->help_text_title ? "'".addslashes($field->help_text_title)."'" : 'NULL' !!},
+                'help_text' => {!! $field->help_text ? "'".addslashes($field->help_text)."'" : 'NULL' !!},
                 'sorting' => {{$field->sorting}},
             ]);
 
