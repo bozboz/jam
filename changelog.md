@@ -1,5 +1,8 @@
 # Jam Changelog
 
+## Version 1.22.1 (2021-10-08)
+- Rename command
+
 ## Version 1.22.0 (2021-10-07)
 - Add generator to seed all templates
 

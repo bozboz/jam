@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 
 class MakeAllSeeders extends Command
 {
-    protected $signature = 'jam:make-seeders';
+    protected $signature = 'jam:make-all-seeders';
 
     protected $description = 'Generate seeders for all templates';
 
