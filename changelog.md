@@ -1,5 +1,8 @@
 # Jam Changelog
 
+## Version 1.22.3 (2021-11-26)
+- Addslashes to field option value in seed stub
+
 ## Version 1.22.2 (2021-10-08)
 - Rename command
 
