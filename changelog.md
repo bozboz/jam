@@ -1,5 +1,8 @@
 # Jam Changelog
 
+## Version 1.22.4 (2021-12-20)
+- Fix youtube thumbnails
+
 ## Version 1.22.3 (2021-11-26)
 - Addslashes to field option value in seed stub
 
