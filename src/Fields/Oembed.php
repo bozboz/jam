@@ -22,28 +22,8 @@ class Oembed extends Text
     public function getValue(Value $value)
     {
         return $value->value ? Cache::rememberForever($this->getCacheKey($value), function() use ($value) {
-            return $this->youtube($value->value) ?: Embed::create($value->value);
+            return Embed::create($value->value);
         }) : null;
-    }
-
-    private function youtube($url)
-    {
-        preg_match('/^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/', $url, $matches);
-        if (! $videoId = Arr::get($matches, 5)) {
-            return false;
-        }
-
-        $embed = Embed::create($url);
-
-        $code = <<<HTML
-        <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/{$videoId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-HTML;
-
-        return (object)[
-            'code' => $code,
-            'image' => $embed->image,
-        ];
-
     }
 
     protected function getCacheKey($value)
