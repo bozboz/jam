@@ -1,5 +1,8 @@
 # Jam Changelog
 
+## Version 1.22.5 (2021-12-21)
+- Remove youtube hack from oembed field
+
 ## Version 1.22.4 (2021-12-20)
 - Fix youtube thumbnails
 
