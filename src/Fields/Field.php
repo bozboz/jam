@@ -34,6 +34,7 @@ class Field extends Model implements FieldInterface, Sortable
         'help_text_title',
         'help_text',
         'sorting',
+        'tab',
     ];
 
     protected $nullable = [
@@ -41,6 +42,7 @@ class Field extends Model implements FieldInterface, Sortable
         'help_text_title',
         'help_text',
         'label',
+        'tab',
     ];
 
     protected static $mapper;
@@ -137,6 +139,11 @@ class Field extends Model implements FieldInterface, Sortable
         return $value;
     }
 
+    public function getTab()
+    {
+        return $this->tab;
+    }
+
     public function getInputName()
     {
         return e($this->name);
@@ -155,6 +162,7 @@ class Field extends Model implements FieldInterface, Sortable
             'field_id' => $this->id,
             'key' => $this->name,
             'value' => !is_array($value) ? $value : null,
+            'tab' => $this->tab,
             'foreign_key' => $this->usesForeignKey() ? ($value ?: null) : null
         ];
         $valueObj = $revision->fieldValues()->create($fieldValue);

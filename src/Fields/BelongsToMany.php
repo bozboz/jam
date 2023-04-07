@@ -42,6 +42,7 @@ abstract class BelongsToMany extends BelongsTo
     protected function getAdminFieldAttributes()
     {
         return [
+            'tab' => $this->getTab(),
             'name' => $this->getInputName(),
             'label' => $this->getInputLabel(),
             'help_text_title' => $this->help_text_title,

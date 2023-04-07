@@ -13,6 +13,7 @@ class Dropdown extends Field
 	public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
 	{
 	    return new SelectField([
+            'tab' => $this->getTab(),
 			'name' => $this->getInputName(),
 			'label' => $this->getInputLabel(),
             'options' => $this->getSelectOptions(),

@@ -62,9 +62,9 @@ class JamServiceProvider extends ServiceProvider
 
         $this->loadViewsFrom("{$packageRoot}/resources/views", 'jam');
 
-        $this->publishes([
-            "{$packageRoot}database/migrations" => database_path('migrations')
-        ], 'migrations');
+		$this->publishes([
+			$packageRoot . '/database/migrations/' => database_path('migrations')
+		], 'migrations');
 
         $this->mergeConfigFrom(
             "{$packageRoot}config/jam.php", 'jam'

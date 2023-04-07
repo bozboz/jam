@@ -16,6 +16,7 @@ class Textarea extends Field
 	{
         if ($this->getOption('wysiwyg')) {
             return new HTMLEditorField([
+                'tab' => $this->getTab(),
                 'name' => $this->getInputName(),
                 'label' => $this->getInputLabel(),
                 'help_text_title' => $this->help_text_title,
@@ -23,6 +24,7 @@ class Textarea extends Field
             ]);
         } else {
             return new TextareaField([
+                'tab' => $this->getTab(),
                 'name' => $this->getInputName(),
                 'label' => $this->getInputLabel(),
                 'help_text_title' => $this->help_text_title,

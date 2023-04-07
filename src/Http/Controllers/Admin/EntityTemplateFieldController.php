@@ -21,6 +21,7 @@ class EntityTemplateFieldController extends ModelAdminController
 
 	private $template;
 
+
 	protected $useActions = true;
 
 	public function __construct(FieldDecorator $decorator, Template $template)

@@ -13,6 +13,7 @@ class Password extends Field
 	public function getAdminField(Entity $instance, EntityDecorator $decorator, Value $value)
 	{
 	    return new PasswordField([
+            'tab' => $this->getTab(),
 			'name' => $this->getInputName(),
 			'label' => $this->getInputLabel(),
             'help_text_title' => $this->help_text_title,
