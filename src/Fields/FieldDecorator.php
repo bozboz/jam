@@ -61,11 +61,21 @@ class FieldDecorator extends ModelAdminDecorator
 			new TextField('validation'),
 			new TextField('help_text_title'),
 			new TextareaField('help_text'),
-			new TextField('tab', ['help_text' => '(optional) if present this field will be in a tab']), // Will be used to put this field in a tab
+			//new TextField('tab', ['help_text' => '(optional) if present this field will be in a tab']), // Will be used to put this field in a tab
+			new SelectField('tab', [
+				'options' => $this->getTabOptions($instance),
+				'help_text' => '(optional) if present this field will be in a tab',
+			]),
 			new HiddenField('template_id'),
 			// new HiddenField('type_alias'),
 		], $instance->getOptionFields());
 	}
+
+	protected function getTabOptions($instance)
+    {
+        $tabs = $instance->template->getTabsForForm();
+		return ['' => 'Default']+$tabs;
+    }
 
 	protected function getTypeOptions()
 	{

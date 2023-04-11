@@ -6,6 +6,7 @@ use Bozboz\Admin\Base\ModelAdminDecorator;
 use Bozboz\Admin\Fields\HiddenField;
 use Bozboz\Admin\Fields\SelectField;
 use Bozboz\Admin\Fields\TextField;
+use Bozboz\Admin\Fields\TextareaField;
 use Bozboz\Jam\Templates\Template;
 use Bozboz\Jam\Types\Type;
 use Illuminate\Database\Eloquent\Builder;
@@ -66,6 +67,9 @@ class TemplateDecorator extends ModelAdminDecorator
 			]),
 			new TextField('max_uses', [
 				'help_text' => 'Allows you to limit the number of times a template may be used e.g. setting it to 1 will hide the option to create a new entity with that template after 1 is created.'
+			]),
+			new TextareaField('tabs', [
+				'help_text' => 'One tab per line. Use lower case names, spaces are allowed. Tabs defined here will show in template fields an a tab option. Any fields not placed in a custom tab will go into "Default" tab at start'
 			]),
 			new HiddenField('type_alias')
 		];

@@ -28,12 +28,14 @@ class Template extends Model
 		'alias',
 		'type_alias',
 		'max_uses',
+		'tabs',
 	];
 
 	protected $nullable = [
 		'view',
 		'listing_view',
 		'max_uses',
+		'tabs',
 	];
 
 	static public function boot()
@@ -105,4 +107,28 @@ class Template extends Model
 	{
 		return $this;
 	}
+
+    /*
+     * return an array of tabs
+     */
+    public function getTabsForForm($for_select = true)
+    {
+        $tabs = [];
+        if ($this->tabs){
+            $tabs_string = $this->tabs;
+            if ($tabs_string){
+                $tabs_split = preg_split("/\r\n|\n|\r/", $tabs_string); // split text by newlines
+                foreach ($tabs_split as $tab) {
+                    $clean_tab = strtolower(trim($tab)); // lowercase stripped of leading and trailing
+                    if ($for_select) {
+                        // For a form we want a select dropdown 
+                        $tabs[$clean_tab] = ucfirst($clean_tab);
+                    } else {
+                        $tabs[$clean_tab] = [];
+                    }
+                }
+            }
+        }
+        return $tabs;
+    }
 }
